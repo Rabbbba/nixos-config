@@ -1,4 +1,9 @@
-{ config, pkgs, inputs, ... }:
+{
+  config,
+  pkgs,
+  inputs,
+  ...
+}:
 
 {
   imports = [ inputs.mango.hmModules.mango ];
@@ -9,14 +14,15 @@
   programs.home-manager.enable = true;
 
   xdg.configFile."nvim".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/nvim";
-  xdg.configFile."foot".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/foot";
+  xdg.configFile."ghostty".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/ghostty";
   xdg.configFile."waybar".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/waybar";
   xdg.configFile."rofi".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/rofi";
   xdg.configFile."swaync".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/swaync";
   xdg.configFile."mango".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/mango";
 
-
   home.packages = with pkgs; [
+    ghostty
+    neovim
     nixfmt
     clang-tools
     hyprls
@@ -27,7 +33,6 @@
     taplo
     shfmt
     fish
-    foot
     swaybg
     waybar
     swaynotificationcenter
@@ -47,8 +52,20 @@
     settings.user.email = "rayane.bensalah@proton.me";
   };
 
-    wayland.windowManager.mango = {
+  wayland.windowManager.mango = {
     enable = true;
   };
+
+  programs.zsh = {
+    enable = true;
+    autosuggestion.enable = true;
+    syntaxHighlighting.enable = true;
+  };
+
+  programs.starship = {
+    enable = true;
+  };
+
+  xdg.configFile."starship.toml".source = ./starship.toml;
 
 }

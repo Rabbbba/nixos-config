@@ -1,0 +1,12 @@
+font-family = Iosevka Nerd Font
+font-size = 14
+
+theme = GruvboxDark
+
+window-padding-x = 8
+window-padding-y = 8
+
+cursor-style = bar
+cursor-style-blink = true
+
+scrollback-limit = 10000
