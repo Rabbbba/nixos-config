@@ -89,17 +89,6 @@
     isNormalUser = true;
     description = "Rayane";
     extraGroups = [ "networkmanager" "wheel" ];
-    packages = with pkgs; [
-    ghostty
-    thunderbird
-    bitwarden-desktop
-    steam
-    discord
-    lmstudio
-    pi-coding-agent
-    nodejs
-    claude-code
-    ];
   };
 
   # Install firefox.
@@ -112,10 +101,8 @@
   # $ nix search wget
   environment.systemPackages = with pkgs; [
   wget
-  neovim
-  git
   tealdeer
-  xclip
+  wl-clipboard
   bat
   ];
 

@@ -33,6 +33,12 @@
     nerd-fonts.iosevka
     nixd
     rofi
+    discord
+    pi-coding-agent
+    nodejs
+    claude-code
+    steam
+    bitwarden-desktop
   ];
 
   programs.git = {
