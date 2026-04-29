@@ -2,13 +2,13 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-    ];
+  imports = [
+    # Include the results of the hardware scan.
+    ./hardware-configuration.nix
+  ];
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -24,9 +24,15 @@
   networking.hostName = "Rayane"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
-    nix.settings = {
-    experimental-features = [ "nix-command" "flakes" ];
-    substituters = [ "https://cache.nixos.org" "https://nix-community.cachix.org" ];
+  nix.settings = {
+    experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
+    substituters = [
+      "https://cache.nixos.org"
+      "https://nix-community.cachix.org"
+    ];
     trusted-public-keys = [
       "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
       "nix-community.cachix.org-1:mB9FSh9qf2dde0dGKs7wMzfk5fhMaIoI7P/I4tFMQeA="
@@ -109,7 +115,10 @@
   users.users.rayane = {
     isNormalUser = true;
     description = "Rayane";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+    ];
   };
 
   # Install firefox.
@@ -121,11 +130,20 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-  wget
-  tealdeer
-  wl-clipboard
-  bat
+    wget
+    tealdeer
+    wl-clipboard
+    bat
   ];
+
+  fileSystems."/mnt/jeux" = {
+    device = "/dev/disk/by-uuid/eaf01630-0390-47bc-8052-c056e1e5aedb";
+    fsType = "btrfs";
+    options = [
+      "defaults"
+      "nofail"
+    ];
+  };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.

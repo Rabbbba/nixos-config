@@ -44,6 +44,10 @@
     nodejs
     claude-code
     bitwarden-desktop
+    wl-clip-persist
+    cliphist
+    networkmanagerapplet
+    swayosd
   ];
 
   programs.git = {
