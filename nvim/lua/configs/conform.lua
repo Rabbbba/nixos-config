@@ -3,7 +3,6 @@ local options = {
 		lua = { "stylua" },
 		cpp = { "clang-format" },
 		c = { "clang-format" },
-
 		json = { "prettier" },
 		jsonc = { "prettier" },
 		css = { "prettier" },
@@ -11,6 +10,7 @@ local options = {
 		sh = { "shfmt" },
 		fish = { "fish_indent" },
 		md = { "prettier" },
+		nix = { "nixd" },
 	},
 
 	format_on_save = {

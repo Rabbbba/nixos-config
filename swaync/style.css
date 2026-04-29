@@ -1,0 +1,219 @@
+/* =============================================================================
+   SwayNC — thème Gruvbox dark
+   Centre de notifications, position : haut droite
+   ============================================================================= */
+
+/* Palette Gruvbox dark */
+@define-color bg      #1d2021; /* Gruvbox bg (hard) — fond principal */
+@define-color bg1     #282828; /* Gruvbox bg */
+@define-color bg2     #3c3836; /* Gruvbox bg1 */
+@define-color bg3     #504945; /* Gruvbox bg2 */
+@define-color fg      #ebdbb2; /* Gruvbox fg */
+@define-color fg2     #a89984; /* Gruvbox fg2 (muted) */
+@define-color yellow  #d79921;
+@define-color green   #98971a;
+@define-color aqua    #689d6a;
+@define-color blue    #458588;
+@define-color red     #cc241d;
+
+* {
+  font-family: "JetBrainsMono Nerd Font", monospace;
+  font-size: 13px;
+}
+
+/* ── Centre de contrôle ─────────────────────────────────────────────────────── */
+.control-center {
+  background-color: @bg;
+  border-radius: 0 0 0 12px; /* Coin arrondi en bas à gauche uniquement */
+  border: 1px solid @bg3;
+  border-top: none;
+  border-right: none;
+  padding: 8px;
+}
+
+/* ── Widget MPRIS (lecteur média) ────────────────────────────────────────────── */
+.widget-mpris {
+  background-color: @bg1;
+  border-radius: 8px 8px 0 0;
+  margin-bottom: 0;
+  padding: 8px;
+}
+
+.widget-mpris-player {
+  padding: 4px;
+}
+
+.widget-mpris-album-art {
+  border-radius: 6px;
+}
+
+.widget-mpris-title {
+  color: @fg;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.widget-mpris-subtitle {
+  color: @aqua;
+  font-size: 12px;
+}
+
+.widget-mpris button {
+  background-color: @bg2;
+  color: @fg;
+  border-radius: 6px;
+  border: none;
+  padding: 4px 10px;
+}
+
+.widget-mpris button:hover {
+  background-color: @bg3;
+  color: @yellow;
+}
+
+/* ── Widget Volume ────────────────────────────────────────────────────────────── */
+.widget-volume {
+  background-color: @bg1;
+  border-radius: 0 0 8px 8px;
+  margin-bottom: 0;
+  padding: 4px 12px 8px 12px;
+  color: @fg;
+}
+
+/* Masque les éléments inutiles */
+.notifications-group-headers,
+.notification-row,
+.blank-window,
+label.empty-state-label {
+  display: none;
+}
+
+/* Barre de volume */
+.widget-volume scale trough {
+  background-color: @bg2;
+  border-radius: 4px;
+  min-height: 4px;
+}
+
+.widget-volume scale highlight {
+  background-color: @aqua;
+  border-radius: 4px;
+}
+
+.widget-volume scale slider {
+  background-color: @fg;
+  border-radius: 50%;
+  min-width: 12px;
+  min-height: 12px;
+  border: none;
+}
+
+/* ── Widget Titre ─────────────────────────────────────────────────────────────── */
+.widget-title {
+  color: @fg;
+  margin-bottom: 4px;
+}
+
+.widget-title > label {
+  font-size: 14px;
+  font-weight: bold;
+  color: @fg;
+}
+
+.widget-title > button {
+  background-color: @bg2;
+  color: @fg2;
+  border-radius: 6px;
+  border: none;
+  padding: 2px 8px;
+  font-size: 11px;
+}
+
+.widget-title > button:hover {
+  background-color: @bg3;
+  color: @red; /* Rouge au survol du bouton "Tout effacer" */
+}
+
+/* ── Widget Ne pas déranger (DND) ─────────────────────────────────────────────── */
+.widget-dnd {
+  color: @fg;
+  margin-bottom: 4px;
+}
+
+.widget-dnd > switch {
+  border-radius: 12px;
+  background-color: @bg2;
+  border: none;
+}
+
+.widget-dnd > switch:checked {
+  background-color: @yellow;
+}
+
+.widget-dnd > switch slider {
+  background-color: @fg;
+  border-radius: 50%;
+  border: none;
+}
+
+/* ── Notifications individuelles ──────────────────────────────────────────────── */
+.notification-row {
+  outline: none;
+  margin-bottom: 4px;
+}
+
+.notification {
+  background-color: @bg1;
+  border-radius: 8px;
+  border: 1px solid @bg3;
+  padding: 8px;
+  color: @fg;
+}
+
+.notification-content {
+  padding: 4px;
+}
+
+.notification-default-action {
+  background-color: transparent;
+  border-radius: 8px;
+  border: none;
+  color: @fg;
+}
+
+.notification-default-action:hover {
+  background-color: @bg2;
+}
+
+/* Typographie des notifications */
+.summary {
+  font-weight: bold;
+  color: @fg;
+  font-size: 13px;
+}
+.body {
+  color: @fg2;
+  font-size: 12px;
+}
+.app-name {
+  color: @aqua;
+  font-size: 11px;
+}
+.time {
+  color: @fg2;
+  font-size: 11px;
+}
+
+/* Bouton de fermeture */
+.close-button {
+  background-color: @bg2;
+  color: @fg2;
+  border-radius: 50%;
+  border: none;
+  padding: 2px;
+}
+
+.close-button:hover {
+  background-color: @red;
+  color: @fg;
+}

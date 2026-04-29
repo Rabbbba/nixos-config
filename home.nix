@@ -10,9 +10,13 @@
 
   xdg.configFile."nvim".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/nvim";
   xdg.configFile."foot".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/foot";
+  xdg.configFile."waybar".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/waybar";
+  xdg.configFile."rofi".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/rofi";
+  xdg.configFile."swaync".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/swaync";
+
 
   home.packages = with pkgs; [
-    nixfmt-rfc-style
+    nixfmt
     clang-tools
     hyprls
     bash-language-server
@@ -27,6 +31,8 @@
     waybar
     swaynotificationcenter
     nerd-fonts.iosevka
+    nixd
+    rofi
   ];
 
   programs.git = {

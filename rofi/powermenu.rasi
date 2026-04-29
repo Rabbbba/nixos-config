@@ -1,0 +1,97 @@
+// =============================================================================
+// Rofi power menu theme — Gruvbox dark
+// Used by: ~/.config/waybar/scripts/powermenu.sh
+// Appears in the top-left corner, below the Waybar
+// =============================================================================
+
+// --- Color palette (Gruvbox dark) --------------------------------------------
+* {
+    bg:      #1d2021;   // Darkest background (window base)
+    bg1:     #282828;   // Dark background (header)
+    bg2:     #3c3836;   // Medium background (selected item)
+    bg3:     #504945;   // Light background (border)
+    fg:      #ebdbb2;   // Primary text
+    fg2:     #a89984;   // Muted text
+    yellow:  #d79921;   // Selected item accent
+    aqua:    #689d6a;   // Prompt color
+    red:     #cc241d;   // Reserved for destructive actions
+
+    background-color: transparent;
+    text-color:       @fg;
+    border-color:     @bg3;
+}
+
+// --- Window ------------------------------------------------------------------
+// Anchored to top-left, offset to appear below Waybar (y-offset = bar height)
+window {
+    background-color: @bg;
+    border:           1px;
+    border-color:     @bg3;
+    border-radius:    12px;
+    width:            220px;
+    padding:          0;
+    location:         northwest;
+    anchor:           northwest;
+    x-offset:         8px;
+    y-offset:         48px;   // Offset below the Waybar
+}
+
+// --- Main container ----------------------------------------------------------
+mainbox {
+    background-color: transparent;
+    padding:          8px;
+    spacing:          4px;
+}
+
+// --- Header (shows username/icon via powermenu.sh) ---------------------------
+inputbar {
+    background-color: @bg1;
+    border-radius:    8px;
+    padding:          8px 12px;
+    margin-bottom:    4px;
+}
+
+prompt {
+    color: @aqua;
+    font:  "JetBrainsMono Nerd Font Bold 13";
+}
+
+// Text input is disabled — this is a selection-only menu
+entry {
+    enabled: false;
+}
+
+// --- Actions list ------------------------------------------------------------
+listview {
+    background-color: transparent;
+    lines:            4;   // lock / logout / reboot / shutdown
+    columns:          1;
+    spacing:          2px;
+    padding:          0;
+}
+
+// Action item
+element {
+    background-color: transparent;
+    border-radius:    6px;
+    padding:          8px 12px;
+    orientation:      horizontal;
+}
+
+// Highlighted action
+element selected {
+    background-color: @bg2;
+    text-color:       @yellow;
+}
+
+// Action label text
+element-text {
+    color:          @fg;
+    font:           "JetBrainsMono Nerd Font 13";
+    vertical-align: 0.5;
+}
+
+// Text color override for selected action
+element selected element-text {
+    color: @yellow;
+}
