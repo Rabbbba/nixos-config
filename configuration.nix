@@ -14,6 +14,7 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
+  programs.mango.enable = true;
   zramSwap.enable = true;
 
   networking.hostName = "Rayane"; # Define your hostname.
