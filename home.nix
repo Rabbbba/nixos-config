@@ -9,6 +9,7 @@
   programs.home-manager.enable = true;
 
   xdg.configFile."nvim".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/nvim";
+  xdg.configFile."foot".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/foot";
 
   home.packages = with pkgs; [
     nixfmt-rfc-style
@@ -25,6 +26,7 @@
     swaybg
     waybar
     swaynotificationcenter
+    nerd-fonts.iosevka
   ];
 
   programs.git = {
