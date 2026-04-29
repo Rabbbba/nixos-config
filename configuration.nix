@@ -17,6 +17,9 @@
   programs.mango.enable = true;
   zramSwap.enable = true;
   programs.steam.enable = true;
+  programs.zsh.enable = true;
+
+  users.users.rayane.shell = pkgs.zsh;
 
   networking.hostName = "Rayane"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
