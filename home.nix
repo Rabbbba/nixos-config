@@ -7,9 +7,11 @@
 
   programs.home-manager.enable = true;
 
+  xdg.configFile."nvim".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/nvim";
+
   programs.git = {
     enable = true;
-    userName = "Rayane";
-    userEmail = "rayane.bensalah@proton.me";
+    settings.user.name = "Rayane";
+    settings.user.email = "rayane.bensalah@proton.me";
   };
 }
