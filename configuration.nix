@@ -16,6 +16,7 @@
 
   programs.mango.enable = true;
   zramSwap.enable = true;
+  programs.steam.enable = true;
 
   networking.hostName = "Rayane"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.

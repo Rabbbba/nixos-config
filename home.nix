@@ -13,6 +13,7 @@
   xdg.configFile."waybar".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/waybar";
   xdg.configFile."rofi".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/rofi";
   xdg.configFile."swaync".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/swaync";
+  xdg.configFile."mango".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/mango";
 
 
   home.packages = with pkgs; [
@@ -37,7 +38,6 @@
     pi-coding-agent
     nodejs
     claude-code
-    steam
     bitwarden-desktop
   ];
 
