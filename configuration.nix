@@ -20,10 +20,27 @@
   networking.hostName = "Rayane"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+    nix.settings = {
+    experimental-features = [ "nix-command" "flakes" ];
+    substituters = [ "https://cache.nixos.org" "https://nix-community.cachix.org" ];
+    trusted-public-keys = [
+      "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+      "nix-community.cachix.org-1:mB9FSh9qf2dde0dGKs7wMzfk5fhMaIoI7P/I4tFMQeA="
+    ];
+  };
+
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 7d";
+  };
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
+
+  hardware.graphics.enable = true;
+  hardware.graphics.enable32Bit = true;
+  hardware.amdgpu.opencl.enable = true;
 
   # Enable networking
   networking.networkmanager.enable = true;
