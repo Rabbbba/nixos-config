@@ -25,7 +25,6 @@
     neovim
     nixfmt
     clang-tools
-    hyprls
     bash-language-server
     stylua
     vscode-langservers-extracted
@@ -35,6 +34,7 @@
     fish
     swaybg
     waybar
+
     swaynotificationcenter
     nerd-fonts.iosevka
     nixd
