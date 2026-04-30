@@ -35,7 +35,6 @@
 
     # Terminal & shell
     ghostty
-    fish
 
     # Éditeur & outils dev
     neovim
