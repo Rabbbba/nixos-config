@@ -8,7 +8,7 @@
   boot.loader.efi.canTouchEfiVariables = true;
 
   # ── Programs (system-wide) ──────────────────────────────────────────────────
-  programs.mango.enable = true;     # WM Wayland
+  programs.mango.enable = true; # WM Wayland
   programs.steam.enable = true;
   programs.zsh.enable = true;
   programs.firefox.enable = true;
@@ -16,12 +16,18 @@
   # Compression de la swap en RAM (utile sans vraie swap disque)
   zramSwap.enable = true;
 
+  # Swayosd — udev pour les permissions backlight/input
+  services.udev.packages = [ pkgs.swayosd ];
+
   # ── Utilisateur ─────────────────────────────────────────────────────────────
   users.users.rayane = {
     isNormalUser = true;
     description = "Rayane";
     shell = pkgs.zsh;
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+    ];
   };
 
   # ── Réseau ──────────────────────────────────────────────────────────────────
@@ -45,7 +51,7 @@
   };
 
   # ── Display & clavier ───────────────────────────────────────────────────────
-  services.xserver.enable = true;          # Nécessaire pour XWayland (Steam, etc.)
+  services.xserver.enable = true; # Nécessaire pour XWayland (Steam, etc.)
   services.displayManager.gdm.enable = true;
   services.xserver.xkb = {
     layout = "fr";
@@ -68,13 +74,19 @@
 
   # ── GPU AMD ─────────────────────────────────────────────────────────────────
   hardware.graphics.enable = true;
-  hardware.graphics.enable32Bit = true;     # 32-bit pour les jeux
+  hardware.graphics.enable32Bit = true; # 32-bit pour les jeux
   hardware.amdgpu.opencl.enable = true;
 
   # ── Nix ─────────────────────────────────────────────────────────────────────
   nix.settings = {
-    experimental-features = [ "nix-command" "flakes" ];
-    substituters = [ "https://cache.nixos.org" "https://nix-community.cachix.org" ];
+    experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
+    substituters = [
+      "https://cache.nixos.org"
+      "https://nix-community.cachix.org"
+    ];
     trusted-public-keys = [
       "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
       "nix-community.cachix.org-1:mB9FSh9qf2dde0dGKs7wMzfk5fhMaIoI7P/I4tFMQeA="
@@ -93,16 +105,19 @@
   # ── Packages système (les packages user vont dans home.nix) ────────────────
   environment.systemPackages = with pkgs; [
     wget
-    tealdeer       # tldr — pages d'aide concises
+    tealdeer # tldr — pages d'aide concises
     wl-clipboard
-    bat            # cat avec syntax highlighting
+    bat # cat avec syntax highlighting
   ];
 
   # ── Disque jeux ─────────────────────────────────────────────────────────────
   fileSystems."/mnt/jeux" = {
     device = "/dev/disk/by-uuid/eaf01630-0390-47bc-8052-c056e1e5aedb";
     fsType = "btrfs";
-    options = [ "defaults" "nofail" ];
+    options = [
+      "defaults"
+      "nofail"
+    ];
   };
 
   system.stateVersion = "25.11";

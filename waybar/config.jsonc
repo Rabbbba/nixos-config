@@ -68,10 +68,14 @@
     },
 
     // --- Audio (PulseAudio/Pipewire) -------------------------------------
+    // Clic gauche : mixer | Clic droit : mute | Molette : volume +/-
     "pulseaudio": {
       "format": " {volume}%",
       "format-muted": "󰝟 Mute",
-      "on-click": "pavucontrol", // Open mixer on click
+      "on-click": "pavucontrol",
+      "on-click-right": "swayosd-client --output-volume mute-toggle",
+      "on-scroll-up": "swayosd-client --output-volume raise",
+      "on-scroll-down": "swayosd-client --output-volume lower",
     },
 
     // --- Media controls (Tidal HiFi preferred, fallback to any player) ---

@@ -26,36 +26,42 @@
 
   # ── Packages ────────────────────────────────────────────────────────────────
   home.packages = with pkgs; [
+    # Media
+    playerctl
+    pavucontrol
+    easyeffects
+    sox
+
     # Terminal & shell
     ghostty
     fish
 
     # Éditeur & outils dev
     neovim
-    nixd                          # LSP Nix
-    nixfmt                        # Formateur Nix
-    clang-tools                   # LSP C/C++
-    bash-language-server          # LSP Bash
-    vscode-langservers-extracted  # LSP HTML/CSS/JSON
-    stylua                        # Formateur Lua
-    prettier                      # Formateur JS/MD/YAML
-    taplo                         # Formateur TOML
-    shfmt                         # Formateur Shell
+    nixd # LSP Nix
+    nixfmt # Formateur Nix
+    clang-tools # LSP C/C++
+    bash-language-server # LSP Bash
+    vscode-langservers-extracted # LSP HTML/CSS/JSON
+    stylua # Formateur Lua
+    prettier # Formateur JS/MD/YAML
+    taplo # Formateur TOML
+    shfmt # Formateur Shell
     nodejs
 
     # Window manager & desktop
     waybar
-    swaybg                        # Wallpaper
-    swaynotificationcenter        # Notifications
-    swayosd                       # OSD volume/luminosité
-    rofi                          # Lanceur
+    swaybg # Wallpaper
+    swaynotificationcenter # Notifications
+    swayosd # OSD volume/luminosité
+    rofi # Lanceur
 
     # Capture & presse-papiers
     grim
     slurp
     wl-clipboard
-    wl-clip-persist               # Garde le clipboard après fermeture
-    cliphist                      # Historique presse-papiers
+    wl-clip-persist # Garde le clipboard après fermeture
+    cliphist # Historique presse-papiers
 
     # Apps
     discord
@@ -66,12 +72,26 @@
     pi-coding-agent
 
     # Système
-    amdgpu_top                    # Monitoring GPU AMD
-    networkmanagerapplet          # Tray network
+    amdgpu_top # Monitoring GPU AMD
+    networkmanagerapplet # Tray network
 
     # Fonts
     nerd-fonts.iosevka
   ];
+
+  home.sessionVariables = {
+    XCURSOR_THEME = "Bibata-Modern-Amber";
+    XCURSOR_SIZE = "24";
+  };
+
+  #Mouse
+  home.pointerCursor = {
+    name = "Bibata-Modern-Amber";
+    package = pkgs.bibata-cursors;
+    size = 24;
+    gtk.enable = true;
+    x11.enable = true;
+  };
 
   # ── Programs ────────────────────────────────────────────────────────────────
   programs.git = {
