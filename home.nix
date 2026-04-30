@@ -22,6 +22,7 @@
   xdg.configFile."rofi".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/rofi";
   xdg.configFile."swaync".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/swaync";
   xdg.configFile."mango".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/mango";
+  xdg.configFile."swaylock".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/swaylock/";
   xdg.configFile."starship.toml".source = ./starship.toml;
 
   # ── Packages ────────────────────────────────────────────────────────────────
@@ -55,6 +56,8 @@
     swaynotificationcenter # Notifications
     swayosd # OSD volume/luminosité
     rofi # Lanceur
+    swayidle
+    swaylock-effects
 
     # Capture & presse-papiers
     grim

@@ -62,6 +62,10 @@
   # ── Impression ──────────────────────────────────────────────────────────────
   services.printing.enable = true;
 
+  # ── Sécurité ────────────────────────────────────────────────────────────────
+  # PAM pour swaylock (sinon le mdp n'est pas reconnu)
+  security.pam.services.swaylock = { };
+
   # ── Audio (PipeWire) ────────────────────────────────────────────────────────
   services.pulseaudio.enable = false;
   security.rtkit.enable = true;
