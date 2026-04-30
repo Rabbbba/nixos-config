@@ -9,11 +9,15 @@ NixOS flake-based configuration for a single AMD desktop running **Mango WM** on
 | OS | NixOS (unstable) |
 | Window Manager | [Mango WM](https://github.com/mangowm/mango) |
 | Bar | Waybar |
-| Terminal | Foot |
+| Terminal | Ghostty |
 | Editor | Neovim (NvChad) |
 | Launcher | Rofi |
 | Notifications | Swaync |
-| Shell | Fish |
+| Shell | Zsh + Starship |
+| Audio | PipeWire + EasyEffects |
+| Screenshots | grim + slurp |
+| OSD (volume/brightness) | swayosd |
+| Cursor | Bibata-Modern-Amber |
 | Font | Iosevka Nerd Font |
 
 ## Install
@@ -51,26 +55,62 @@ sudo nixos-rebuild switch
 ├── configuration.nix      # System config (boot, network, services, GPU)
 ├── home.nix               # User config (packages, dotfiles, git, mango)
 ├── hardware-configuration.nix  # Auto-generated, do not edit
+├── starship.toml          # Starship prompt (gruvbox-rainbow)
 ├── nvim/                  # Neovim config (NvChad)
-├── foot/                  # Foot terminal config
-├── waybar/                # Waybar config
-├── rofi/                  # Rofi config
-├── swaync/                # Swaync config
-└── mango/                 # Mango WM config
+├── ghostty/               # Ghostty terminal config
+├── waybar/                # Waybar config + style
+├── rofi/                  # Rofi launcher + theme
+├── swaync/                # Swaync notification center
+├── mango/                 # Mango WM config (modular: binds, rules, monitors...)
+│   └── scripts/           # Helper scripts (reload, etc.)
+└── wallpapers/            # Wallpapers per monitor
 ```
 
-## Key bindings (Mango defaults)
+## Key bindings (Mango)
 
+### Apps
 | Key | Action |
 |---|---|
-| `Alt + Enter` | Open terminal (foot) |
-| `Alt + Space` | Open launcher (rofi) |
+| `Alt + Enter` | Terminal (ghostty) |
+| `Alt + Space` | Launcher (rofi) |
+| `Super + B` | Firefox |
+
+### Window management
+| Key | Action |
+|---|---|
 | `Alt + Q` | Close window |
 | `Alt + ←/→/↑/↓` | Move focus |
+| `Super + Shift + ←/→/↑/↓` | Swap windows |
+| `Alt + \` | Toggle floating |
+| `Alt + F` | Fullscreen |
+| `Alt + Tab` | Overview |
+
+### Layouts
+| Key | Action |
+|---|---|
+| `Super + T` | Tile |
+| `Super + M` | Monocle |
+| `Super + V` | Vertical grid |
+| `Super + Shift + V` | Vertical scroller |
+| `Super + N` | Cycle layouts |
+
+### Tags / Workspaces
+| Key | Action |
+|---|---|
 | `Ctrl + 1-9` | Switch tag |
 | `Alt + 1-9` | Move window to tag |
-| `Super + R` | Reload config |
-| `Super + M` | Quit Mango |
+| `Super + ←/→` | Previous / next tag |
+| `Alt + Shift + ←/→` | Focus monitor |
+
+### System
+| Key | Action |
+|---|---|
+| `Super + R` | Reload Mango config |
+| `Super + Shift + R` | Restart Waybar |
+| `Super + Shift + M` | Quit Mango |
+| `Super + S` | Screenshot region → file |
+| `Super + Ctrl + S` | Screenshot region → clipboard |
+| Volume / Brightness | Hardware keys via swayosd |
 
 ## Maintenance
 
@@ -80,4 +120,7 @@ sudo nix-collect-garbage -d
 
 # List generations
 sudo nix-env --list-generations --profile /nix/var/nix/profiles/system
+
+# Rollback to previous generation
+sudo nixos-rebuild switch --rollback
 ```
