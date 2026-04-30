@@ -68,6 +68,7 @@
     # Apps
     discord
     bitwarden-desktop
+    mangohud
 
     # IA
     claude-code
@@ -76,14 +77,39 @@
     # Système
     amdgpu_top # Monitoring GPU AMD
     networkmanagerapplet # Tray network
+    btop
 
     # Fonts
     nerd-fonts.iosevka
   ];
 
+  programs.yazi = {
+    enable = true;
+    enableZshIntegration = true;
+    shellWrapperName = "y";
+  };
+
+  services.gammastep = {
+    enable = true;
+    provider = "manual";
+    latitude = 48.85;
+    longitude = 2.35;
+    temperature = {
+      day = 6500;
+      night = 4000;
+    };
+  };
+
   home.sessionVariables = {
     XCURSOR_THEME = "Bibata-Modern-Amber";
     XCURSOR_SIZE = "24";
+  };
+
+  #Qt
+  qt = {
+    enable = true;
+    platformTheme.name = "gtk";
+    style.name = "adwaita-dark";
   };
 
   #Mouse
@@ -95,11 +121,28 @@
     x11.enable = true;
   };
 
+  gtk = {
+    enable = true;
+    theme = {
+      name = "Gruvbox-Dark-B";
+      package = pkgs.gruvbox-gtk-theme;
+    };
+    iconTheme = {
+      name = "Papirus-Dark";
+      package = pkgs.papirus-icon-theme;
+    };
+  };
+
   # ── Programs ────────────────────────────────────────────────────────────────
   programs.git = {
     enable = true;
     settings.user.name = "Rayane";
     settings.user.email = "rayane.bensalah@proton.me";
+  };
+
+  programs.direnv = {
+    enable = true;
+    nix-direnv.enable = true;
   };
 
   programs.zsh = {

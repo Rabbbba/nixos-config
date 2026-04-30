@@ -13,6 +13,22 @@
   programs.zsh.enable = true;
   programs.firefox.enable = true;
 
+  programs.gamemode = {
+    enable = true;
+    enableRenice = true;
+  };
+
+  # nh — wrapper rebuild plus propre (nh os switch, nh search, nh clean)
+  programs.nh = {
+    enable = true;
+    flake = "/etc/nixos";
+  };
+
+  programs.corectrl = {
+    enable = true;
+    gpuOverclock.enable = true;
+  };
+
   # Compression de la swap en RAM (utile sans vraie swap disque)
   zramSwap.enable = true;
 
@@ -27,6 +43,7 @@
     extraGroups = [
       "networkmanager"
       "wheel"
+      "corectrl"
     ];
   };
 
@@ -112,6 +129,7 @@
     tealdeer # tldr — pages d'aide concises
     wl-clipboard
     bat # cat avec syntax highlighting
+    nix-output-monitor # nom — progression colorée des builds (utilisé par nh)
   ];
 
   # ── Disque jeux ─────────────────────────────────────────────────────────────
