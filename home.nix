@@ -108,6 +108,7 @@
   home.sessionVariables = {
     XCURSOR_THEME = "Bibata-Modern-Amber";
     XCURSOR_SIZE = "24";
+    QML_IMPORT_PATH = "${pkgs.qt6.qtdeclarative}/lib/qt-6/qml:${pkgs.quickshell}/lib/qt-6/qml";
   };
 
   #Qt

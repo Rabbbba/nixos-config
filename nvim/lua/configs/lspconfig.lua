@@ -24,6 +24,7 @@ vim.lsp.config("nixd", {
 vim.lsp.enable("nixd")
 
 vim.lsp.config("qmlls", {
+	cmd = { "qmlls", "-E" },
 	capabilities = require("cmp_nvim_lsp").default_capabilities(),
 })
 vim.lsp.enable("qmlls")
