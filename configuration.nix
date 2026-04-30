@@ -3,16 +3,20 @@
 {
   imports = [ ./hardware-configuration.nix ];
 
+  # ── Boot ────────────────────────────────────────────────────────────────────
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  programs.mango.enable = true;
+  # ── Programs (system-wide) ──────────────────────────────────────────────────
+  programs.mango.enable = true;     # WM Wayland
   programs.steam.enable = true;
   programs.zsh.enable = true;
   programs.firefox.enable = true;
 
+  # Compression de la swap en RAM (utile sans vraie swap disque)
   zramSwap.enable = true;
 
+  # ── Utilisateur ─────────────────────────────────────────────────────────────
   users.users.rayane = {
     isNormalUser = true;
     description = "Rayane";
@@ -20,9 +24,11 @@
     extraGroups = [ "networkmanager" "wheel" ];
   };
 
+  # ── Réseau ──────────────────────────────────────────────────────────────────
   networking.hostName = "Rayane";
   networking.networkmanager.enable = true;
 
+  # ── Localisation ────────────────────────────────────────────────────────────
   time.timeZone = "Europe/Paris";
 
   i18n.defaultLocale = "fr_FR.UTF-8";
@@ -38,17 +44,19 @@
     LC_TIME = "fr_FR.UTF-8";
   };
 
-  services.xserver.enable = true;
+  # ── Display & clavier ───────────────────────────────────────────────────────
+  services.xserver.enable = true;          # Nécessaire pour XWayland (Steam, etc.)
   services.displayManager.gdm.enable = true;
   services.xserver.xkb = {
     layout = "fr";
     variant = "";
   };
-
   console.keyMap = "fr";
 
+  # ── Impression ──────────────────────────────────────────────────────────────
   services.printing.enable = true;
 
+  # ── Audio (PipeWire) ────────────────────────────────────────────────────────
   services.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
@@ -58,10 +66,12 @@
     pulse.enable = true;
   };
 
+  # ── GPU AMD ─────────────────────────────────────────────────────────────────
   hardware.graphics.enable = true;
-  hardware.graphics.enable32Bit = true;
+  hardware.graphics.enable32Bit = true;     # 32-bit pour les jeux
   hardware.amdgpu.opencl.enable = true;
 
+  # ── Nix ─────────────────────────────────────────────────────────────────────
   nix.settings = {
     experimental-features = [ "nix-command" "flakes" ];
     substituters = [ "https://cache.nixos.org" "https://nix-community.cachix.org" ];
@@ -71,6 +81,7 @@
     ];
   };
 
+  # Garbage collection automatique chaque semaine, garde 7 derniers jours
   nix.gc = {
     automatic = true;
     dates = "weekly";
@@ -79,13 +90,15 @@
 
   nixpkgs.config.allowUnfree = true;
 
+  # ── Packages système (les packages user vont dans home.nix) ────────────────
   environment.systemPackages = with pkgs; [
     wget
-    tealdeer
+    tealdeer       # tldr — pages d'aide concises
     wl-clipboard
-    bat
+    bat            # cat avec syntax highlighting
   ];
 
+  # ── Disque jeux ─────────────────────────────────────────────────────────────
   fileSystems."/mnt/jeux" = {
     device = "/dev/disk/by-uuid/eaf01630-0390-47bc-8052-c056e1e5aedb";
     fsType = "btrfs";
