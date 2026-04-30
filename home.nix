@@ -34,7 +34,7 @@
     fish
     swaybg
     waybar
-
+    amdgpu_top
     swaynotificationcenter
     nerd-fonts.iosevka
     nixd

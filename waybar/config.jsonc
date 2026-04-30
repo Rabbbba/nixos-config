@@ -10,8 +10,8 @@
     "position": "top",
     "height": 56, // Bar height in px (sized for 3440x1440)
 
-    // Left: workspace buttons + app launchers
-    "modules-left": ["hyprland/workspaces", "custom/discord", "custom/steam"],
+    // Left: tag buttons + app launchers
+    "modules-left": ["dwl/tags", "custom/discord", "custom/steam"],
 
     // Center: clock
     "modules-center": ["clock"],
@@ -24,7 +24,6 @@
       "pulseaudio",
       "network",
       "custom/weather",
-      "hyprland/language",
       "custom/gpu",
       "cpu",
       "memory",
@@ -32,26 +31,10 @@
       "tray",
     ],
 
-    // --- Workspaces ------------------------------------------------------
-    // Shows icon + name for workspaces 1-3 (DP-2) and 4-5 (DP-1)
-    // Icons are defined both by ID (before rename) and by name (after rename)
-    // so they appear correctly regardless of startup timing
-    "hyprland/workspaces": {
-      "format": "{icon} {name}",
-      "format-icons": {
-        "1": "󰇄", // bureau (by ID, before rename script runs)
-        "2": "󰊗", // gaming
-        "3": "󰨞", // code
-        "4": "", // DP-1 workspace 4
-        "5": "", // DP-1 workspace 5
-        "bureau": "󰇄", // bureau (by name, after rename)
-        "gaming": "󰊗", // gaming
-        "code": "󰨞", // code
-      },
-      "persistent-workspaces": {
-        "DP-2": [1, 2, 3], // Always show workspaces 1-3 on DP-2
-        "DP-1": [4, 5], // Always show workspaces 4-5 on DP-1
-      },
+    // --- Mango tags -------------------------------------------------------
+    "dwl/tags": {
+      "num-tags": 9,
+      "disable-click": false,
     },
 
     // --- System tray -----------------------------------------------------
@@ -121,13 +104,6 @@
       "format": "󰍹 {}%",
       "interval": 2,
       "exec": "cat /sys/class/drm/card1/device/gpu_busy_percent",
-    },
-
-    // --- Keyboard layout indicator ---------------------------------------
-    "hyprland/language": {
-      "format": "󰌌 {}",
-      "format-en": "US",
-      "format-fr": "FR",
     },
 
     // --- Weather (wttr.in, updates every 30 min) -------------------------

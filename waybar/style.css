@@ -39,24 +39,37 @@ window#waybar {
   margin: 8px 10px;
 }
 
-/* --- Workspaces ------------------------------------------------------------ */
-#workspaces button {
+/* --- Tags (dwl/tags pour Mango) ------------------------------------------- */
+#tags button {
   padding: 0 10px;
   background-color: #3c3836;
-  color: #a89984; /* Inactive: muted grey */
+  color: #a89984; /* Tag vide : gris muet */
   border-radius: 6px;
   margin: 6px 3px;
   transition: all 0.2s ease;
 }
 
-#workspaces button.active {
-  background-color: #d79921; /* Active: Gruvbox yellow */
+/* Tag avec une fenêtre dedans */
+#tags button.occupied {
+  color: #ebdbb2;
+}
+
+/* Tag actuellement visible */
+#tags button.focused {
+  background-color: #d79921; /* Gruvbox yellow */
   color: #282828;
 }
 
-#workspaces button:hover {
-  background-color: #504945;
+/* Tag urgent (notification) */
+#tags button.urgent {
+  background-color: #cc241d; /* Gruvbox red */
   color: #ebdbb2;
+}
+
+#tags button:hover {
+  background: #504945;
+  box-shadow: none;
+  text-shadow: none;
 }
 
 /* --- Clock ----------------------------------------------------------------- */
