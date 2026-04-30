@@ -17,6 +17,7 @@
 
   # ── Dotfiles (symlinks vers /etc/nixos pour rester writables) ──────────────
   xdg.configFile."nvim".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/nvim";
+  xdg.configFile."quickshell".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/quickshell";
   xdg.configFile."ghostty".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/ghostty";
   xdg.configFile."waybar".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/waybar";
   xdg.configFile."rofi".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/rofi";
@@ -45,6 +46,7 @@
     vscode-langservers-extracted # LSP HTML/CSS/JSON
     stylua # Formateur Lua
     prettier # Formateur JS/MD/YAML
+    qt6.qtdeclarative # Fourni qmlls (LSP qml)
     taplo # Formateur TOML
     shfmt # Formateur Shell
     nodejs
@@ -57,6 +59,9 @@
     rofi # Lanceur
     swayidle
     swaylock-effects
+
+    #Quickshell (Projet)
+    quickshell
 
     # Capture & presse-papiers
     grim
