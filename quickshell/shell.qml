@@ -18,7 +18,7 @@ Variants {
 
         Rectangle {
             anchors.fill: parent
-            color: "#504945"
+            color: "#282828"
             Row {
                 anchors {
                     left: parent.left
@@ -52,6 +52,7 @@ Variants {
                 spacing: 12
                 Ram {}
                 Cpu {}
+                Mic {}
                 Audio {}
             }
         }
