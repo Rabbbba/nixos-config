@@ -17,12 +17,20 @@ Row {
         model: tags.tagStates
 
         Rectangle {
+            id: tag
             required property var modelData
             required property int index
 
             width: modelData.selected ? 32 : 20
             height: 20
             radius: 4
+
+            Text {
+                anchors.centerIn: parent
+                text: tag.index
+                color: (tag.modelData.selected || tag.modelData.occupied || tag.modelData.urgent) ? "#282828" : "#ebdbb2"
+                font.pixelSize: 12
+            }
 
             Behavior on color {
                 ColorAnimation {
