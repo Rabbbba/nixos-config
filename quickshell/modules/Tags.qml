@@ -20,9 +20,22 @@ Row {
             required property var modelData
             required property int index
 
-            width: 20
+            width: modelData.selected ? 32 : 20
             height: 20
             radius: 4
+
+            Behavior on color {
+                ColorAnimation {
+                    duration: 150
+                }
+            }
+
+            Behavior on width {
+                NumberAnimation {
+                    duration: 150
+                    easing.type: Easing.InOutQuad
+                }
+            }
 
             color: {
                 if (modelData.urgent)
