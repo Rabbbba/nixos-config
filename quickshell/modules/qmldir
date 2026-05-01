@@ -6,3 +6,4 @@ Tags 1.0 Tags.qml
 Cpu 1.0 Cpu.qml
 Title 1.0 Title.qml
 ModuleWrapper 1.0 ModuleWrapper.qml
+Layouts 1.0 Layouts.qml

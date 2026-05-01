@@ -27,6 +27,9 @@ Variants {
             Title {
                 monitor: modelData.name
             }
+            Layouts {
+                monitor: modelData.name
+            }
         }
 
         Clock {
