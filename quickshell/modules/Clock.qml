@@ -24,10 +24,10 @@ Item {
         font.family: "Iosevka Nerd Font"
         font.pixelSize: 20
         font.bold: true
-        text: Qt.formatDateTime(now, "HH:mm:ss")
+        text: Qt.formatDateTime(now, "HH:mm dd/MM")
 
         Timer {
-            interval: 1000
+            interval: 60000
             running: true
             repeat: true
             onTriggered: clock.now = new Date()
