@@ -8,7 +8,8 @@ Text {
 
     color: "#ebdbb2"
     font.pixelSize: 20
-    text: "RAM: " + ramPercent.toFixed(0) + "%"
+    font.family: "Iosevka Nerd Font"
+    text: "󰍛 " + ramPercent.toFixed(0) + "%"
 
     FileView {
         id: meminfo
