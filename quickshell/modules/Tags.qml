@@ -27,7 +27,7 @@ Row {
 
             Text {
                 anchors.centerIn: parent
-                text: tag.index
+                text: tag.index + 1
                 color: (tag.modelData.selected || tag.modelData.occupied || tag.modelData.urgent) ? "#282828" : "#ebdbb2"
                 font.pixelSize: 12
             }
