@@ -38,7 +38,8 @@ Variants {
                 rightMargin: 8
             }
             spacing: 12
-            System {}
+            Ram {}
+            Cpu {}
             Audio {}
         }
     }

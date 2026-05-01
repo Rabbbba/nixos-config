@@ -2,7 +2,7 @@ import QtQuick
 import Quickshell.Io
 
 Text {
-    id: system
+    id: ram
 
     property real ramPercent: 0
 
@@ -20,7 +20,7 @@ Text {
             const content = meminfo.text();
             const total = parseInt(content.match(/MemTotal:\s+(\d+)/)[1]);
             const avail = parseInt(content.match(/MemAvailable:\s+(\d+)/)[1]);
-            system.ramPercent = ((total - avail) / total) * 100;
+            ram.ramPercent = ((total - avail) / total) * 100;
         }
     }
 
