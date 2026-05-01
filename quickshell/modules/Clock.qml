@@ -8,7 +8,7 @@ Item {
     Rectangle {
         anchors.fill: parent
         radius: 4
-        color: ma.containsMouse ? "#3c3836" : "transparent"
+        color: ma.containsMouse ? "#3c3836" : "#fabd2f"
         Behavior on color {
             ColorAnimation {
                 duration: 150
@@ -20,10 +20,10 @@ Item {
 
         property date now: new Date()
         anchors.centerIn: parent
-
-        color: "#ebdbb2"
+        color: ma.containsMouse ? "#ebdbb2" : "#3c3836"
         font.family: "Iosevka Nerd Font"
         font.pixelSize: 20
+        font.bold: true
         text: Qt.formatDateTime(now, "HH:mm:ss")
 
         Timer {
