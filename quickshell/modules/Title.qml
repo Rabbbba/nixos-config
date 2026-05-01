@@ -6,6 +6,8 @@ Item {
     implicitWidth: title.implicitWidth + 16
     height: 30
 
+    property string monitor: ""    // passé depuis shell.qml comme pour Tags
+
     Rectangle {
         anchors.fill: parent
         radius: 4
@@ -19,7 +21,6 @@ Item {
     Text {
         id: title
         anchors.centerIn: parent
-        property string monitor: ""    // passé depuis shell.qml comme pour Tags
         property string current: ""    // le titre courant
 
         color: "#ebdbb2"
@@ -27,7 +28,7 @@ Item {
         font.pixelSize: 18              // un peu plus petit que les modules
         text: current
         elide: Text.ElideRight          // tronque avec "..." si trop long
-        width: 400                      // largeur max — sans ça, elide ne fait rien
+        width: Math.min(implicitWidth, 400)
         horizontalAlignment: Text.AlignLeft
 
         Process {
@@ -38,7 +39,7 @@ Item {
                 splitMarker: "\n"
                 onRead: data => {
                     const parts = data.split(" ");
-                    if (parts[0] !== title.monitor)
+                    if (parts[0] !== root.monitor)
                         return;
                     if (parts[1] !== "title")
                         return;
