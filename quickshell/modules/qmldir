@@ -7,4 +7,5 @@ Cpu 1.0 Cpu.qml
 Title 1.0 Title.qml
 ModuleWrapper 1.0 ModuleWrapper.qml
 Layouts 1.0 Layouts.qml
+Network 1.0 Network.qml
 singleton Theme 1.0 Theme.qml

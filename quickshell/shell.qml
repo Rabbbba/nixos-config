@@ -52,6 +52,7 @@ Variants {
                 spacing: 12
                 Ram {}
                 Cpu {}
+                Network {}
                 Audio {}
             }
         }
