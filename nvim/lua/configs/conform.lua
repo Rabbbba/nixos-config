@@ -11,6 +11,7 @@ local options = {
 		fish = { "fish_indent" },
 		md = { "prettier" },
 		nix = { "nixd" },
+		qml = { "qmlformat" },
 	},
 
 	format_on_save = {
