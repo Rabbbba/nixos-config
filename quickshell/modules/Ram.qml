@@ -1,27 +1,11 @@
 import QtQuick
 import Quickshell.Io
 
-Item {
+ModuleWrapper {
     id: root
-    implicitWidth: ram.implicitWidth + 16
-    height: 30
-
-    Rectangle {
-        anchors.fill: parent
-        radius: 4
-        color: ma.containsMouse ? "#3c3836" : "transparent"
-        Behavior on color {
-            ColorAnimation {
-                duration: 150
-            }
-        }
-    }
 
     Text {
         id: ram
-
-        anchors.centerIn: parent
-
         property real ramPercent: 0
 
         color: "#ebdbb2"
@@ -49,11 +33,5 @@ Item {
             triggeredOnStart: true
             onTriggered: meminfo.reload()
         }
-    }
-
-    MouseArea {
-        id: ma
-        anchors.fill: parent
-        hoverEnabled: true
     }
 }

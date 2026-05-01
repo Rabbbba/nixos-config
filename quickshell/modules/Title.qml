@@ -1,26 +1,12 @@
 import QtQuick
 import Quickshell.Io
 
-Item {
+ModuleWrapper {
     id: root
-    implicitWidth: title.implicitWidth + 16
-    height: 30
-
     property string monitor: ""    // passé depuis shell.qml comme pour Tags
 
-    Rectangle {
-        anchors.fill: parent
-        radius: 4
-        color: ma.containsMouse ? "#3c3836" : "transparent"
-        Behavior on color {
-            ColorAnimation {
-                duration: 150
-            }
-        }
-    }
     Text {
         id: title
-        anchors.centerIn: parent
         property string current: ""    // le titre courant
 
         color: "#ebdbb2"
@@ -47,10 +33,5 @@ Item {
                 }
             }
         }
-    }
-    MouseArea {
-        id: ma
-        anchors.fill: parent
-        hoverEnabled: true
     }
 }

@@ -1,24 +1,11 @@
 import QtQuick
 import Quickshell.Io
 
-Item {
+ModuleWrapper {
     id: root
-    implicitWidth: cpu.implicitWidth + 16
-    height: 30
 
-    Rectangle {
-        anchors.fill: parent
-        radius: 4
-        color: ma.containsMouse ? "#3c3836" : "transparent"
-        Behavior on color {
-            ColorAnimation {
-                duration: 150
-            }
-        }
-    }
     Text {
         id: cpu
-        anchors.centerIn: parent
         property real cpuPercent: 0
         property var prev: ({
                 total: 0,
@@ -63,11 +50,5 @@ Item {
             triggeredOnStart: true
             onTriggered: cpuinfo.reload()
         }
-    }
-
-    MouseArea {
-        id: ma
-        anchors.fill: parent
-        hoverEnabled: true
     }
 }
