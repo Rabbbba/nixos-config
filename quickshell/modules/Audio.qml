@@ -17,7 +17,10 @@ ModuleWrapper {
                 return "󰕾  ?";
             if (sink.audio.muted)
                 return "󰝟 ";
-            return "󰕾 " + Math.round(sink.audio.volume * 100) + "%";
+            const v = sink.audio.volume;
+            if (typeof v !== "number" || isNaN(v))
+                return "󰕾 ?";
+            return "󰕾 " + Math.round(v * 100) + "%";
         }
 
         PwObjectTracker {

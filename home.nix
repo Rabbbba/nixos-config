@@ -26,12 +26,15 @@
   xdg.configFile."swaylock".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/swaylock/";
   xdg.configFile."starship.toml".source = ./starship.toml;
 
+  home.sessionVariables.ELECTRON_OZONE_PLATFORM_HINT = "wayland";
+
   # ── Packages ────────────────────────────────────────────────────────────────
   home.packages = with pkgs; [
     # Media
     playerctl
     pavucontrol
     easyeffects
+    tidal-hifi
     sox
 
     # Terminal & shell

@@ -3,7 +3,7 @@ import QtQuick
 import "modules"
 
 Variants {
-    model: Quickshell.screens
+    model: Quickshell.screens.filter(s => s.name === "DP-2")
     PanelWindow {
         color: "transparent"
         implicitHeight: 40
@@ -50,6 +50,7 @@ Variants {
                     rightMargin: 8
                 }
                 spacing: 12
+                Tidal {}
                 Ram {}
                 Cpu {}
                 Network {}
