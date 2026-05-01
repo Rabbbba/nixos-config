@@ -2,12 +2,12 @@ import QtQuick
 
 ModuleWrapper {
     id: root
-    bgIdle: "#fabd2f"
-    bgHover: "#3c3836"
+    bgIdle: Theme.yellow
+    bgHover: Theme.bg2
 
     Text {
         property date now: new Date()
-        color: root.hovered ? "#ebdbb2" : "#3c3836"
+        color: root.hovered ? Theme.fg1 : Theme.bg1
         font.family: "Iosevka Nerd Font"
         font.pixelSize: 20
         font.bold: true

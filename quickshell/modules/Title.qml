@@ -9,7 +9,7 @@ ModuleWrapper {
         id: title
         property string current: ""    // le titre courant
 
-        color: "#ebdbb2"
+        color: Theme.fg1
         font.family: "Iosevka Nerd Font"
         font.pixelSize: 18              // un peu plus petit que les modules
         text: current

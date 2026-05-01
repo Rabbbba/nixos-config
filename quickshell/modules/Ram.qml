@@ -8,7 +8,7 @@ ModuleWrapper {
         id: ram
         property real ramPercent: 0
 
-        color: "#ebdbb2"
+        color: Theme.fg1
         font.pixelSize: 20
         font.family: "Iosevka Nerd Font"
         text: "󰍛 " + ramPercent.toFixed(0) + "%"

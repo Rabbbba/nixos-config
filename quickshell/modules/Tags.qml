@@ -28,7 +28,7 @@ Row {
             Text {
                 anchors.centerIn: parent
                 text: tag.index + 1
-                color: (tag.modelData.selected || tag.modelData.occupied || tag.modelData.urgent) ? "#282828" : "#ebdbb2"
+                color: (tag.modelData.selected || tag.modelData.occupied || tag.modelData.urgent) ? Theme.bg0 : Theme.fg1
                 font.pixelSize: 18
             }
 
@@ -42,27 +42,27 @@ Row {
 
             Behavior on color {
                 ColorAnimation {
-                    duration: 150
+                    duration: Theme.animFast
                 }
             }
 
             Behavior on width {
                 NumberAnimation {
-                    duration: 150
+                    duration: Theme.animFast
                     easing.type: Easing.InOutQuad
                 }
             }
 
             color: {
                 if (modelData.urgent)
-                    return "#fb4934";
+                    return Theme.red;
                 if (modelData.selected)
-                    return "#fabd2f";
+                    return Theme.yellow;
                 if (modelData.occupied)
-                    return "#a89984";
+                    return Theme.fg4;
                 if (ma.containsMouse)
-                    return "#504945";
-                return "#3c3836";
+                    return Theme.bg2;
+                return Theme.bg1;
             }
         }
     }

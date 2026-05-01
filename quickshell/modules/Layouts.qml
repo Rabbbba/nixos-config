@@ -16,7 +16,7 @@ ModuleWrapper {
                 "F": "Float"
             })
 
-        color: "#ebdbb2"
+        color: Theme.fg1
         font.family: "Iosevka Nerd Font"
         font.pixelSize: 18
         font.bold: true

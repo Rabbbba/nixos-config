@@ -5,8 +5,8 @@ Item {
 
     // API publique (configurable depuis l'extérieur)
     default property alias _content: inner.data
-    property color bgHover: "#504945"
-    property color bgIdle: "#3c3836"
+    property color bgHover: Theme.bg1
+    property color bgIdle: Theme.bg2
     property alias hovered: ma.containsMouse
 
     implicitWidth: inner.childrenRect.width + 16
@@ -18,7 +18,7 @@ Item {
         color: ma.containsMouse ? root.bgHover : root.bgIdle
         Behavior on color {
             ColorAnimation {
-                duration: 150
+                duration: Theme.animFast
             }
         }
     }

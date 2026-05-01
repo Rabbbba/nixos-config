@@ -8,7 +8,7 @@ ModuleWrapper {
         id: audio
         property PwNode sink: Pipewire.defaultAudioSink
 
-        color: "#ebdbb2"
+        color: Theme.fg1
         font.family: "Iosevka Nerd Font"
         font.pixelSize: 20
 
