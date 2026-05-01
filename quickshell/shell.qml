@@ -5,6 +5,7 @@ import "modules"
 Variants {
     model: Quickshell.screens.filter(s => s.name === "DP-2")
     PanelWindow {
+        id: panel
         color: "transparent"
         implicitHeight: 40
         required property var modelData
@@ -50,7 +51,9 @@ Variants {
                     rightMargin: 8
                 }
                 spacing: 12
-                Tidal {}
+                Tidal {
+                    panelWindow: panel
+                }
                 Ram {}
                 Cpu {}
                 Network {}

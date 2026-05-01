@@ -2,6 +2,7 @@ import QtQuick
 
 Item {
     id: root
+    signal clicked
 
     // API publique (configurable depuis l'extérieur)
     default property alias _content: inner.data
@@ -34,5 +35,6 @@ Item {
         id: ma
         anchors.fill: parent
         hoverEnabled: true
+        onClicked: root.clicked()
     }
 }
