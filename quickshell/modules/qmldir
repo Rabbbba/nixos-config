@@ -1,3 +1,4 @@
 module modules
 Clock 1.0 Clock.qml
 System 1.0 System.qml
+Audio 1.0 Audio.qml

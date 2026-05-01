@@ -12,6 +12,7 @@ FloatingWindow {
       spacing: 8
       Clock { }
       System { }
+      Audio { }
     }
 
 }
