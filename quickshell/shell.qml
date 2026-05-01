@@ -13,6 +13,7 @@ FloatingWindow {
       Clock { }
       System { }
       Audio { }
+      Tags { }
     }
 
 }

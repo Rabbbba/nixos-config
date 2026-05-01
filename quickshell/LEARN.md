@@ -86,3 +86,5 @@
 
 ## Pièges rencontrés
 *(Notes sur les trucs qui m'ont pris du temps : qmldir indenté, typo ML_IMPORT_PATH, qmlls qui résout mal les composants custom...)*
+states est réservé dans un Item
+Mutation in-place d'array ne déclenche pas de binding -toujours réassigner
