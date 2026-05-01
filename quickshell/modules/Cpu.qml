@@ -1,51 +1,73 @@
 import QtQuick
 import Quickshell.Io
 
-Text {
-    id: cpu
+Item {
+    id: root
+    implicitWidth: cpu.implicitWidth + 16
+    height: 30
 
-    property real cpuPercent: 0
-    property var prev: ({
-            total: 0,
-            idle: 0
-        })
-
-    color: "#ebdbb2"
-    font.pixelSize: 20
-    font.family: "Iosevka Nerd Font"
-    text: "󰘚 " + cpuPercent.toFixed(0) + "%"
-
-    FileView {
-        id: cpuinfo
-        path: "/proc/stat"
-        blockLoading: true
-
-        onLoaded: {
-            const line = cpuinfo.text().split("\n")[0];                     // 1ère ligne "cpu ..."
-            const fields = line.trim().split(/\s+/).slice(1).map(Number);   // skip "cpu", convertir
-            const idle = fields[3] + fields[4];                            // idle + iowait
-            const total = fields.reduce((a, b) => a + b, 0);                // somme
-
-            // delta vs précédent
-            const totalDelta = total - cpu.prev.total;
-            const idleDelta = idle - cpu.prev.idle;
-
-            if (cpu.prev.total > 0 && totalDelta > 0) {
-                cpu.cpuPercent = (1 - idleDelta / totalDelta) * 100;
+    Rectangle {
+        anchors.fill: parent
+        radius: 4
+        color: ma.containsMouse ? "#3c3836" : "transparent"
+        Behavior on color {
+            ColorAnimation {
+                duration: 150
             }
+        }
+    }
+    Text {
+        id: cpu
+        anchors.centerIn: parent
+        property real cpuPercent: 0
+        property var prev: ({
+                total: 0,
+                idle: 0
+            })
 
-            cpu.prev = {
-                total: total,
-                idle: idle
-            };
+        color: "#ebdbb2"
+        font.pixelSize: 20
+        font.family: "Iosevka Nerd Font"
+        text: "󰘚 " + cpuPercent.toFixed(0) + "%"
+
+        FileView {
+            id: cpuinfo
+            path: "/proc/stat"
+            blockLoading: true
+
+            onLoaded: {
+                const line = cpuinfo.text().split("\n")[0];                     // 1ère ligne "cpu ..."
+                const fields = line.trim().split(/\s+/).slice(1).map(Number);   // skip "cpu", convertir
+                const idle = fields[3] + fields[4];                            // idle + iowait
+                const total = fields.reduce((a, b) => a + b, 0);                // somme
+
+                // delta vs précédent
+                const totalDelta = total - cpu.prev.total;
+                const idleDelta = idle - cpu.prev.idle;
+
+                if (cpu.prev.total > 0 && totalDelta > 0) {
+                    cpu.cpuPercent = (1 - idleDelta / totalDelta) * 100;
+                }
+
+                cpu.prev = {
+                    total: total,
+                    idle: idle
+                };
+            }
+        }
+
+        Timer {
+            interval: 2000
+            running: true
+            repeat: true
+            triggeredOnStart: true
+            onTriggered: cpuinfo.reload()
         }
     }
 
-    Timer {
-        interval: 2000
-        running: true
-        repeat: true
-        triggeredOnStart: true
-        onTriggered: cpuinfo.reload()
+    MouseArea {
+        id: ma
+        anchors.fill: parent
+        hoverEnabled: true
     }
 }
