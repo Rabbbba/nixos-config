@@ -15,25 +15,25 @@ Variants {
         }
         screen: modelData
 
-        Tags {
-            monitor: modelData.name
+        Row {
             anchors {
                 left: parent.left
                 verticalCenter: parent.verticalCenter
-                leftMargin: 8
+            }
+            spacing: 10
+            Tags {
+                monitor: modelData.name
+            }
+            Title {
+                monitor: modelData.name
             }
         }
 
-        Row {
+        Clock {
             anchors {
                 horizontalCenter: parent.horizontalCenter
                 verticalCenter: parent.verticalCenter
             }
-            spacing: 24
-            Title {
-                monitor: modelData.name
-            }
-            Clock {}
         }
 
         Row {
