@@ -1,7 +1,7 @@
 import QtQuick
 import Quickshell.Io
 
-Text {
+Row {
     id: tags
 
     property string monitor: "DP-2"
@@ -11,9 +11,30 @@ Text {
         urgent: false
     })
 
-    color: "#ebdbb2"
-    font.pixelSize: 12
-    text: JSON.stringify(tags.tagStates)
+    spacing: 4
+
+    Repeater {
+        model: tags.tagStates
+
+        Rectangle {
+            required property var modelData
+            required property int index
+
+            width: 20
+            height: 20
+            radius: 4
+
+            color: {
+                if (modelData.urgent)
+                    return "#fb4934";
+                if (modelData.selected)
+                    return "#fabd2f";
+                if (modelData.occupied)
+                    return "#a89984";
+                return "#3c3836";
+            }
+        }
+    }
 
     Process {
         command: ["mmsg", "-w"]

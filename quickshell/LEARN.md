@@ -65,8 +65,44 @@
 
 ---
 
-## Style / Animations
-*(Phase 5 — couleurs gruvbox, transitions, hover, polish)*
+## Style — Gruvbox Dark (palette projet)
+
+**Convention du projet** : tout le styling de la barre utilise la palette Gruvbox Dark.
+
+### Backgrounds
+| Couleur | Hex | Usage |
+|---|---|---|
+| bg0_h | `#1d2021` | hard background |
+| bg0   | `#282828` | background principal de la barre |
+| bg1   | `#3c3836` | element vide / inactif |
+| bg2   | `#504945` | hover léger |
+| bg3   | `#665c54` | bordures |
+| bg4   | `#7c6f64` | bordures plus visibles |
+
+### Foregrounds
+| Couleur | Hex | Usage |
+|---|---|---|
+| fg0 | `#fbf1c7` | texte le plus clair |
+| fg1 | `#ebdbb2` | texte standard ← défaut |
+| fg2 | `#d5c4a1` | texte secondaire |
+| fg3 | `#bdae93` | texte tertiaire |
+| fg4 | `#a89984` | texte désactivé / indicateur "occupé" |
+
+### Accents (bright variants — privilégier)
+| Couleur | Hex | Usage |
+|---|---|---|
+| red    | `#fb4934` | urgent, erreur |
+| green  | `#b8bb26` | success, ok |
+| yellow | `#fabd2f` | tag actif, focus, attention douce |
+| blue   | `#83a598` | info |
+| purple | `#d3869b` | accent |
+| aqua   | `#8ec07c` | accent |
+| orange | `#fe8019` | warning |
+
+### Variants normaux (si on veut plus sourd)
+red `#cc241d`, green `#98971a`, yellow `#d79921`, blue `#458588`, purple `#b16286`, aqua `#689d6a`, orange `#d65d0e`.
+
+*(Phase 5 ajoutera transitions, hover, animations basés sur cette palette.)*
 
 ---
 
