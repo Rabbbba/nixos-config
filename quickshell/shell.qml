@@ -2,39 +2,44 @@ import Quickshell
 import QtQuick
 import "modules"
 
-PanelWindow {
-    color: "#282828"
-    implicitHeight: 30
-
-    anchors {
-        top: true
-        left: true
-        right: true
-    }
-
-    Tags {
+Variants {
+    model: Quickshell.screens
+    PanelWindow {
+        color: "#282828"
+        implicitHeight: 30
+        required property var modelData
         anchors {
-            left: parent.left
-            verticalCenter: parent.verticalCenter
-            leftMargin: 8
+            top: true
+            left: true
+            right: true
         }
-    }
+        screen: modelData
 
-    Clock {
-        anchors {
-            horizontalCenter: parent.horizontalCenter
-            verticalCenter: parent.verticalCenter
+        Tags {
+            monitor: modelData.name
+            anchors {
+                left: parent.left
+                verticalCenter: parent.verticalCenter
+                leftMargin: 8
+            }
         }
-    }
 
-    Row {
-        anchors {
-            right: parent.right
-            verticalCenter: parent.verticalCenter
-            rightMargin: 8
+        Clock {
+            anchors {
+                horizontalCenter: parent.horizontalCenter
+                verticalCenter: parent.verticalCenter
+            }
         }
-        spacing: 12
-        System {}
-        Audio {}
+
+        Row {
+            anchors {
+                right: parent.right
+                verticalCenter: parent.verticalCenter
+                rightMargin: 8
+            }
+            spacing: 12
+            System {}
+            Audio {}
+        }
     }
 }
