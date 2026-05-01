@@ -4,3 +4,4 @@ Ram 1.0 Ram.qml
 Audio 1.0 Audio.qml
 Tags 1.0 Tags.qml
 Cpu 1.0 Cpu.qml
+Title 1.0 Title.qml

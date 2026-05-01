@@ -24,11 +24,16 @@ Variants {
             }
         }
 
-        Clock {
+        Row {
             anchors {
                 horizontalCenter: parent.horizontalCenter
                 verticalCenter: parent.verticalCenter
             }
+            spacing: 24
+            Title {
+                monitor: modelData.name
+            }
+            Clock {}
         }
 
         Row {
