@@ -7,7 +7,11 @@ FloatingWindow {
     width: 400
     height: 200
 
-    Clock {
+    Column {
       anchors.centerIn: parent
+      spacing: 8
+      Clock { }
+      System { }
     }
+
 }
