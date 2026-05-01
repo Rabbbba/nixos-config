@@ -5,50 +5,55 @@ import "modules"
 Variants {
     model: Quickshell.screens
     PanelWindow {
-        color: "#282828"
-        implicitHeight: 30
+        color: "transparent"
+        implicitHeight: 40
         required property var modelData
         anchors {
             top: true
             left: true
             right: true
         }
+
         screen: modelData
 
-        Row {
-            anchors {
-                left: parent.left
-                verticalCenter: parent.verticalCenter
+        Rectangle {
+            anchors.fill: parent
+            color: "#504945"
+            Row {
+                anchors {
+                    left: parent.left
+                    verticalCenter: parent.verticalCenter
+                }
+                spacing: 10
+                Tags {
+                    monitor: modelData.name
+                }
+                Title {
+                    monitor: modelData.name
+                }
+                Layouts {
+                    monitor: modelData.name
+                }
             }
-            spacing: 10
-            Tags {
-                monitor: modelData.name
-            }
-            Title {
-                monitor: modelData.name
-            }
-            Layouts {
-                monitor: modelData.name
-            }
-        }
 
-        Clock {
-            anchors {
-                horizontalCenter: parent.horizontalCenter
-                verticalCenter: parent.verticalCenter
+            Clock {
+                anchors {
+                    horizontalCenter: parent.horizontalCenter
+                    verticalCenter: parent.verticalCenter
+                }
             }
-        }
 
-        Row {
-            anchors {
-                right: parent.right
-                verticalCenter: parent.verticalCenter
-                rightMargin: 8
+            Row {
+                anchors {
+                    right: parent.right
+                    verticalCenter: parent.verticalCenter
+                    rightMargin: 8
+                }
+                spacing: 12
+                Ram {}
+                Cpu {}
+                Audio {}
             }
-            spacing: 12
-            Ram {}
-            Cpu {}
-            Audio {}
         }
     }
 }

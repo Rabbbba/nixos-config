@@ -32,6 +32,14 @@ Row {
                 font.pixelSize: 18
             }
 
+            MouseArea {
+                id: ma
+                anchors.fill: parent
+                hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor       // curseur "main" pour signaler clickable
+                onClicked: switcher.command = ["mmsg", "-s", "-d", "view," + (tag.index + 1)]
+            }
+
             Behavior on color {
                 ColorAnimation {
                     duration: 150
@@ -52,9 +60,18 @@ Row {
                     return "#fabd2f";
                 if (modelData.occupied)
                     return "#a89984";
+                if (ma.containsMouse)
+                    return "#504945";
                 return "#3c3836";
             }
         }
+    }
+
+    Process {
+        id: switcher
+        running: false
+        onCommandChanged: if (command.length > 0)
+            running = true
     }
 
     Process {

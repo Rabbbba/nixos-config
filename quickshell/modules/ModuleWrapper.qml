@@ -5,8 +5,8 @@ Item {
 
     // API publique (configurable depuis l'extérieur)
     default property alias _content: inner.data
-    property color bgIdle: "transparent"
-    property color bgHover: "#3c3836"
+    property color bgHover: "#504945"
+    property color bgIdle: "#3c3836"
     property alias hovered: ma.containsMouse
 
     implicitWidth: inner.childrenRect.width + 16
@@ -14,7 +14,7 @@ Item {
 
     Rectangle {
         anchors.fill: parent
-        radius: 4
+        radius: 6
         color: ma.containsMouse ? root.bgHover : root.bgIdle
         Behavior on color {
             ColorAnimation {
