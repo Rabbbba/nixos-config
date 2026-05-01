@@ -2,18 +2,13 @@ import Quickshell
 import QtQuick
 import "modules"
 
-FloatingWindow {
+PanelWindow {
     color: "#282828"
-    width: 400
-    height: 200
+    implicitHeight: 30
 
-    Column {
-      anchors.centerIn: parent
-      spacing: 8
-      Clock { }
-      System { }
-      Audio { }
-      Tags { }
+    anchors {
+      top: true
+      left: true
+      right: true
     }
-
 }
