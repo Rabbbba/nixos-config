@@ -1,0 +1,60 @@
+/* Walker — Gruvbox Dark theme */
+
+* {
+    font-family: "Iosevka Nerd Font";
+    font-size: 14px;
+}
+
+#window {
+    background: transparent;
+}
+
+#box {
+    background: #282828;
+    border: 2px solid #3c3836;
+    border-radius: 8px;
+    padding: 12px;
+    margin: 0;
+    min-width: 600px;
+}
+
+#search {
+    background: #1d2021;
+    border-radius: 6px;
+    padding: 6px 10px;
+    color: #ebdbb2;
+    margin-bottom: 8px;
+}
+
+#search > placeholder {
+    color: #928374;
+}
+
+#list {
+    background: transparent;
+}
+
+#list > .item {
+    padding: 8px 12px;
+    border-radius: 6px;
+    color: #ebdbb2;
+}
+
+#list > .item:hover,
+#list > .item:selected {
+    background: #3c3836;
+    color: #fbf1c7;
+}
+
+#list > .item > .icon {
+    margin-right: 10px;
+}
+
+#list > .item > .text > .label {
+    color: #ebdbb2;
+}
+
+#list > .item > .text > .sub {
+    color: #928374;
+    font-size: 12px;
+}
