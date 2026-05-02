@@ -22,11 +22,29 @@ PopupWindow {
     color: "transparent"
 
     Rectangle {
+        id: panel
         anchors.fill: parent
         color: Theme.bg1
         radius: 10
         border.color: Theme.bg3
         border.width: 1
+
+        opacity: 0
+        scale: 0.96
+        transformOrigin: Item.Center
+
+        Behavior on opacity {
+            NumberAnimation {
+                duration: Theme.animFast
+                easing.type: Easing.OutCubic
+            }
+        }
+        Behavior on scale {
+            NumberAnimation {
+                duration: Theme.animFast
+                easing.type: Easing.OutCubic
+            }
+        }
 
         Item {
             id: container
@@ -37,6 +55,8 @@ PopupWindow {
 
     onVisibleChanged: {
         if (!visible) {
+            panel.opacity = 0;
+            panel.scale = 0.96;
             return;
         }
 
@@ -45,5 +65,8 @@ PopupWindow {
 
         anchor.rect.x = parentItem.mapToItem(panelWindow.contentItem, localX, 0).x - popoutOffset;
         anchor.rect.y = parentItem.mapToItem(panelWindow.contentItem, 0, parentItem.height).y;
+
+        panel.opacity = 1;
+        panel.scale = 1;
     }
 }
