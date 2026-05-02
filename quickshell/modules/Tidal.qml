@@ -1,6 +1,4 @@
 import QtQuick
-import Quickshell
-import QtQuick.Window
 import "../services"
 import "../components"
 
@@ -19,16 +17,12 @@ ModuleWrapper {
         width: Math.min(implicitWidth, 300)
     }
 
-    PopupWindow {
+    Popout {
         id: popup
-        visible: false
         implicitWidth: 300
         implicitHeight: 150
-        color: Theme.bg1
-
-        anchor.window: root.panelWindow          // ← le PanelWindow parent
-        anchor.rect.x: root.panelWindow.width / 2 - popup.width / 2
-        anchor.rect.y: root.panelWindow.height
+        parentItem: root
+        panelWindow: root.panelWindow
 
         // contenu temporaire
         StyledText {
