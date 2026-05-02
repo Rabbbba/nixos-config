@@ -1,0 +1,3 @@
+module services
+
+singleton SystemUsage 1.0 SystemUsage.qml
