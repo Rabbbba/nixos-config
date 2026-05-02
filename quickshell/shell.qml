@@ -72,22 +72,49 @@ Scope {
         PanelWindow {
             id: rightPanel
             color: "transparent"
-            implicitWidth: 45
+            exclusionMode: ExclusionMode.Ignore
+            implicitWidth: hover.containsMouse ? 48 : 14
             required property var modelData
             screen: modelData
             anchors {
-                top: true
                 right: true
+                top: true
                 bottom: true
             }
 
-            Rectangle {
+            Behavior on implicitWidth {
+                NumberAnimation {
+                    duration: Theme.animSlow
+                    easing.type: Easing.OutCubic
+                }
+            }
+
+            MouseArea {
+                id: hover
                 anchors.fill: parent
+                hoverEnabled: true
+            }
+
+            Rectangle {
+                anchors.right: parent.right
+                anchors.verticalCenter: parent.verticalCenter
                 color: Theme.bg0
+                radius: 18
+                width: parent.width
+                height: 220
+                border.color: Theme.bg3
+                border.width: 1
+                clip: true
 
                 Column {
                     anchors.centerIn: parent
                     spacing: 12
+                    opacity: hover.containsMouse ? 1 : 0
+                    Behavior on opacity {
+                        NumberAnimation {
+                            duration: Theme.animFast
+                        }
+                    }
 
                     Power {}
                 }
