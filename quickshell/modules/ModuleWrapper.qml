@@ -3,6 +3,7 @@ import QtQuick
 Item {
     id: root
     signal clicked
+    signal wheel(point angleDelta)
 
     // API publique (configurable depuis l'extérieur)
     default property alias _content: inner.data
@@ -36,5 +37,6 @@ Item {
         anchors.fill: parent
         hoverEnabled: true
         onClicked: root.clicked()
+        onWheel: w => root.wheel(w.angleDelta)
     }
 }

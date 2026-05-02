@@ -42,6 +42,13 @@ Row {
                 hoverEnabled: true
                 cursorShape: Qt.PointingHandCursor
                 onClicked: Hyprland.dispatch("workspace " + tag.modelData.id)
+
+                onWheel: wheel => {
+                    if (wheel.angleDelta.y > 0)
+                        Hyprland.dispatch("workspace m-1");
+                    else
+                        Hyprland.dispatch("workspace m+1");
+                }
             }
 
             Behavior on color {

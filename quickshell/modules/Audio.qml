@@ -5,25 +5,32 @@ import "../components"
 ModuleWrapper {
     id: root
 
+    property PwNode sink: Pipewire.defaultAudioSink
+
+    onWheel: angleDelta => {
+        const step = 0.05;
+        const cur = sink && sink.audio ? sink.audio.volume : 0;
+        sink.audio.volume = Math.max(0, Math.min(1, cur + (angleDelta.y > 0 ? step : -step)));
+    }
+
     StyledText {
         id: audio
-        property PwNode sink: Pipewire.defaultAudioSink
 
         font.pixelSize: Theme.fontSizeLg
 
         text: {
-            if (!sink || !sink.audio)
+            if (!root.sink || !root.sink.audio)
                 return "󰕾  ?";
-            if (sink.audio.muted)
+            if (root.sink.audio.muted)
                 return "󰝟 ";
-            const v = sink.audio.volume;
+            const v = root.sink.audio.volume;
             if (typeof v !== "number" || isNaN(v))
                 return "󰕾 ?";
             return "󰕾 " + Math.round(v * 100) + "%";
         }
 
         PwObjectTracker {
-            objects: audio.sink ? [audio.sink] : []
+            objects: root.sink ? [root.sink] : []
         }
     }
 }
