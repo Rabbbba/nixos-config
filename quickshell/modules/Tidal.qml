@@ -27,7 +27,7 @@ ModuleWrapper {
     Popout {
         id: popup
         implicitWidth: 520
-        implicitHeight: 320
+        implicitHeight: 250
         parentItem: root
         padding: 4
         alignement: "left"

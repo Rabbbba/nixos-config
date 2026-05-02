@@ -31,6 +31,7 @@
     easyeffects
     tidal-hifi
     sox
+    matugen
 
     # Terminal & shell
     ghostty
@@ -53,7 +54,8 @@
     # hyprland — fourni par programs.hyprland system-wide (configuration.nix)
     hyprlock # Lock screen
     hypridle # Idle daemon
-    hyprpaper # Wallpaper
+    swww # Wallpaper daemon (replaces hyprpaper)
+    matugen # Material You palette generation from wallpaper
     walker # Lanceur d'apps
     elephant # Backend data provider pour walker 2.x
     dunst # Notifications
