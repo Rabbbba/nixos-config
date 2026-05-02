@@ -56,6 +56,7 @@
     hypridle # Idle daemon
     swww # Wallpaper daemon (replaces hyprpaper)
     matugen # Material You palette generation from wallpaper
+    imagemagick # Used by wallpaper.sh to extract dominant color for matugen
     walker # Lanceur d'apps
     elephant # Backend data provider pour walker 2.x
     dunst # Notifications
