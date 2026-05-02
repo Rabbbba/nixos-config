@@ -1,16 +1,15 @@
 import QtQuick
 import Quickshell.Services.Pipewire
+import "../components"
 
 ModuleWrapper {
     id: root
 
-    Text {
+    StyledText {
         id: audio
         property PwNode sink: Pipewire.defaultAudioSink
 
-        color: Theme.fg1
-        font.family: "Iosevka Nerd Font"
-        font.pixelSize: 20
+        font.pixelSize: Theme.fontSizeLg
 
         text: {
             if (!sink || !sink.audio)

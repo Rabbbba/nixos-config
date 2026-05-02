@@ -1,16 +1,14 @@
 import QtQuick
 import "../services"
+import "../components"
 
 ModuleWrapper {
     id: root
 
-    Text {
+    StyledText {
         id: cpu
 
-        color: Theme.fg1
-        font.pixelSize: 20
-        font.family: "Iosevka Nerd Font"
+        font.pixelSize: Theme.fontSizeLg
         text: "󰘚 " + SystemUsage.cpuPercent.toFixed(0) + "%"
-
     }
 }

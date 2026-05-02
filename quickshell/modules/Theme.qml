@@ -13,4 +13,8 @@ QtObject {
 
     readonly property int animFast: 150
     readonly property int animSlow: 300
+
+    readonly property string fontFamily: "Iosevka Nerd Font"
+    readonly property int fontSizeMd: 18
+    readonly property int fontSizeLg: 20
 }

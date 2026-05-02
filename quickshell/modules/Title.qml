@@ -1,15 +1,13 @@
 import QtQuick
 import Quickshell.Hyprland
+import "../components"
 
 ModuleWrapper {
     id: root
     property string monitor: ""
 
-    Text {
-        color: Theme.fg1
-        font.family: "Iosevka Nerd Font"
-        font.pixelSize: 18
-        elide: Text.ElideRight
+    StyledText {
+        font.pixelSize: Theme.fontSizeMd
         width: Math.min(implicitWidth, 400)
         horizontalAlignment: Text.AlignLeft
 

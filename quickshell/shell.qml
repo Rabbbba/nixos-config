@@ -2,6 +2,7 @@ import Quickshell
 import QtQuick
 import "modules"
 import "services"
+import "components"
 
 Variants {
     model: Quickshell.screens.filter(s => s.name === "DP-2")

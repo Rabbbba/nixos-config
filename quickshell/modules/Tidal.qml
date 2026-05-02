@@ -2,6 +2,7 @@ import QtQuick
 import Quickshell
 import QtQuick.Window
 import "../services"
+import "../components"
 
 ModuleWrapper {
     id: root
@@ -10,14 +11,11 @@ ModuleWrapper {
 
     property var panelWindow: null
 
-
-    Text {
+    StyledText {
         text: Players.tidal ? "󰝚  " + Players.tidal.trackArtist + " - " + Players.tidal.trackTitle : ""
         color: root.hovered ? Theme.fg1 : Theme.bg1
-        font.family: "Iosevka Nerd Font"
-        font.pixelSize: 18
+        font.pixelSize: Theme.fontSizeMd
         font.bold: true
-        elide: Text.ElideRight
         width: Math.min(implicitWidth, 300)
     }
 
@@ -33,9 +31,8 @@ ModuleWrapper {
         anchor.rect.y: root.panelWindow.height
 
         // contenu temporaire
-        Text {
+        StyledText {
             anchors.centerIn: parent
-            color: Theme.fg1
             text: Players.tidal ? Players.tidal.trackTitle : "no track"
         }
     }

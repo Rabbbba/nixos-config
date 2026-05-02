@@ -1,6 +1,7 @@
 import QtQuick
 import Quickshell
 import Quickshell.Hyprland
+import "../components"
 
 Row {
     id: tags
@@ -12,9 +13,7 @@ Row {
     Repeater {
         // Workspaces filtrés par moniteur, triés par id
         model: ScriptModel {
-            values: Hyprland.workspaces.values
-                .filter(ws => ws.monitor && ws.monitor.name === tags.monitor)
-                .sort((a, b) => a.id - b.id)
+            values: Hyprland.workspaces.values.filter(ws => ws.monitor && ws.monitor.name === tags.monitor).sort((a, b) => a.id - b.id)
         }
 
         Rectangle {
@@ -30,11 +29,11 @@ Row {
             height: 30
             radius: 4
 
-            Text {
+            StyledText {
                 anchors.centerIn: parent
                 text: tag.modelData.id
                 color: (tag.active || tag.occupied || tag.urgent) ? Theme.bg0 : Theme.fg1
-                font.pixelSize: 18
+                font.pixelSize: Theme.fontSizeMd
             }
 
             MouseArea {

@@ -1,18 +1,17 @@
 import QtQuick
 import Quickshell.Io
 import Quickshell.Hyprland
+import "../components"
 
 ModuleWrapper {
     id: root
     property string monitor: ""
 
-    Text {
+    StyledText {
         id: lyt
         property string code: "Master"
 
-        color: Theme.fg1
-        font.family: "Iosevka Nerd Font"
-        font.pixelSize: 18
+        font.pixelSize: Theme.fontSizeLg
         font.bold: true
         text: code
 

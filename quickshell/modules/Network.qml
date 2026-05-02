@@ -1,30 +1,35 @@
 import QtQuick
 import Quickshell.Io
+import "../components"
 
 ModuleWrapper {
     id: root
 
-    Text {
+    StyledText {
         id: net
         property string state: "offline"   // "ethernet" | "wifi" | "offline"
         property string ssid: ""
         property int signal: 0
 
-        color: Theme.fg1
-        font.family: "Iosevka Nerd Font"
-        font.pixelSize: 20
+        font.pixelSize: Theme.fontSizeLg
 
         text: {
-            if (state === "ethernet") return "󰈀";
-            if (state === "wifi")     return wifiIcon() + " " + ssid;
+            if (state === "ethernet")
+                return "󰈀";
+            if (state === "wifi")
+                return wifiIcon() + " " + ssid;
             return "󰤭";
         }
 
         function wifiIcon() {
-            if (signal > 75) return "󰤨";
-            if (signal > 50) return "󰤥";
-            if (signal > 25) return "󰤢";
-            if (signal > 0)  return "󰤟";
+            if (signal > 75)
+                return "󰤨";
+            if (signal > 50)
+                return "󰤥";
+            if (signal > 25)
+                return "󰤢";
+            if (signal > 0)
+                return "󰤟";
             return "󰤯";
         }
 
@@ -58,7 +63,8 @@ ModuleWrapper {
 
             // si aucune ligne ne sort (pas de connexion), on reset
             onExited: {
-                if (net.state === "wifi" || net.state === "ethernet") return;
+                if (net.state === "wifi" || net.state === "ethernet")
+                    return;
                 net.state = "offline";
             }
         }
