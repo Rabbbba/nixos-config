@@ -1,3 +1,4 @@
 module services
 
 singleton SystemUsage 1.0 SystemUsage.qml
+singleton Players     1.0 Players.qml

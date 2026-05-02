@@ -1,7 +1,7 @@
 import QtQuick
 import Quickshell
-import Quickshell.Services.Mpris
 import QtQuick.Window
+import "../services"
 
 ModuleWrapper {
     id: root
@@ -10,10 +10,9 @@ ModuleWrapper {
 
     property var panelWindow: null
 
-    property var tidal: Mpris.players.values.find(p => p.identity.toLowerCase().includes("tidal"))
 
     Text {
-        text: root.tidal ? "󰝚  " + root.tidal.trackArtist + " - " + root.tidal.trackTitle : ""
+        text: Players.tidal ? "󰝚  " + Players.tidal.trackArtist + " - " + Players.tidal.trackTitle : ""
         color: root.hovered ? Theme.fg1 : Theme.bg1
         font.family: "Iosevka Nerd Font"
         font.pixelSize: 18
@@ -37,15 +36,9 @@ ModuleWrapper {
         Text {
             anchors.centerIn: parent
             color: Theme.fg1
-            text: root.tidal ? root.tidal.trackTitle : "no track"
+            text: Players.tidal ? Players.tidal.trackTitle : "no track"
         }
     }
 
-    Component.onCompleted: console.log("window:", Window.window)
-
-    onClicked: {
-        console.log("clicked, popup.visible was =", popup.visible);
-        popup.visible = !popup.visible;
-        console.log("now visible:", popup.visible, "anchor:", popup.anchor.window);
-    }
+    onClicked: popup.visible = !popup.visible
 }
