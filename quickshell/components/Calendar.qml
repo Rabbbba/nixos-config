@@ -26,7 +26,7 @@ Item {
 
         StyledText {
             anchors.horizontalCenter: parent.horizontalCenter
-            text: Qt.formatDate(root.now, "MMMM yyyy")
+            text: Qt.locale("fr_FR").toString(root.now, "MMMM yyyy")
             font.bold: true
             font.pixelSize: Theme.fontSizeMd
         }
