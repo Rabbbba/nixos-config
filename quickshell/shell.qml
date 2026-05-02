@@ -29,6 +29,32 @@ Scope {
                         verticalCenter: parent.verticalCenter
                     }
                     spacing: 10
+                    Item {
+                        id: nixBtn
+                        width: 32
+                        height: 32
+
+                        IconButton {
+                            anchors.centerIn: parent
+                            icon: ""
+                            iconSize: 22
+                            iconColor: Theme.fg1
+                            onClicked: powerPop.visible = !powerPop.visible
+                        }
+
+                        Popout {
+                            id: powerPop
+                            parentItem: nixBtn
+                            panelWindow: panel
+                            alignement: "left"
+                            width: 70
+                            height: 200
+
+                            Power {
+                                anchors.centerIn: parent
+                            }
+                        }
+                    }
                     Tags {
                         monitor: modelData.name
                     }
@@ -62,61 +88,6 @@ Scope {
                     Cpu {}
                     Network {}
                     Audio {}
-                }
-            }
-        }
-    }
-
-    Variants {
-        model: Quickshell.screens.filter(s => s.name === "DP-2")
-        PanelWindow {
-            id: rightPanel
-            color: "transparent"
-            exclusionMode: ExclusionMode.Ignore
-            implicitWidth: hover.containsMouse ? 48 : 14
-            required property var modelData
-            screen: modelData
-            anchors {
-                right: true
-                top: true
-                bottom: true
-            }
-
-            Behavior on implicitWidth {
-                NumberAnimation {
-                    duration: Theme.animSlow
-                    easing.type: Easing.OutCubic
-                }
-            }
-
-            MouseArea {
-                id: hover
-                anchors.fill: parent
-                hoverEnabled: true
-            }
-
-            Rectangle {
-                anchors.right: parent.right
-                anchors.verticalCenter: parent.verticalCenter
-                color: Theme.bg0
-                radius: 18
-                width: parent.width
-                height: 220
-                border.color: Theme.bg3
-                border.width: 1
-                clip: true
-
-                Column {
-                    anchors.centerIn: parent
-                    spacing: 12
-                    opacity: hover.containsMouse ? 1 : 0
-                    Behavior on opacity {
-                        NumberAnimation {
-                            duration: Theme.animFast
-                        }
-                    }
-
-                    Power {}
                 }
             }
         }

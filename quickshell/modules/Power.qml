@@ -6,28 +6,28 @@ Column {
     spacing: 8
 
     IconButton {
-        icon: "󰐥 "
+        icon: "󰐥"
         iconSize: 40
         iconColor: Theme.yellow
         onClicked: Quickshell.execDetached(["systemctl", "poweroff"])
     }
 
     IconButton {
-        icon: "󰜉 "
+        icon: "󰜉"
         iconSize: 40
         iconColor: Theme.yellow
         onClicked: Quickshell.execDetached(["systemctl", "reboot"])
     }
 
     IconButton {
-        icon: "󰌾 "
+        icon: "󰌾"
         iconSize: 40
         iconColor: Theme.yellow
         onClicked: Quickshell.execDetached(["loginctl", "lock-session"])
     }
 
     IconButton {
-        icon: "󰗽 "
+        icon: "󰗽"
         iconSize: 40
         iconColor: Theme.yellow
         onClicked: Quickshell.execDetached(["hyprctl", "dispatch", "exit"])
