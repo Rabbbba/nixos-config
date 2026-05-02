@@ -19,15 +19,78 @@ ModuleWrapper {
 
     Popout {
         id: popup
-        implicitWidth: 300
-        implicitHeight: 150
+        implicitWidth: 340
+        implicitHeight: 190
         parentItem: root
         panelWindow: root.panelWindow
 
-        // contenu temporaire
-        StyledText {
+        Column {
             anchors.centerIn: parent
-            text: Players.tidal ? Players.tidal.trackTitle : "no track"
+            width: parent.width
+            spacing: 14
+
+            Row {
+                spacing: 12
+                width: parent.width
+
+                Image {
+                    width: 72
+                    height: 72
+                    fillMode: Image.PreserveAspectFit
+                    source: Players.tidal ? Players.tidal.trackArtUrl : ""
+                }
+
+                Column {
+                    spacing: 4
+                    width: parent.width - 84
+
+                    StyledText {
+                        width: parent.width
+                        font.bold: true
+                        text: Players.tidal ? Players.tidal.trackTitle : "—"
+                    }
+                    StyledText {
+                        width: parent.width
+                        color: Theme.fg4
+                        text: Players.tidal ? Players.tidal.trackArtist : ""
+                    }
+                }
+            }
+
+            Row {
+                anchors.horizontalCenter: parent.horizontalCenter
+                spacing: 28
+
+                StyledText {
+                    text: "󰒮"
+                    font.pixelSize: 22
+                    MouseArea {
+                        anchors.fill: parent
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: if (Players.tidal) Players.tidal.previous()
+                    }
+                }
+
+                StyledText {
+                    text: Players.tidal && Players.tidal.isPlaying ? "󰏤" : "󰐊"
+                    font.pixelSize: 26
+                    MouseArea {
+                        anchors.fill: parent
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: if (Players.tidal) Players.tidal.togglePlaying()
+                    }
+                }
+
+                StyledText {
+                    text: "󰒭"
+                    font.pixelSize: 22
+                    MouseArea {
+                        anchors.fill: parent
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: if (Players.tidal) Players.tidal.next()
+                    }
+                }
+            }
         }
     }
 
