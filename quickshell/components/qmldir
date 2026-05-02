@@ -3,3 +3,5 @@ module components
 StyledText 1.0 StyledText.qml
 Popout 1.0 Popout.qml
 Calendar 1.0 Calendar.qml
+IconButton 1.0 IconButton.qml
+

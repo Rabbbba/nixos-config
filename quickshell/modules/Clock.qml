@@ -28,9 +28,10 @@ ModuleWrapper {
         panelWindow: root.panelWindow
         implicitWidth: 280
         implicitHeight: 220
+        alignement: "center"
 
         Calendar {
-          anchors.centerIn: parent
+            anchors.centerIn: parent
         }
     }
 

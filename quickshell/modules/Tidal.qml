@@ -22,36 +22,40 @@ ModuleWrapper {
         implicitWidth: 340
         implicitHeight: 190
         parentItem: root
+        alignement: "left"
         panelWindow: root.panelWindow
-
         Column {
             anchors.centerIn: parent
             width: parent.width
-            spacing: 14
+            spacing: 16
 
             Row {
-                spacing: 12
+                spacing: 16
                 width: parent.width
 
                 Image {
-                    width: 72
-                    height: 72
-                    fillMode: Image.PreserveAspectFit
+                    width: 80
+                    height: 80
+                    fillMode: Image.PreserveAspectCrop
+                    smooth: true
                     source: Players.tidal ? Players.tidal.trackArtUrl : ""
                 }
 
                 Column {
-                    spacing: 4
-                    width: parent.width - 84
+                    spacing: 6
+                    width: parent.width - 96
+                    anchors.verticalCenter: parent.verticalCenter
 
                     StyledText {
                         width: parent.width
                         font.bold: true
+                        font.pixelSize: Theme.fontSizeMd + 2
                         text: Players.tidal ? Players.tidal.trackTitle : "—"
                     }
                     StyledText {
                         width: parent.width
                         color: Theme.fg4
+                        font.pixelSize: Theme.fontSizeMd
                         text: Players.tidal ? Players.tidal.trackArtist : ""
                     }
                 }
@@ -59,36 +63,27 @@ ModuleWrapper {
 
             Row {
                 anchors.horizontalCenter: parent.horizontalCenter
-                spacing: 28
+                spacing: 8
 
-                StyledText {
-                    text: "󰒮"
-                    font.pixelSize: 22
-                    MouseArea {
-                        anchors.fill: parent
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: if (Players.tidal) Players.tidal.previous()
-                    }
+                IconButton {
+                    icon: "󰒮"
+                    onClicked: if (Players.tidal)
+                        Players.tidal.previous()
                 }
 
-                StyledText {
-                    text: Players.tidal && Players.tidal.isPlaying ? "󰏤" : "󰐊"
-                    font.pixelSize: 26
-                    MouseArea {
-                        anchors.fill: parent
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: if (Players.tidal) Players.tidal.togglePlaying()
-                    }
+                IconButton {
+                    icon: Players.tidal && Players.tidal.isPlaying ? "󰏤" : "󰐊"
+                    iconSize: 22
+                    iconColor: Theme.yellow
+                    diameter: 48
+                    onClicked: if (Players.tidal)
+                        Players.tidal.togglePlaying()
                 }
 
-                StyledText {
-                    text: "󰒭"
-                    font.pixelSize: 22
-                    MouseArea {
-                        anchors.fill: parent
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: if (Players.tidal) Players.tidal.next()
-                    }
+                IconButton {
+                    icon: "󰒭"
+                    onClicked: if (Players.tidal)
+                        Players.tidal.next()
                 }
             }
         }
