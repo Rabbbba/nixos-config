@@ -1,34 +1,39 @@
 import QtQuick
-import Quickshell.Io
+import Quickshell
+import Quickshell.Hyprland
 
 Row {
     id: tags
 
-    property string monitor: "DP-2"
-    property var tagStates: Array(9).fill({
-        selected: false,
-        occupied: false,
-        urgent: false
-    })
+    property string monitor: ""
 
     spacing: 4
 
     Repeater {
-        model: tags.tagStates
+        // Workspaces filtrés par moniteur, triés par id
+        model: ScriptModel {
+            values: Hyprland.workspaces.values
+                .filter(ws => ws.monitor && ws.monitor.name === tags.monitor)
+                .sort((a, b) => a.id - b.id)
+        }
 
         Rectangle {
             id: tag
             required property var modelData
-            required property int index
 
-            width: modelData.selected ? 32 : 20
+            // Sur Hyprland un seul workspace par moniteur est actif à la fois
+            property bool active: modelData.active
+            property bool occupied: modelData.toplevels && modelData.toplevels.values.length > 0
+            property bool urgent: modelData.urgent
+
+            width: active ? 32 : 20
             height: 30
             radius: 4
 
             Text {
                 anchors.centerIn: parent
-                text: tag.index + 1
-                color: (tag.modelData.selected || tag.modelData.occupied || tag.modelData.urgent) ? Theme.bg0 : Theme.fg1
+                text: tag.modelData.id
+                color: (tag.active || tag.occupied || tag.urgent) ? Theme.bg0 : Theme.fg1
                 font.pixelSize: 18
             }
 
@@ -36,8 +41,8 @@ Row {
                 id: ma
                 anchors.fill: parent
                 hoverEnabled: true
-                cursorShape: Qt.PointingHandCursor       // curseur "main" pour signaler clickable
-                onClicked: switcher.command = ["mmsg", "-s", "-d", "view," + (tag.index + 1)]
+                cursorShape: Qt.PointingHandCursor
+                onClicked: Hyprland.dispatch("workspace " + tag.modelData.id)
             }
 
             Behavior on color {
@@ -54,46 +59,15 @@ Row {
             }
 
             color: {
-                if (modelData.urgent)
+                if (tag.urgent)
                     return Theme.red;
-                if (modelData.selected)
+                if (tag.active)
                     return Theme.yellow;
-                if (modelData.occupied)
+                if (tag.occupied)
                     return Theme.fg4;
                 if (ma.containsMouse)
                     return Theme.bg2;
                 return Theme.bg1;
-            }
-        }
-    }
-
-    Process {
-        id: switcher
-        running: false
-        onCommandChanged: if (command.length > 0)
-            running = true
-    }
-
-    Process {
-        command: ["mmsg", "-w"]
-        running: true
-
-        stdout: SplitParser {
-            splitMarker: "\n"
-            onRead: data => {
-                const parts = data.split(" ");
-                if (parts[0] !== tags.monitor || parts[1] !== "tag")
-                    return;
-                const idx = parseInt(parts[2]) - 1;
-                if (idx < 0 || idx > 8)
-                    return;
-                const next = tags.tagStates.slice();
-                next[idx] = {
-                    selected: parseInt(parts[3]) === 1,
-                    occupied: parseInt(parts[4]) > 0,
-                    urgent: parseInt(parts[5]) === 1
-                };
-                tags.tagStates = next;
             }
         }
     }
