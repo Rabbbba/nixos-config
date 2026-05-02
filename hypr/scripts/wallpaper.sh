@@ -34,14 +34,11 @@ awww img --outputs DP-1 "$DP1_WALL" \
 
 # Regenerate the Quickshell theme based on the primary (DP-2) wallpaper.
 # Quickshell's hot-reload picks up the rewritten Theme.qml automatically.
-# matugen 4 forces an interactive picker on `image` mode that breaks under
-# Hyprland exec (no TTY), so we extract the dominant colour ourselves with
-# ImageMagick and feed it to `matugen color hex` instead.
-DOMINANT="$(magick "$DP2_WALL" -resize 1x1 -format '%[hex:p{0,0}]' info: 2>/dev/null || true)"
-
-if [ -n "$DOMINANT" ]; then
-    matugen color hex "#$DOMINANT" > /tmp/matugen.log 2>&1 || \
-        notify-send "matugen" "failed: see /tmp/matugen.log" || true
-else
-    notify-send "matugen" "couldn't extract dominant colour from $DP2_WALL" || true
-fi
+#
+# matugen 4 forces an interactive colour picker on `image` mode and refuses
+# to run without a TTY. We wrap it in `script` (allocates a pseudo-TTY) and
+# feed it a single \r so it accepts the first/default option, which is
+# matugen's own recommended dominant colour for the wallpaper. That gives
+# a much better source colour than averaging the pixels ourselves.
+printf '\r' | script -q -c "matugen image '$DP2_WALL'" /dev/null > /tmp/matugen.log 2>&1 || \
+    notify-send "matugen" "failed: see /tmp/matugen.log" || true
