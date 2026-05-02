@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Effects
+import Quickshell.Io
 import "../services"
 import "../components"
 
@@ -59,6 +60,24 @@ ModuleWrapper {
             onTriggered: {
                 if (Players.tidal)
                     Players.tidal.positionChanged();
+            }
+        }
+
+        // cava streams 24 ASCII bar heights per frame on stdout.
+        Process {
+            id: cavaProc
+            command: ["cava", "-p", "/etc/nixos/cava/config"]
+            running: popup.visible
+
+            stdout: SplitParser {
+                splitMarker: "\n"
+                onRead: data => {
+                    if (!data)
+                        return;
+                    const nums = data.split(";").filter(s => s.length > 0).map(s => parseInt(s, 10));
+                    if (nums.length === 24)
+                        progressBars.values = nums;
+                }
             }
         }
 
@@ -239,16 +258,29 @@ ModuleWrapper {
                         }
                     }
 
-                    Rectangle {
+                    // Bars react to audio (cava), coloured by playback position.
+                    Item {
+                        id: progressBars
                         width: parent.width
-                        height: 4
-                        color: Theme.bg2
-                        radius: 2
+                        height: 28
+
+                        property var values: new Array(24).fill(0)
+                        readonly property real progress: Players.tidal && Players.tidal.length > 0 ? Players.tidal.position / Players.tidal.length : 0
+
+                        Repeater {
+                            model: 24
+                            Rectangle {
+                                width: (progressBars.width - 23 * 2) / 24
+                                x: index * (width + 2)
+                                anchors.bottom: parent.bottom
+                                height: Math.max(4, (progressBars.values[index] / 100) * progressBars.height)
+                                color: (index + 0.5) / 24 < progressBars.progress ? Theme.yellow : Theme.bg3
+                                radius: 1
+                            }
+                        }
 
                         MouseArea {
                             anchors.fill: parent
-                            anchors.topMargin: -8
-                            anchors.bottomMargin: -8
                             cursorShape: Qt.PointingHandCursor
 
                             function seek(x) {
@@ -263,14 +295,6 @@ ModuleWrapper {
                                 if (pressed)
                                     seek(mouse.x);
                             }
-                        }
-
-                        Rectangle {
-                            anchors.left: parent.left
-                            width: parent.width * (Players.tidal && Players.tidal.length > 0 ? Players.tidal.position / Players.tidal.length : 0)
-                            height: parent.height
-                            color: Theme.yellow
-                            radius: 2
                         }
                     }
                 }

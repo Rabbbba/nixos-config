@@ -19,6 +19,7 @@
   xdg.configFile."hypr".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/hypr";
   xdg.configFile."walker".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/walker";
   xdg.configFile."dunst".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/dunst";
+  xdg.configFile."cava".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/cava";
   xdg.configFile."starship.toml".source = ./starship.toml;
 
   home.sessionVariables.ELECTRON_OZONE_PLATFORM_HINT = "wayland";
@@ -56,6 +57,7 @@
     hypridle # Idle daemon
     swww # Wallpaper daemon (replaces hyprpaper)
     matugen # Material You palette generation from wallpaper
+    cava # Audio spectrum visualizer feeding the Tidal popup bars
     walker # Lanceur d'apps
     elephant # Backend data provider pour walker 2.x
     dunst # Notifications
