@@ -10,6 +10,12 @@ ModuleWrapper {
 
     property var panelWindow: null
 
+    function fmt(s) {
+        const m = Math.floor(s / 60);
+        const sec = Math.floor(s % 60);
+        return m + ":" + (sec < 10 ? "0" : "") + sec;
+    }
+
     StyledText {
         text: Players.tidal ? "󰝚  " + Players.tidal.trackArtist + " - " + Players.tidal.trackTitle : ""
         color: root.hovered ? Theme.fg1 : Theme.bg1
@@ -46,14 +52,24 @@ ModuleWrapper {
             brightness: -0.2
         }
 
+        Timer {
+            interval: 1000
+            running: popup.visible
+            repeat: true
+            onTriggered: {
+                if (Players.tidal)
+                    Players.tidal.positionChanged();
+            }
+        }
+
         Row {
             anchors.centerIn: parent
             width: parent.width
             spacing: 20
 
             Image {
-                width: 220
-                height: 220
+                width: 190
+                height: 190
                 fillMode: Image.PreserveAspectCrop
                 smooth: true
                 anchors.verticalCenter: parent.verticalCenter
@@ -89,14 +105,6 @@ ModuleWrapper {
                     }
                 }
 
-                // Placeholder progress bar — remplacé en stage B
-                Rectangle {
-                    width: parent.width
-                    height: 4
-                    color: Theme.bg2
-                    radius: 2
-                }
-
                 Row {
                     anchors.horizontalCenter: parent.horizontalCenter
                     spacing: 10
@@ -109,7 +117,7 @@ ModuleWrapper {
 
                     IconButton {
                         icon: Players.tidal && Players.tidal.isPlaying ? "󰏤" : "󰐊"
-                        iconSize: 22
+                        iconSize: 40
                         iconColor: Theme.yellow
                         diameter: 48
                         onClicked: if (Players.tidal)
@@ -123,12 +131,53 @@ ModuleWrapper {
                     }
                 }
 
-                // Placeholder volume slider — remplacé en stage C
-                Rectangle {
+                Column {
                     width: parent.width
-                    height: 4
-                    color: Theme.bg2
-                    radius: 2
+                    spacing: 4
+
+                    Item {
+                        width: parent.width
+                        height: 14
+
+                        StyledText {
+                            anchors.left: parent.left
+                            color: Theme.fg4
+                            text: root.fmt(Players.tidal ? Players.tidal.position : 0)
+                        }
+                        StyledText {
+                            anchors.right: parent.right
+                            color: Theme.fg4
+                            text: root.fmt(Players.tidal ? Players.tidal.length : 0)
+                        }
+                    }
+
+                    Rectangle {
+                        width: parent.width
+                        height: 4
+                        color: Theme.bg2
+                        radius: 2
+
+                        MouseArea {
+                            anchors.fill: parent
+                            anchors.topMargin: -8
+                            anchors.bottomMargin: -8
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: mouse => {
+                                if (!Players.tidal || !Players.tidal.canSeek)
+                                    return;
+                                const ratio = mouse.x / width;
+                                Players.tidal.position = ratio * Players.tidal.length;
+                            }
+                        }
+
+                        Rectangle {
+                            anchors.left: parent.left
+                            width: parent.width * (Players.tidal && Players.tidal.length > 0 ? Players.tidal.position / Players.tidal.length : 0)
+                            height: parent.height
+                            color: Theme.yellow
+                            radius: 2
+                        }
+                    }
                 }
             }
         }
