@@ -10,29 +10,19 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    # Mango — window manager Wayland (fork de dwl)
-    mango = {
-      url = "github:mangowm/mango";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
-  outputs = { self, nixpkgs, home-manager, mango }: {
-    # Configuration système — l'hostname doit matcher (Rayane)
+  outputs = { self, nixpkgs, home-manager }: {
     nixosConfigurations.Rayane = nixpkgs.lib.nixosSystem {
-      # `inputs` passé aux modules pour qu'ils puissent y accéder
-      specialArgs = { inputs = { inherit home-manager mango; }; };
+      specialArgs = { inputs = { inherit home-manager; }; };
 
       modules = [
         ./configuration.nix
         home-manager.nixosModules.home-manager
-        mango.nixosModules.mango
         {
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
-          # `inputs` passé aussi aux modules home-manager (pour mango.hmModules)
-          home-manager.extraSpecialArgs = { inputs = { inherit home-manager mango; }; };
+          home-manager.extraSpecialArgs = { inputs = { inherit home-manager; }; };
           home-manager.users.rayane = import ./home.nix;
         }
       ];

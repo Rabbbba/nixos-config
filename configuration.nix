@@ -8,8 +8,16 @@
   boot.loader.efi.canTouchEfiVariables = true;
 
   # ── Programs (system-wide) ──────────────────────────────────────────────────
-  programs.mango.enable = true; # WM Wayland
-  programs.steam.enable = true;
+  programs.hyprland = {
+    enable = true;
+    xwayland.enable = true; # Steam, jeux, apps X11
+  };
+  programs.steam = {
+    enable = true;
+    gamescopeSession.enable = true; # Big Picture en gamescope (FSR, HDR)
+    remotePlay.openFirewall = true; # Streaming Steam Remote Play
+    localNetworkGameTransfers.openFirewall = true; # Transferts jeux entre PC
+  };
   programs.zsh.enable = true;
   programs.firefox.enable = true;
 
@@ -22,11 +30,6 @@
   programs.nh = {
     enable = true;
     flake = "/etc/nixos";
-  };
-
-  programs.corectrl = {
-    enable = true;
-    gpuOverclock.enable = true;
   };
 
   # Compression de la swap en RAM (utile sans vraie swap disque)
@@ -43,7 +46,6 @@
     extraGroups = [
       "networkmanager"
       "wheel"
-      "corectrl"
     ];
   };
 
@@ -80,8 +82,8 @@
   services.printing.enable = true;
 
   # ── Sécurité ────────────────────────────────────────────────────────────────
-  # PAM pour swaylock (sinon le mdp n'est pas reconnu)
-  security.pam.services.swaylock = { };
+  # PAM pour hyprlock (sinon le mdp n'est pas reconnu)
+  security.pam.services.hyprlock = { };
 
   # ── Audio (PipeWire) ────────────────────────────────────────────────────────
   services.pulseaudio.enable = false;
@@ -97,6 +99,11 @@
   hardware.graphics.enable = true;
   hardware.graphics.enable32Bit = true; # 32-bit pour les jeux
   hardware.amdgpu.opencl.enable = true;
+  hardware.amdgpu.overdrive.enable = true; # Expose les sysfs OC pour LACT
+  hardware.amdgpu.initrd.enable = true; # amdgpu chargé dès l'initrd (boot propre)
+
+  # LACT — contrôle GPU AMD (clocks, fan curve, stats)
+  services.lact.enable = true;
 
   # ── Nix ─────────────────────────────────────────────────────────────────────
   nix.settings = {
