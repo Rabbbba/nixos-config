@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Effects
 import "../services"
 import "../components"
 
@@ -19,71 +20,115 @@ ModuleWrapper {
 
     Popout {
         id: popup
-        implicitWidth: 340
-        implicitHeight: 190
+        implicitWidth: 520
+        implicitHeight: 320
         parentItem: root
+        padding: 4
         alignement: "left"
         panelWindow: root.panelWindow
-        Column {
+
+        Image {
+            id: bgArt
+            width: parent.width
+            height: parent.height
+            fillMode: Image.PreserveAspectCrop
+            smooth: true
+            anchors.verticalCenter: parent.verticalCenter
+            source: Players.tidal ? Players.tidal.trackArtUrl : ""
+        }
+
+        MultiEffect {
+            source: bgArt
+            anchors.fill: bgArt
+            blurEnabled: true
+            blur: 1.0
+            saturation: -0.4
+            brightness: -0.2
+        }
+
+        Row {
             anchors.centerIn: parent
             width: parent.width
-            spacing: 16
+            spacing: 20
 
-            Row {
-                spacing: 16
-                width: parent.width
+            Image {
+                width: 220
+                height: 220
+                fillMode: Image.PreserveAspectCrop
+                smooth: true
+                anchors.verticalCenter: parent.verticalCenter
+                source: Players.tidal ? Players.tidal.trackArtUrl : ""
+            }
 
-                Image {
-                    width: 80
-                    height: 80
-                    fillMode: Image.PreserveAspectCrop
-                    smooth: true
-                    source: Players.tidal ? Players.tidal.trackArtUrl : ""
-                }
+            Column {
+                width: parent.width - 240
+                anchors.verticalCenter: parent.verticalCenter
+                spacing: 18
 
                 Column {
+                    width: parent.width
                     spacing: 6
-                    width: parent.width - 96
-                    anchors.verticalCenter: parent.verticalCenter
 
                     StyledText {
                         width: parent.width
                         font.bold: true
-                        font.pixelSize: Theme.fontSizeMd + 2
+                        font.pixelSize: Theme.fontSizeLg + 6
                         text: Players.tidal ? Players.tidal.trackTitle : "—"
+                    }
+                    StyledText {
+                        width: parent.width
+                        color: Theme.fg1
+                        font.pixelSize: Theme.fontSizeMd + 2
+                        text: Players.tidal ? Players.tidal.trackArtist : ""
                     }
                     StyledText {
                         width: parent.width
                         color: Theme.fg4
                         font.pixelSize: Theme.fontSizeMd
-                        text: Players.tidal ? Players.tidal.trackArtist : ""
+                        text: Players.tidal && Players.tidal.trackAlbum ? Players.tidal.trackAlbum : ""
                     }
                 }
-            }
 
-            Row {
-                anchors.horizontalCenter: parent.horizontalCenter
-                spacing: 8
-
-                IconButton {
-                    icon: "󰒮"
-                    onClicked: if (Players.tidal)
-                        Players.tidal.previous()
+                // Placeholder progress bar — remplacé en stage B
+                Rectangle {
+                    width: parent.width
+                    height: 4
+                    color: Theme.bg2
+                    radius: 2
                 }
 
-                IconButton {
-                    icon: Players.tidal && Players.tidal.isPlaying ? "󰏤" : "󰐊"
-                    iconSize: 22
-                    iconColor: Theme.yellow
-                    diameter: 48
-                    onClicked: if (Players.tidal)
-                        Players.tidal.togglePlaying()
+                Row {
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    spacing: 10
+
+                    IconButton {
+                        icon: "󰒮"
+                        onClicked: if (Players.tidal)
+                            Players.tidal.previous()
+                    }
+
+                    IconButton {
+                        icon: Players.tidal && Players.tidal.isPlaying ? "󰏤" : "󰐊"
+                        iconSize: 22
+                        iconColor: Theme.yellow
+                        diameter: 48
+                        onClicked: if (Players.tidal)
+                            Players.tidal.togglePlaying()
+                    }
+
+                    IconButton {
+                        icon: "󰒭"
+                        onClicked: if (Players.tidal)
+                            Players.tidal.next()
+                    }
                 }
 
-                IconButton {
-                    icon: "󰒭"
-                    onClicked: if (Players.tidal)
-                        Players.tidal.next()
+                // Placeholder volume slider — remplacé en stage C
+                Rectangle {
+                    width: parent.width
+                    height: 4
+                    color: Theme.bg2
+                    radius: 2
                 }
             }
         }

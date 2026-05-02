@@ -8,6 +8,8 @@ PopupWindow {
     required property Item parentItem
     required property var panelWindow
 
+    property int padding: 14
+
     // "left" | "center"a | "right"
     property string alignement: "center"
 
@@ -29,7 +31,7 @@ PopupWindow {
         Item {
             id: container
             anchors.fill: parent
-            anchors.margins: 14
+            anchors.margins: popout.padding
         }
     }
 
