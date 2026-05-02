@@ -110,6 +110,13 @@ ModuleWrapper {
                     spacing: 10
 
                     IconButton {
+                        icon: "󰒝"
+                        iconColor: Players.tidal && Players.tidal.shuffle ? Theme.yellow : Theme.fg4
+                        onClicked: if (Players.tidal)
+                            Players.tidal.shuffle = !Players.tidal.shuffle
+                    }
+
+                    IconButton {
                         icon: "󰒮"
                         onClicked: if (Players.tidal)
                             Players.tidal.previous()
@@ -128,6 +135,87 @@ ModuleWrapper {
                         icon: "󰒭"
                         onClicked: if (Players.tidal)
                             Players.tidal.next()
+                    }
+
+                    // 0 = None, 1 = Track, 2 = Playlist
+                    IconButton {
+                        icon: {
+                            if (!Players.tidal)
+                                return "󰑗";
+                            const s = Players.tidal.loopState;
+                            if (s === 1)
+                                return "󰑘";
+                            if (s === 2)
+                                return "󰑖";
+                            return "󰑗";
+                        }
+                        iconColor: Players.tidal && Players.tidal.loopState !== 0 ? Theme.yellow : Theme.fg4
+                        onClicked: if (Players.tidal)
+                            Players.tidal.loopState = (Players.tidal.loopState + 1) % 3
+                    }
+                }
+
+                Row {
+                    width: parent.width
+                    spacing: 8
+
+                    StyledText {
+                        id: volIcon
+                        anchors.verticalCenter: parent.verticalCenter
+                        text: Players.tidal && Players.tidal.volume === 0 ? "󰝟" : "󰕾"
+                        color: Theme.fg4
+                        property real previousVolume: 1.0
+
+                        MouseArea {
+                            anchors.fill: parent
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: {
+                                if (!Players.tidal)
+                                    return;
+                                if (Players.tidal.volume > 0) {
+                                    volIcon.previousVolume = Players.tidal.volume;
+                                    Players.tidal.volume = 0;
+                                } else {
+                                    Players.tidal.volume = volIcon.previousVolume > 0 ? volIcon.previousVolume : 1.0;
+                                }
+                            }
+                        }
+                    }
+
+                    Rectangle {
+                        anchors.verticalCenter: parent.verticalCenter
+                        width: parent.width - 28
+                        height: 4
+                        color: Theme.bg2
+                        radius: 2
+
+                        MouseArea {
+                            anchors.fill: parent
+                            anchors.topMargin: -8
+                            anchors.bottomMargin: -8
+                            cursorShape: Qt.PointingHandCursor
+
+                            function setVolume(x) {
+                                if (!Players.tidal)
+                                    return;
+                                const ratio = Math.max(0, Math.min(1, x / width));
+                                Players.tidal.volume = ratio;
+                            }
+
+                            onPressed: mouse => setVolume(mouse.x)
+                            onPositionChanged: mouse => {
+                                if (pressed)
+                                    setVolume(mouse.x);
+                            }
+                        }
+
+                        Rectangle {
+                            anchors.left: parent.left
+                            width: parent.width * (Players.tidal ? Players.tidal.volume : 0)
+                            height: parent.height
+                            color: Theme.yellow
+                            radius: 2
+                        }
                     }
                 }
 
@@ -162,11 +250,18 @@ ModuleWrapper {
                             anchors.topMargin: -8
                             anchors.bottomMargin: -8
                             cursorShape: Qt.PointingHandCursor
-                            onClicked: mouse => {
+
+                            function seek(x) {
                                 if (!Players.tidal || !Players.tidal.canSeek)
                                     return;
-                                const ratio = mouse.x / width;
+                                const ratio = Math.max(0, Math.min(1, x / width));
                                 Players.tidal.position = ratio * Players.tidal.length;
+                            }
+
+                            onPressed: mouse => seek(mouse.x)
+                            onPositionChanged: mouse => {
+                                if (pressed)
+                                    seek(mouse.x);
                             }
                         }
 
