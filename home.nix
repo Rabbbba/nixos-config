@@ -1,13 +1,10 @@
 {
   config,
   pkgs,
-  inputs,
   ...
 }:
 
 {
-  imports = [ inputs.mango.hmModules.mango ];
-
   # ── Identity ────────────────────────────────────────────────────────────────
   home.username = "rayane";
   home.homeDirectory = "/home/rayane";
@@ -19,11 +16,9 @@
   xdg.configFile."nvim".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/nvim";
   xdg.configFile."quickshell".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/quickshell";
   xdg.configFile."ghostty".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/ghostty";
-  xdg.configFile."waybar".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/waybar";
-  xdg.configFile."rofi".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/rofi";
-  xdg.configFile."swaync".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/swaync";
-  xdg.configFile."mango".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/mango";
-  xdg.configFile."swaylock".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/swaylock/";
+  xdg.configFile."hypr".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/hypr";
+  xdg.configFile."walker".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/walker";
+  xdg.configFile."dunst".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/dunst";
   xdg.configFile."starship.toml".source = ./starship.toml;
 
   home.sessionVariables.ELECTRON_OZONE_PLATFORM_HINT = "wayland";
@@ -55,13 +50,15 @@
     nodejs
 
     # Window manager & desktop
-    waybar
-    swaybg # Wallpaper
-    swaynotificationcenter # Notifications
-    swayosd # OSD volume/luminosité
-    rofi # Lanceur
-    swayidle
-    swaylock-effects
+    # hyprland — fourni par programs.hyprland system-wide (configuration.nix)
+    hyprlock # Lock screen
+    hypridle # Idle daemon
+    hyprpaper # Wallpaper
+    walker # Lanceur d'apps
+    elephant # Backend data provider pour walker 2.x
+    dunst # Notifications
+    libnotify # notify-send pour tester dunst
+    swayosd # OSD volume/luminosité (compositor-agnostic)
 
     #Quickshell (Projet)
     quickshell
@@ -78,6 +75,13 @@
     bitwarden-desktop
     mangohud
 
+    # Gaming
+    protonup-qt # Gestion Proton-GE
+    protontricks # Tweaks/DLLs pour jeux Proton
+    heroic # GOG / Epic Games / Amazon Prime
+    goverlay # GUI config MangoHud
+    gamescope # Compositeur dédié jeux (FSR, HDR)
+
     # IA
     claude-code
     pi-coding-agent
@@ -86,6 +90,8 @@
     amdgpu_top # Monitoring GPU AMD
     networkmanagerapplet # Tray network
     btop
+    jq # JSON parsing — utilisé par les scripts Hyprland
+    socat # Socket cat — utilisé pour écouter events Hyprland
 
     # Fonts
     nerd-fonts.iosevka
@@ -162,5 +168,4 @@
 
   programs.starship.enable = true;
 
-  wayland.windowManager.mango.enable = true;
 }
