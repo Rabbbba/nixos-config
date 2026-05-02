@@ -40,6 +40,7 @@ Variants {
             }
 
             Clock {
+                panelWindow: panel
                 anchors {
                     horizontalCenter: parent.horizontalCenter
                     verticalCenter: parent.verticalCenter

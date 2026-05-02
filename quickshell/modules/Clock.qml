@@ -6,6 +6,8 @@ ModuleWrapper {
     bgIdle: Theme.yellow
     bgHover: Theme.bg2
 
+    property var panelWindow: null
+
     StyledText {
         property date now: new Date()
         color: root.hovered ? Theme.fg1 : Theme.bg1
@@ -19,4 +21,18 @@ ModuleWrapper {
             onTriggered: parent.now = new Date()
         }
     }
+
+    Popout {
+        id: popup
+        parentItem: root
+        panelWindow: root.panelWindow
+        implicitWidth: 280
+        implicitHeight: 220
+
+        Calendar {
+          anchors.centerIn: parent
+        }
+    }
+
+    onClicked: popup.visible = !popup.visible
 }
