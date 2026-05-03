@@ -38,6 +38,7 @@ ModuleWrapper {
         padding: 4
         alignement: "left"
         panelWindow: root.panelWindow
+        visible: Visibilities.current === "tidal"
 
         Image {
             id: bgArt
@@ -309,5 +310,5 @@ ModuleWrapper {
         }
     }
 
-    onClicked: popup.visible = !popup.visible
+    onClicked: Visibilities.toggle("tidal")
 }

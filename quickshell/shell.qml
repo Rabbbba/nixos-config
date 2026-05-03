@@ -1,3 +1,7 @@
+//@ pragma DefaultEnv QS_NO_RELOAD_POPUP=1
+//@ pragma DefaultEnv QS_DROP_EXPENSIVE_FONTS=1
+//@ pragma DefaultEnv QSG_RENDER_LOOP=threaded
+
 import Quickshell
 import QtQuick
 import "modules"
@@ -9,7 +13,9 @@ import "components"
 //   left Row    : Nix-logo button (Power popup) → Tags → Title → Layouts
 //   centered    : Clock (Calendar popup)
 //   right Row   : Tidal → Ram → Cpu → Network → Audio
-Scope {
+ShellRoot {
+    settings.watchFiles: true
+
     Variants {
         // Variants spawns one PanelWindow per matching screen.
         model: Quickshell.screens.filter(s => s.name === "DP-2")
@@ -45,7 +51,7 @@ Scope {
                             icon: ""
                             iconSize: 22
                             iconColor: Theme.fg1
-                            onClicked: powerPop.visible = !powerPop.visible
+                            onClicked: Visibilities.toggle("power")
                         }
 
                         Popout {
@@ -55,6 +61,7 @@ Scope {
                             alignement: "left"
                             width: 70
                             height: 200
+                            visible: Visibilities.current === "power"
 
                             Power {
                                 anchors.centerIn: parent

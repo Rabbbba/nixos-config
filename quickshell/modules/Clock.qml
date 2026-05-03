@@ -1,5 +1,6 @@
 import QtQuick
 import "../components"
+import "../services"
 
 // Center-bar clock, ticks every minute. Click toggles a Calendar popout.
 ModuleWrapper {
@@ -32,10 +33,12 @@ ModuleWrapper {
         implicitHeight: 220
         alignement: "center"
 
+        visible: Visibilities.current === "calendar"
+
         Calendar {
             anchors.centerIn: parent
         }
     }
 
-    onClicked: popup.visible = !popup.visible
+    onClicked: Visibilities.toggle("calendar")
 }
