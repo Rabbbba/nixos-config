@@ -53,6 +53,13 @@ Item {
                         height: parent.height * (bar.modelData / 100)
                         color: Theme.accent
                         radius: 2
+
+                        Behavior on height {
+                            NumberAnimation {
+                                duration: 500
+                                easing.type: Easing.Linear
+                            }
+                        }
                     }
                 }
             }
@@ -64,13 +71,16 @@ Item {
                 color: Theme.textMuted
             }
             StyledText {
-                text: root.fmt(SystemUsage.loadAverage.l1)
+                text: "1m:" + root.fmt(SystemUsage.loadAverage.l1)
+                color: Theme.textMuted
             }
             StyledText {
-                text: root.fmt(SystemUsage.loadAverage.l5)
+                text: "5m:" + root.fmt(SystemUsage.loadAverage.l5)
+                color: Theme.textMuted
             }
             StyledText {
-                text: root.fmt(SystemUsage.loadAverage.l15)
+                text: "15m:" + root.fmt(SystemUsage.loadAverage.l15)
+                color: Theme.textMuted
             }
         }
     }

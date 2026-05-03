@@ -130,7 +130,7 @@ QtObject {
     }
 
     property Timer _poller: Timer {
-        interval: 2000
+        interval: 500
         running: true
         repeat: true
         triggeredOnStart: true
