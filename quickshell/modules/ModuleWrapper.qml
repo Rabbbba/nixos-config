@@ -1,4 +1,6 @@
 import QtQuick
+import "../components"
+import "../services"
 
 // Common bar-module shell: rounded background that swaps color on hover,
 // click + wheel signals, content slot. Used by Cpu, Ram, Audio, Network,
@@ -8,10 +10,13 @@ Item {
     signal clicked
     signal wheel(point angleDelta)
 
+    property string tooltip: ""
+    property var panelWindow: null
+
     // Public API (configurable from the outside).
     default property alias _content: inner.data
-    property color bgHover: Theme.bg1
-    property color bgIdle: Theme.bg2
+    property color bgHover: Theme.popupBg
+    property color bgIdle: Theme.moduleBg
     property alias hovered: ma.containsMouse
 
     implicitWidth: inner.childrenRect.width + 16
@@ -35,11 +40,31 @@ Item {
         height: childrenRect.height
     }
 
+    Timer {
+        id: tooltipTimer
+        interval: 300
+        onTriggered: tt.visible = true
+    }
+
+    Tooltip {
+        id: tt
+        parentItem: root
+        panelWindow: root.panelWindow
+        text: root.tooltip
+    }
+
     MouseArea {
         id: ma
         anchors.fill: parent
         hoverEnabled: true
         onClicked: root.clicked()
         onWheel: w => root.wheel(w.angleDelta)
+
+        onEntered: if (root.tooltip !== "")
+            tooltipTimer.start()
+        onExited: {
+            tooltipTimer.stop();
+            tt.visible = false;
+        }
     }
 }

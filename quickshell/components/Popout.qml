@@ -31,9 +31,9 @@ PopupWindow {
     Rectangle {
         id: panel
         anchors.fill: parent
-        color: Theme.bg1
+        color: Theme.popupBg
         radius: 10
-        border.color: Theme.bg3
+        border.color: Theme.border
         border.width: 1
 
         opacity: 0

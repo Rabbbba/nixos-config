@@ -11,7 +11,7 @@ Rectangle {
 
     property string icon: ""
     property int iconSize: 18
-    property color iconColor: Theme.fg1
+    property color iconColor: Theme.text
     property int diameter: 40
 
     signal clicked
@@ -19,7 +19,7 @@ Rectangle {
     width: diameter
     height: diameter
     radius: diameter / 2
-    color: ma.containsMouse ? Theme.bg2 : "transparent"
+    color: ma.containsMouse ? Theme.moduleBg : "transparent"
 
     Behavior on color {
         ColorAnimation {

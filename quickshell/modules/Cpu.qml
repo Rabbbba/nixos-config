@@ -6,6 +6,8 @@ import "../components"
 ModuleWrapper {
     id: root
 
+    tooltip: "Cpu usage"
+
     StyledText {
         id: cpu
 

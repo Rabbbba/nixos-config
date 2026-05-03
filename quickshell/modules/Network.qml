@@ -8,6 +8,7 @@ import "../components"
 ModuleWrapper {
     id: root
 
+    tooltip: net.state === "wifi" ? "Wi-Fi: " + net.ssid + " (" + net.signal + "%)" : net.state === "ethernet" ? "Ethernet" : "Offline"
     StyledText {
         id: net
         property string state: "offline"   // "ethernet" | "wifi" | "offline"

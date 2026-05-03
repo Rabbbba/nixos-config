@@ -44,7 +44,7 @@ Item {
                     width: root.cellSize
                     horizontalAlignment: Text.AlignHCenter
                     text: modelData
-                    color: Theme.fg4
+                    color: Theme.textMuted
                 }
             }
 
@@ -64,7 +64,7 @@ Item {
                     width: root.cellSize
                     horizontalAlignment: Text.AlignHCenter
                     text: index + 1
-                    color: (index + 1) === root.today ? Theme.yellow : Theme.fg1
+                    color: (index + 1) === root.today ? Theme.accent : Theme.text
                     font.bold: (index + 1) === root.today
                 }
             }

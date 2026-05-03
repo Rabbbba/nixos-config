@@ -34,7 +34,7 @@ ShellRoot {
 
             Rectangle {
                 anchors.fill: parent
-                color: Theme.bg0
+                color: Theme.windowBg
                 Row {
                     anchors {
                         left: parent.left
@@ -50,7 +50,7 @@ ShellRoot {
                             anchors.centerIn: parent
                             icon: ""
                             iconSize: 22
-                            iconColor: Theme.fg1
+                            iconColor: Theme.text
                             onClicked: Visibilities.toggle("power")
                         }
 
@@ -97,10 +97,18 @@ ShellRoot {
                     Tidal {
                         panelWindow: panel
                     }
-                    Ram {}
-                    Cpu {}
-                    Network {}
-                    Audio {}
+                    Ram {
+                        panelWindow: panel
+                    }
+                    Cpu {
+                        panelWindow: panel
+                    }
+                    Network {
+                        panelWindow: panel
+                    }
+                    Audio {
+                        panelWindow: panel
+                    }
                 }
             }
         }

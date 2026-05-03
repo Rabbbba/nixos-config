@@ -10,8 +10,8 @@ import "../components"
 // and a 24-band cava equalizer that doubles as a seek bar.
 ModuleWrapper {
     id: root
-    bgIdle: Theme.yellow
-    bgHover: Theme.bg2
+    bgIdle: Theme.accent
+    bgHover: Theme.moduleBg
 
     property var panelWindow: null
 
@@ -24,7 +24,7 @@ ModuleWrapper {
 
     StyledText {
         text: Players.tidal ? "󰝚  " + Players.tidal.trackArtist + " - " + Players.tidal.trackTitle : ""
-        color: root.hovered ? Theme.fg1 : Theme.bg1
+        color: root.hovered ? Theme.text : Theme.popupBg
         font.pixelSize: Theme.fontSizeMd
         font.bold: true
         width: Math.min(implicitWidth, 300)
@@ -120,13 +120,13 @@ ModuleWrapper {
                     }
                     StyledText {
                         width: parent.width
-                        color: Theme.fg1
+                        color: Theme.text
                         font.pixelSize: Theme.fontSizeMd + 2
                         text: Players.tidal ? Players.tidal.trackArtist : ""
                     }
                     StyledText {
                         width: parent.width
-                        color: Theme.fg4
+                        color: Theme.textMuted
                         font.pixelSize: Theme.fontSizeMd
                         text: Players.tidal && Players.tidal.trackAlbum ? Players.tidal.trackAlbum : ""
                     }
@@ -138,7 +138,7 @@ ModuleWrapper {
 
                     IconButton {
                         icon: "󰒝"
-                        iconColor: Players.tidal && Players.tidal.shuffle ? Theme.yellow : Theme.fg4
+                        iconColor: Players.tidal && Players.tidal.shuffle ? Theme.accent : Theme.textMuted
                         onClicked: if (Players.tidal)
                             Players.tidal.shuffle = !Players.tidal.shuffle
                     }
@@ -152,7 +152,7 @@ ModuleWrapper {
                     IconButton {
                         icon: Players.tidal && Players.tidal.isPlaying ? "󰏤" : "󰐊"
                         iconSize: 40
-                        iconColor: Theme.yellow
+                        iconColor: Theme.accent
                         diameter: 48
                         onClicked: if (Players.tidal)
                             Players.tidal.togglePlaying()
@@ -176,7 +176,7 @@ ModuleWrapper {
                                 return "󰑖";
                             return "󰑗";
                         }
-                        iconColor: Players.tidal && Players.tidal.loopState !== 0 ? Theme.yellow : Theme.fg4
+                        iconColor: Players.tidal && Players.tidal.loopState !== 0 ? Theme.accent : Theme.textMuted
                         onClicked: if (Players.tidal)
                             Players.tidal.loopState = (Players.tidal.loopState + 1) % 3
                     }
@@ -190,7 +190,7 @@ ModuleWrapper {
                         id: volIcon
                         anchors.verticalCenter: parent.verticalCenter
                         text: Players.tidal && Players.tidal.volume === 0 ? "󰝟" : "󰕾"
-                        color: Theme.fg4
+                        color: Theme.textMuted
                         property real previousVolume: 1.0
 
                         MouseArea {
@@ -213,7 +213,7 @@ ModuleWrapper {
                         anchors.verticalCenter: parent.verticalCenter
                         width: parent.width - 28
                         height: 4
-                        color: Theme.bg2
+                        color: Theme.moduleBg
                         radius: 2
 
                         MouseArea {
@@ -240,7 +240,7 @@ ModuleWrapper {
                             anchors.left: parent.left
                             width: parent.width * (Players.tidal ? Players.tidal.volume : 0)
                             height: parent.height
-                            color: Theme.yellow
+                            color: Theme.accent
                             radius: 2
                         }
                     }
@@ -256,12 +256,12 @@ ModuleWrapper {
 
                         StyledText {
                             anchors.left: parent.left
-                            color: Theme.fg4
+                            color: Theme.textMuted
                             text: root.fmt(Players.tidal ? Players.tidal.position : 0)
                         }
                         StyledText {
                             anchors.right: parent.right
-                            color: Theme.fg4
+                            color: Theme.textMuted
                             text: root.fmt(Players.tidal ? Players.tidal.length : 0)
                         }
                     }
@@ -282,7 +282,7 @@ ModuleWrapper {
                                 x: index * (width + 2)
                                 anchors.bottom: parent.bottom
                                 height: Math.max(4, (progressBars.values[index] / 100) * progressBars.height)
-                                color: (index + 0.5) / 24 < progressBars.progress ? Theme.yellow : Theme.bg3
+                                color: (index + 0.5) / 24 < progressBars.progress ? Theme.accent : Theme.border
                                 radius: 1
                             }
                         }

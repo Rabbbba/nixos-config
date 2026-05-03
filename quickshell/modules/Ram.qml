@@ -6,6 +6,7 @@ import "../components"
 ModuleWrapper {
     id: root
 
+    tooltip: "Ram usage"
     StyledText {
         id: ram
 

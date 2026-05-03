@@ -8,6 +8,7 @@ ModuleWrapper {
     id: root
 
     property PwNode sink: Pipewire.defaultAudioSink
+    tooltip: sink ? sink.description + " · " + Math.round(sink.audio.volume * 100) + "%" : ""
 
     // Wheel up = louder, wheel down = quieter, clamped to [0, 1].
     onWheel: angleDelta => {

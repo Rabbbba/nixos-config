@@ -35,7 +35,7 @@ Row {
             StyledText {
                 anchors.centerIn: parent
                 text: tag.modelData.id
-                color: (tag.active || tag.occupied || tag.urgent) ? Theme.bg0 : Theme.fg1
+                color: (tag.active || tag.occupied || tag.urgent) ? Theme.windowBg : Theme.text
                 font.pixelSize: Theme.fontSizeMd
             }
 
@@ -69,14 +69,14 @@ Row {
 
             color: {
                 if (tag.urgent)
-                    return Theme.red;
+                    return Theme.alert;
                 if (tag.active)
-                    return Theme.yellow;
+                    return Theme.accent;
                 if (tag.occupied)
-                    return Theme.fg4;
+                    return Theme.textMuted;
                 if (ma.containsMouse)
-                    return Theme.bg2;
-                return Theme.bg1;
+                    return Theme.moduleBg;
+                return Theme.popupBg;
             }
         }
     }

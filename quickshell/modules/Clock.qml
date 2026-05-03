@@ -5,14 +5,14 @@ import "../services"
 // Center-bar clock, ticks every minute. Click toggles a Calendar popout.
 ModuleWrapper {
     id: root
-    bgIdle: Theme.yellow
-    bgHover: Theme.bg2
+    bgIdle: Theme.accent
+    bgHover: Theme.moduleBg
 
     property var panelWindow: null
 
     StyledText {
         property date now: new Date()
-        color: root.hovered ? Theme.fg1 : Theme.bg1
+        color: root.hovered ? Theme.text : Theme.popupBg
         font.pixelSize: Theme.fontSizeLg
         font.bold: true
         text: Qt.formatDateTime(now, "HH:mm dd/MM")
