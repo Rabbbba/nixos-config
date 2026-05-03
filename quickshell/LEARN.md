@@ -60,7 +60,7 @@
 
 ---
 
-## Quickshell.Hyprland / Mango IPC
+## Quickshell.Hyprland IPC
 *(Phase 3 — communication avec le compositor pour les tags)*
 
 ---

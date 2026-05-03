@@ -59,7 +59,6 @@ quickshell/                # ⭐ the custom QML bar
   ├── modules/             # Clock, Cpu, Ram, Audio, Network, Tags, Title, Layouts, Tidal, Power, Theme
   └── services/            # Visibilities, Players, SystemUsage
 hypr/                      # Hyprland WM config
-mango/                     # mango WM config (alternative WM kept around)
 nvim/                      # Neovim (NvChad)
 ghostty/                   # terminal
 waybar/                    # legacy Waybar config (no longer used)
@@ -73,7 +72,7 @@ This config is shaped around my desktop:
 - **Monitors**: Dell 3440×1440 (DP-2, primary, where the bar lives) + AOC 1920×1080 portrait (DP-1)
 - **Games disk**: mounted at `/mnt/jeux`
 
-To run on different hardware, regenerate `hardware-configuration.nix` and adjust monitor names in `mango/monitors.conf` and the screen filter in `quickshell/shell.qml`.
+To run on different hardware, regenerate `hardware-configuration.nix` and adjust monitor names in `hypr/hyprland.conf` and the screen filter in `quickshell/shell.qml`.
 
 ## Replicate
 
@@ -117,4 +116,4 @@ A few design choices in the Quickshell bar worth pointing out:
 ## Credits
 
 - Quickshell shell architecture inspired by [caelestia-dots/shell](https://github.com/caelestia-dots/shell) — Visibilities and the popout coordination layer borrow ideas from theirs.
-- Quickshell, Hyprland, mango, NvChad, NixOS — all the work of their respective upstreams.
+- Quickshell, Hyprland, NvChad, NixOS — all the work of their respective upstreams.
