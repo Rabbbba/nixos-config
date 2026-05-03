@@ -65,44 +65,37 @@
 
 ---
 
-## Style — Gruvbox Dark (palette projet)
+## Style — palette matugen + tokens sémantiques
 
-**Convention du projet** : tout le styling de la barre utilise la palette Gruvbox Dark.
+**Convention du projet** : on ne hardcode jamais une couleur dans un module. Tout passe par le singleton `modules/Theme.qml`, dont le contenu est régénéré par [matugen](https://github.com/InioX/matugen) à chaque changement de wallpaper (palette Material You 3).
 
-### Backgrounds
-| Couleur | Hex | Usage |
-|---|---|---|
-| bg0_h | `#1d2021` | hard background |
-| bg0   | `#282828` | background principal de la barre |
-| bg1   | `#3c3836` | element vide / inactif |
-| bg2   | `#504945` | hover léger |
-| bg3   | `#665c54` | bordures |
-| bg4   | `#7c6f64` | bordures plus visibles |
+### Tokens disponibles
+Définis dans `Theme.qml`, nommés par rôle (pas par "Gruvbox bg0/bg1"…) :
 
-### Foregrounds
-| Couleur | Hex | Usage |
-|---|---|---|
-| fg0 | `#fbf1c7` | texte le plus clair |
-| fg1 | `#ebdbb2` | texte standard ← défaut |
-| fg2 | `#d5c4a1` | texte secondaire |
-| fg3 | `#bdae93` | texte tertiaire |
-| fg4 | `#a89984` | texte désactivé / indicateur "occupé" |
+| Token | Rôle |
+|---|---|
+| `windowBg` | fond de la barre / fenêtre principale (le plus sombre) |
+| `popupBg` | fond des popouts (Calendar, Tidal, Power) |
+| `moduleBg` | fond des modules au repos / des tooltips |
+| `border` | bordures et séparateurs subtils |
+| `text` | texte principal sur fond sombre |
+| `textMuted` | texte secondaire (jours de la semaine, sous-titres) |
+| `accent` | états actifs, highlights |
+| `alert` | urgent, erreurs |
 
-### Accents (bright variants — privilégier)
-| Couleur | Hex | Usage |
-|---|---|---|
-| red    | `#fb4934` | urgent, erreur |
-| green  | `#b8bb26` | success, ok |
-| yellow | `#fabd2f` | tag actif, focus, attention douce |
-| blue   | `#83a598` | info |
-| purple | `#d3869b` | accent |
-| aqua   | `#8ec07c` | accent |
-| orange | `#fe8019` | warning |
+Plus les durées d'animation (`animFast`, `animSlow`) et les tailles de fonte (`fontSizeMd`, `fontSizeLg`).
 
-### Variants normaux (si on veut plus sourd)
-red `#cc241d`, green `#98971a`, yellow `#d79921`, blue `#458588`, purple `#b16286`, aqua `#689d6a`, orange `#d65d0e`.
+### Comment ça marche en bout de chaîne
+1. matugen lit le wallpaper courant
+2. génère une palette Material You 3
+3. injecte les hex dans le template `matugen/templates/Theme.qml`
+4. écrit le résultat dans `quickshell/modules/Theme.qml`
+5. Quickshell re-render avec les nouvelles couleurs (hot-reload via `settings.watchFiles`)
 
-*(Phase 5 ajoutera transitions, hover, animations basés sur cette palette.)*
+Quand on ajoute une couleur sémantique nouvelle, on :
+1. ajoute la `readonly property color X` dans `matugen/templates/Theme.qml`
+2. regenère via swap de wallpaper (ou édite manuellement Theme.qml en attendant)
+3. on l'utilise dans les modules : `color: Theme.X`
 
 ---
 
