@@ -11,6 +11,9 @@ QtObject {
     id: root
 
     property real cpuPercent: 0
+    property var cpuCoresPercent: []
+    property var _prevCores: []
+
     property real ramPercent: 0
     property real ramUsedKb: 0
     property real ramTotalKb: 0
@@ -52,6 +55,33 @@ QtObject {
                 total: total,
                 idle: idle
             };
+
+            const coreLines = cpuFile.text().split("\n").filter(l => /^cpu\d+\s/.test(l));
+
+            const coresPercent = [];
+            const newPrevCores = [];
+
+            coreLines.forEach((line, i) => {
+                const fields = line.trim().split(/\s+/).slice(1).map(Number);
+                const idle = fields[3] + fields[4];
+                const total = fields.reduce((a, b) => a + b, 0);
+                const prev = root._prevCores[i] || {
+                    idle: 0,
+                    total: 0
+                };
+                const totalDelta = total - prev.total;
+                const idleDelta = idle - prev.idle;
+                let percent = 0;
+                if (prev.total > 0 && totalDelta > 0)
+                    percent = (1 - idleDelta / totalDelta) * 100;
+                coresPercent.push(percent);
+                newPrevCores.push({
+                    idle,
+                    total
+                });
+            });
+            root.cpuCoresPercent = coresPercent;
+            root._prevCores = newPrevCores;
         }
     }
 

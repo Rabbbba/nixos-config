@@ -4,3 +4,4 @@ CalendarPopup 1.0 CalendarPopup.qml
 PowerPopup 1.0 PowerPopup.qml
 TidalPopup 1.0 TidalPopup.qml
 RamPopup 1.0 RamPopup.qml
+CpuPopup 1.0 CpuPopup.qml
