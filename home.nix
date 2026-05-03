@@ -1,6 +1,7 @@
 {
   config,
   pkgs,
+  inputs,
   ...
 }:
 
@@ -64,8 +65,8 @@
     libnotify # notify-send pour tester dunst
     swayosd # OSD volume/luminosité (compositor-agnostic)
 
-    #Quickshell (Projet)
-    quickshell
+    #Quickshell (Projet) — bleeding-edge depuis flake input
+    inputs.quickshell.packages.${pkgs.system}.default
 
     # Capture & presse-papiers
     grim
@@ -121,7 +122,7 @@
   home.sessionVariables = {
     XCURSOR_THEME = "Bibata-Modern-Amber";
     XCURSOR_SIZE = "24";
-    QML_IMPORT_PATH = "${pkgs.qt6.qtdeclarative}/lib/qt-6/qml:${pkgs.quickshell}/lib/qt-6/qml";
+    QML_IMPORT_PATH = "${pkgs.qt6.qtdeclarative}/lib/qt-6/qml:${inputs.quickshell.packages.${pkgs.system}.default}/lib/qt-6/qml";
   };
 
   #Qt

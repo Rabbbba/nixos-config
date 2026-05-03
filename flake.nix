@@ -10,11 +10,17 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # Quickshell — bleeding-edge depuis l'upstream officiel
+    quickshell = {
+      url = "git+https://git.outfoxxed.me/outfoxxed/quickshell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, home-manager }: {
+  outputs = { self, nixpkgs, home-manager, quickshell }: {
     nixosConfigurations.Rayane = nixpkgs.lib.nixosSystem {
-      specialArgs = { inputs = { inherit home-manager; }; };
+      specialArgs = { inputs = { inherit home-manager quickshell; }; };
 
       modules = [
         ./configuration.nix
@@ -22,7 +28,7 @@
         {
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
-          home-manager.extraSpecialArgs = { inputs = { inherit home-manager; }; };
+          home-manager.extraSpecialArgs = { inputs = { inherit home-manager quickshell; }; };
           home-manager.users.rayane = import ./home.nix;
         }
       ];
