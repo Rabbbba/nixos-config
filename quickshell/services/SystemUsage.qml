@@ -12,6 +12,18 @@ QtObject {
 
     property real cpuPercent: 0
     property real ramPercent: 0
+    property real ramUsedKb: 0
+    property real ramTotalKb: 0
+    property real ramBuffersKb: 0
+    property real ramCachedKb: 0
+    property real swapUsedKb: 0
+    property real swapTotalKb: 0
+
+    property var loadAverage: ({
+            l1: 0,
+            l5: 0,
+            l15: 0
+        })
 
     // Previous /proc/stat snapshot, used to compute deltas.
     property var _prev: ({
@@ -53,6 +65,37 @@ QtObject {
             const total = parseInt(content.match(/MemTotal:\s+(\d+)/)[1]);
             const avail = parseInt(content.match(/MemAvailable:\s+(\d+)/)[1]);
             root.ramPercent = ((total - avail) / total) * 100;
+
+            const buffers = parseInt(content.match(/Buffers:\s+(\d+)/)[1]);
+            const cached = parseInt(content.match(/Cached:\s+(\d+)/)[1]);
+            const swapTotal = parseInt(content.match(/SwapTotal:\s+(\d+)/)[1]);
+            const swapFree = parseInt(content.match(/SwapFree:\s+(\d+)/)[1]);
+
+            root.ramTotalKb = total;
+            root.ramUsedKb = total - avail;
+            root.ramBuffersKb = buffers;
+            root.ramCachedKb = cached;
+            root.swapTotalKb = swapTotal;
+            root.swapUsedKb = swapTotal - swapFree;
+        }
+    }
+
+    property FileView _loadFile: FileView {
+        id: loadFile
+        path: "/proc/loadavg"
+        blockLoading: true
+
+        onLoaded: {
+            const content = loadFile.text();
+            const fields = content.trim().split(/\s+/);
+            const l1 = parseFloat(fields[0]);
+            const l5 = parseFloat(fields[1]);
+            const l15 = parseFloat(fields[2]);
+            root.loadAverage = {
+                l1,
+                l5,
+                l15
+            };
         }
     }
 
@@ -64,6 +107,7 @@ QtObject {
         onTriggered: {
             cpuFile.reload();
             ramFile.reload();
+            loadFile.reload();
         }
     }
 }
