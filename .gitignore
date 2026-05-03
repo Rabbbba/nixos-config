@@ -1,2 +1,17 @@
+# Local notes — kept out of public history
 CLAUDE.md
 TODO.md
+
+# Claude Code session state — local permissions, runtime metadata
+.claude/
+
+# Nix build artifacts
+result
+result-*
+
+# direnv local cache
+.direnv/
+
+# Editor swap files
+*.swp
+*.swo
