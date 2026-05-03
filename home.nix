@@ -21,6 +21,7 @@
   xdg.configFile."walker".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/walker";
   xdg.configFile."dunst".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/dunst";
   xdg.configFile."cava".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/cava";
+  xdg.configFile."matugen".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/matugen";
   xdg.configFile."starship.toml".source = ./starship.toml;
 
   home.sessionVariables.ELECTRON_OZONE_PLATFORM_HINT = "wayland";
@@ -51,6 +52,7 @@
     taplo # Formateur TOML
     shfmt # Formateur Shell
     nodejs
+    ripgrep
 
     # Window manager & desktop
     # hyprland — fourni par programs.hyprland system-wide (configuration.nix)

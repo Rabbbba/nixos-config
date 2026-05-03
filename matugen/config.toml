@@ -1,0 +1,8 @@
+# Matugen configuration
+# Generates Theme.qml from current wallpaper using Material You 3 palette
+
+[config]
+
+[templates.quickshell-theme]
+input_path = "/etc/nixos/matugen/templates/Theme.qml"
+output_path = "/etc/nixos/quickshell/modules/Theme.qml"
