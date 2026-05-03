@@ -1,8 +1,9 @@
 import QtQuick
 import Quickshell                  // for execDetached
+import "../modules"
 import "../components"
 
-// Vertical stack of 4 power actions, embedded inside a Popout.
+// Vertical stack of 4 power actions, lives inside the Nix-logo button's Popout.
 // Glyphs (in order): poweroff, reboot, lock, logout.
 Column {
     spacing: 8

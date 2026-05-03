@@ -5,6 +5,7 @@
 import Quickshell
 import QtQuick
 import "modules"
+import "popouts"
 import "services"
 import "components"
 
@@ -63,7 +64,7 @@ ShellRoot {
                             height: 200
                             visible: Visibilities.current === "power"
 
-                            Power {
+                            PowerPopup {
                                 anchors.centerIn: parent
                             }
                         }

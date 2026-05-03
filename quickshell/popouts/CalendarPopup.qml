@@ -1,8 +1,10 @@
 import QtQuick
 import "../modules"
+import "../components"
 
 // Static month view: header + weekday row + 7-column grid of day cells.
 // Today's cell is highlighted in the theme accent.
+// Lives inside the Clock module's Popout.
 Item {
     id: root
     property date now: new Date()
