@@ -1,7 +1,9 @@
 import QtQuick
-import Quickshell                  // pour execDetached
+import Quickshell                  // for execDetached
 import "../components"
 
+// Vertical stack of 4 power actions, embedded inside a Popout.
+// Glyphs (in order): poweroff, reboot, lock, logout.
 Column {
     spacing: 8
 

@@ -3,6 +3,9 @@ import Quickshell
 import Quickshell.Hyprland
 import "../components"
 
+// Hyprland workspace ("tag") indicators. One pill per workspace on this
+// monitor, click to switch, scroll to step through workspaces.
+// Active pill is wider + colored; occupied / urgent / hover have their own colors.
 Row {
     id: tags
 
@@ -11,7 +14,7 @@ Row {
     spacing: 4
 
     Repeater {
-        // Workspaces filtrés par moniteur, triés par id
+        // Workspaces filtered to this monitor, sorted by id.
         model: ScriptModel {
             values: Hyprland.workspaces.values.filter(ws => ws.monitor && ws.monitor.name === tags.monitor).sort((a, b) => a.id - b.id)
         }
@@ -20,7 +23,7 @@ Row {
             id: tag
             required property var modelData
 
-            // Sur Hyprland un seul workspace par moniteur est actif à la fois
+            // On Hyprland only one workspace per monitor is active at any time.
             property bool active: modelData.active
             property bool occupied: modelData.toplevels && modelData.toplevels.values.length > 0
             property bool urgent: modelData.urgent

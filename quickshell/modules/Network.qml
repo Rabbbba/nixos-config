@@ -2,6 +2,9 @@ import QtQuick
 import Quickshell.Io
 import "../components"
 
+// Network module. Polls `nmcli` every 5 s for the active connection and,
+// when on Wi-Fi, also for the signal strength of the in-use AP.
+// Renders one of: ethernet glyph, Wi-Fi glyph + SSID, or "offline" glyph.
 ModuleWrapper {
     id: root
 
@@ -21,6 +24,7 @@ ModuleWrapper {
             return "󰤭";
         }
 
+        // 4-step bar icon based on signal %, plus an off-state glyph at 0.
         function wifiIcon() {
             if (signal > 75)
                 return "󰤨";
@@ -61,7 +65,7 @@ ModuleWrapper {
                 }
             }
 
-            // si aucune ligne ne sort (pas de connexion), on reset
+            // If no line came out (no connection), reset to offline.
             onExited: {
                 if (net.state === "wifi" || net.state === "ethernet")
                     return;
@@ -81,6 +85,8 @@ ModuleWrapper {
             }
         }
 
+        // Re-run the state probe every 5 s. Toggling running false→true
+        // is how Quickshell's Process restarts.
         Timer {
             interval: 5000
             running: true

@@ -1,6 +1,7 @@
 import QtQuick
 import "../components"
 
+// Center-bar clock, ticks every minute. Click toggles a Calendar popout.
 ModuleWrapper {
     id: root
     bgIdle: Theme.yellow
@@ -14,6 +15,7 @@ ModuleWrapper {
         font.pixelSize: Theme.fontSizeLg
         font.bold: true
         text: Qt.formatDateTime(now, "HH:mm dd/MM")
+        // 60s is enough — the displayed precision is the minute.
         Timer {
             interval: 60000
             running: true

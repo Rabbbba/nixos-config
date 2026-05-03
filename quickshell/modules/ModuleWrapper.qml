@@ -1,11 +1,14 @@
 import QtQuick
 
+// Common bar-module shell: rounded background that swaps color on hover,
+// click + wheel signals, content slot. Used by Cpu, Ram, Audio, Network,
+// Clock, Tidal, Title, Layouts.
 Item {
     id: root
     signal clicked
     signal wheel(point angleDelta)
 
-    // API publique (configurable depuis l'extérieur)
+    // Public API (configurable from the outside).
     default property alias _content: inner.data
     property color bgHover: Theme.bg1
     property color bgIdle: Theme.bg2

@@ -2,12 +2,18 @@ pragma Singleton
 import QtQuick
 import Quickshell.Io
 
+// Polls /proc/stat and /proc/meminfo every 2 s and exposes
+// cpuPercent / ramPercent for the Cpu and Ram bar modules.
+//
+// CPU % is computed from the delta of jiffies between two ticks
+// (idle vs. total), which is the standard way to read /proc/stat.
 QtObject {
     id: root
 
     property real cpuPercent: 0
     property real ramPercent: 0
 
+    // Previous /proc/stat snapshot, used to compute deltas.
     property var _prev: ({
             total: 0,
             idle: 0

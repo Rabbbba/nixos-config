@@ -3,6 +3,9 @@ import Quickshell.Io
 import Quickshell.Hyprland
 import "../components"
 
+// Hyprland layout name ("Master" / "Dwindle" / ...). Hyprland doesn't emit
+// a dedicated layout-change signal, so we re-probe `hyprctl getoption` whenever
+// the active toplevel changes — that's a good-enough proxy for layout shifts.
 ModuleWrapper {
     id: root
     property string monitor: ""
@@ -15,7 +18,7 @@ ModuleWrapper {
         font.bold: true
         text: code
 
-        // Récupère le layout courant via hyprctl à chaque changement de focus
+        // Read the current layout via `hyprctl -j` (JSON output).
         Process {
             id: layoutProbe
             command: ["hyprctl", "getoption", "general:layout", "-j"]
@@ -37,7 +40,7 @@ ModuleWrapper {
             }
         }
 
-        // Re-probe quand le toplevel actif change (sniff de changements de layout)
+        // Re-probe on focus changes — proxy for layout changes.
         Connections {
             target: Hyprland
             function onActiveToplevelChanged() {

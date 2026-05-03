@@ -1,6 +1,8 @@
 import QtQuick
 import "../modules"
 
+// Static month view: header + weekday row + 7-column grid of day cells.
+// Today's cell is highlighted in the theme accent.
 Item {
     id: root
     property date now: new Date()
@@ -9,7 +11,7 @@ Item {
     readonly property int month: now.getMonth()
     readonly property int today: now.getDate()
 
-    // Lundi = 0, dimanche = 6 (recalage depuis JS où dimanche = 0)
+    // Monday = 0, Sunday = 6. JS's getDay() puts Sunday at 0, so shift by +6 mod 7.
     readonly property int firstDayOffset: ((new Date(year, month, 1).getDay()) + 6) % 7
     readonly property int daysInMonth: new Date(year, month + 1, 0).getDate()
 
@@ -35,7 +37,7 @@ Item {
             columns: 7
             spacing: root.cellSpacing
 
-            // En-têtes jours de la semaine
+            // Weekday headers (French initials, week starts Monday).
             Repeater {
                 model: ["L", "M", "M", "J", "V", "S", "D"]
                 StyledText {
@@ -46,7 +48,7 @@ Item {
                 }
             }
 
-            // Cases vides avant le 1er du mois
+            // Empty cells padding the grid up to the 1st of the month.
             Repeater {
                 model: root.firstDayOffset
                 Item {
@@ -55,7 +57,7 @@ Item {
                 }
             }
 
-            // Jours du mois
+            // Day cells.
             Repeater {
                 model: root.daysInMonth
                 StyledText {

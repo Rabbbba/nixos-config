@@ -4,6 +4,10 @@ import Quickshell.Io
 import "../services"
 import "../components"
 
+// Tidal "now playing" pill in the bar + a rich popout on click.
+// Popout shows: blurred album-art background, cover, title/artist/album,
+// transport buttons (shuffle, prev, play/pause, next, loop), volume slider,
+// and a 24-band cava equalizer that doubles as a seek bar.
 ModuleWrapper {
     id: root
     bgIdle: Theme.yellow
@@ -11,6 +15,7 @@ ModuleWrapper {
 
     property var panelWindow: null
 
+    // Format seconds as "m:ss" — for elapsed/total track times.
     function fmt(s) {
         const m = Math.floor(s / 60);
         const sec = Math.floor(s % 60);
@@ -53,6 +58,8 @@ ModuleWrapper {
             brightness: -0.2
         }
 
+        // MPRIS doesn't push position changes — poke the change signal
+        // ourselves once a second so the seek bar / time labels update.
         Timer {
             interval: 1000
             running: popup.visible
@@ -156,7 +163,7 @@ ModuleWrapper {
                             Players.tidal.next()
                     }
 
-                    // 0 = None, 1 = Track, 2 = Playlist
+                    // MPRIS loop state: 0 = None, 1 = Track, 2 = Playlist.
                     IconButton {
                         icon: {
                             if (!Players.tidal)

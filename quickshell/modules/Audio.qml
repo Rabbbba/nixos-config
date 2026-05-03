@@ -2,11 +2,14 @@ import QtQuick
 import Quickshell.Services.Pipewire
 import "../components"
 
+// Audio module: shows the default Pipewire sink's volume / mute state.
+// Scroll on the module to nudge volume by ±5 %.
 ModuleWrapper {
     id: root
 
     property PwNode sink: Pipewire.defaultAudioSink
 
+    // Wheel up = louder, wheel down = quieter, clamped to [0, 1].
     onWheel: angleDelta => {
         const step = 0.05;
         const cur = sink && sink.audio ? sink.audio.volume : 0;
@@ -29,6 +32,8 @@ ModuleWrapper {
             return "󰕾 " + Math.round(v * 100) + "%";
         }
 
+        // Pipewire bindings are lazy — without a tracker, .audio.volume reads
+        // as undefined. Tracking the sink keeps it live.
         PwObjectTracker {
             objects: root.sink ? [root.sink] : []
         }

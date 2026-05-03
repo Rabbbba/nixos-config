@@ -4,8 +4,14 @@ import "modules"
 import "services"
 import "components"
 
+// Top bar — lives only on the primary monitor (DP-2).
+// Layout is 3 anchored groups inside the bar Rectangle:
+//   left Row    : Nix-logo button (Power popup) → Tags → Title → Layouts
+//   centered    : Clock (Calendar popup)
+//   right Row   : Tidal → Ram → Cpu → Network → Audio
 Scope {
     Variants {
+        // Variants spawns one PanelWindow per matching screen.
         model: Quickshell.screens.filter(s => s.name === "DP-2")
         PanelWindow {
             id: panel

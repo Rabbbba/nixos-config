@@ -2,6 +2,10 @@ import QtQuick
 import Quickshell
 import "../modules"
 
+// Generic popout window anchored under a bar item.
+// Consumers write:  Popout { parentItem: someItem; panelWindow: bar; ... <content> }
+// and the content lands inside `container` (padded), not as a direct child of the
+// PopupWindow. Pop-in animation: opacity 0→1 + scale 0.96→1 on visible toggle.
 PopupWindow {
     id: popout
 
@@ -10,11 +14,14 @@ PopupWindow {
 
     property int padding: 14
 
-    // "left" | "center"a | "right"
+    // Horizontal alignment of the popout relative to the parent item:
+    // "left"   → popout's left edge aligns with parent's left
+    // "center" → popout horizontally centered on the parent
+    // "right"  → popout's right edge aligns with parent's right
     property string alignement: "center"
 
-    // Slot de contenu : tout enfant déclaré dans un Popout {} consommateur
-    // atterrit dans `container.data` au lieu d'être enfant direct de la fenêtre.
+    // Default property: anything declared inside a Popout {} block is reparented
+    // into `container.data` instead of becoming a child of the PopupWindow itself.
     default property alias contents: container.data
 
     anchor.window: panelWindow
@@ -53,6 +60,10 @@ PopupWindow {
         }
     }
 
+    // Recompute anchor position every time the popout becomes visible.
+    // We pick a reference X on the parent (left / center / right) and subtract
+    // the equivalent offset on the popout, so the chosen edges line up.
+    // Y is always pinned to the bottom of the parent item.
     onVisibleChanged: {
         if (!visible) {
             panel.opacity = 0;

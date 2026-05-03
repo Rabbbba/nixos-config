@@ -1,6 +1,11 @@
 import QtQuick
 import "../modules"
 
+// Round icon button: NerdFont glyph centered, hover bg, click signal.
+// Used for Power actions, Tidal transport controls, the Nix-logo button, etc.
+//
+// NOTE: never include a trailing space in `icon:` — the centered Text counts
+// it in its width and the visible glyph drifts off-center.
 Rectangle {
     id: root
 
