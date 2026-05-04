@@ -1,5 +1,4 @@
 import QtQuick
-import Quickshell.Hyprland
 import "../services"
 
 // Popout attached to a bar module. Wires parentItem, panelWindow, and the
@@ -23,13 +22,4 @@ Popout {
     parentItem: wrapper
     panelWindow: wrapper.panelWindow
     visible: Visibilities.current === name
-
-    // Click outside both the popup and the bar → close. The bar is included
-    // so clicking another module still toggles popups instead of being eaten
-    // by the grab.
-    HyprlandFocusGrab {
-        active: root.visible
-        windows: [root, root.panelWindow]
-        onCleared: Visibilities.close()
-    }
 }
