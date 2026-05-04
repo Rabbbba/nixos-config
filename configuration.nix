@@ -130,6 +130,12 @@
 
   nixpkgs.config.allowUnfree = true;
 
+  # ── Variables d'environnement système ──────────────────────────────────────
+  environment.sessionVariables = {
+    # Active le backend Wayland natif de Proton (au lieu de XWayland) pour tous les jeux Steam
+    PROTON_ENABLE_WAYLAND = "1";
+  };
+
   # ── Packages système (les packages user vont dans home.nix) ────────────────
   environment.systemPackages = with pkgs; [
     wget
