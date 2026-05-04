@@ -18,7 +18,7 @@ PopupWindow {
     // "left"   → popout's left edge aligns with parent's left
     // "center" → popout horizontally centered on the parent
     // "right"  → popout's right edge aligns with parent's right
-    property string alignement: "center"
+    property string alignment: "center"
 
     // Default property: anything declared inside a Popout {} block is reparented
     // into `container.data` instead of becoming a child of the PopupWindow itself.
@@ -71,8 +71,8 @@ PopupWindow {
             return;
         }
 
-        const localX = alignement === "center" ? parentItem.width / 2 : alignement === "right" ? parentItem.width : 0;
-        const popoutOffset = alignement === "center" ? popout.implicitWidth / 2 : alignement === "right" ? popout.implicitWidth : 0;
+        const localX = alignment === "center" ? parentItem.width / 2 : alignment === "right" ? parentItem.width : 0;
+        const popoutOffset = alignment === "center" ? popout.implicitWidth / 2 : alignment === "right" ? popout.implicitWidth : 0;
 
         anchor.rect.x = parentItem.mapToItem(panelWindow.contentItem, localX, 0).x - popoutOffset;
         anchor.rect.y = parentItem.mapToItem(panelWindow.contentItem, 0, parentItem.height).y;

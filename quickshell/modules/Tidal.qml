@@ -25,7 +25,7 @@ ModuleWrapper {
         implicitWidth: 520
         implicitHeight: 250
         padding: 4
-        alignement: "left"
+        alignment: "left"
 
         TidalPopup {
             anchors.fill: parent

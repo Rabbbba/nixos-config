@@ -2,14 +2,14 @@ import QtQuick
 import "../services"
 
 // Popout attached to a bar module. Wires parentItem, panelWindow, and the
-// Visibilities-driven open/close so the call site only declares alignement,
+// Visibilities-driven open/close so the call site only declares alignment,
 // sizing, and content.
 //
 // Usage:
 //     ModulePopout {
 //         wrapper: root
 //         name: "audio"
-//         alignement: "right"
+//         alignment: "right"
 //         implicitWidth: 300
 //         implicitHeight: 200
 //         AudioPopup { anchors.fill: parent }

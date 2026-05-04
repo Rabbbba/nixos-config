@@ -20,7 +20,7 @@ ModuleWrapper {
         name: "cpu"
         implicitWidth: 360
         implicitHeight: 200
-        alignement: "center"
+        alignment: "center"
 
         CpuPopup {
             anchors.fill: parent

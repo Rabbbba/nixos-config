@@ -29,7 +29,7 @@ ModuleWrapper {
         name: "calendar"
         implicitWidth: 280
         implicitHeight: 220
-        alignement: "center"
+        alignment: "center"
 
         CalendarPopup {
             anchors.centerIn: parent

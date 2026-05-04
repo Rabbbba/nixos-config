@@ -58,7 +58,7 @@ ShellRoot {
                         ModulePopout {
                             wrapper: nixBtn
                             name: "power"
-                            alignement: "left"
+                            alignment: "left"
                             width: 70
                             height: 200
 

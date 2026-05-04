@@ -65,7 +65,7 @@ Three rules keep this navigable:
    Popout {
        parentItem: root
        panelWindow: root.panelWindow
-       alignement: "center"   // "left" | "center" | "right"
+       alignment: "center"   // "left" | "center" | "right"
        implicitWidth: 320
        implicitHeight: 200
        visible: Visibilities.current === "foo"

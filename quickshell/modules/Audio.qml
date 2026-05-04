@@ -45,7 +45,7 @@ ModuleWrapper {
     ModulePopout {
         wrapper: root
         name: "audio"
-        alignement: "right"
+        alignment: "right"
         implicitWidth: 300
         implicitHeight: 200
 

@@ -18,7 +18,7 @@ ModuleWrapper {
     ModulePopout {
         wrapper: root
         name: "ram"
-        alignement: "center"
+        alignment: "center"
         implicitWidth: 320
         implicitHeight: 200
 
