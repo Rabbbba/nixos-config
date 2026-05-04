@@ -21,7 +21,7 @@ ModuleWrapper {
         implicitHeight: 200
         alignment: "center"
 
-        CpuPopup {
+        GpuPopup {
             anchors.fill: parent
         }
     }

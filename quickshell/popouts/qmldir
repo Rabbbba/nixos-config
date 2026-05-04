@@ -6,3 +6,4 @@ TidalPopup 1.0 TidalPopup.qml
 RamPopup 1.0 RamPopup.qml
 CpuPopup 1.0 CpuPopup.qml
 AudioPopup 1.0 AudioPopup.qml
+GpuPopup 1.0 GpuPopup.qml
