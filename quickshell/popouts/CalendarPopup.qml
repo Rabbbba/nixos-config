@@ -30,7 +30,7 @@ Item {
 
         StyledText {
             anchors.horizontalCenter: parent.horizontalCenter
-            text: Qt.locale("fr_FR").toString(root.now, "MMMM yyyy")
+            text: Qt.locale().toString(root.now, "MMMM yyyy")
             font.bold: true
             font.pixelSize: Theme.fontSizeMd
         }
@@ -39,13 +39,14 @@ Item {
             columns: 7
             spacing: root.cellSpacing
 
-            // Weekday headers (French initials, week starts Monday).
+            // Weekday headers — narrow names from the system locale, week starts Monday.
+            // Qt's standaloneDayName uses 0=Sunday..6=Saturday, so map (idx+1)%7.
             Repeater {
-                model: ["L", "M", "M", "J", "V", "S", "D"]
+                model: 7
                 StyledText {
                     width: root.cellSize
                     horizontalAlignment: Text.AlignHCenter
-                    text: modelData
+                    text: Qt.locale().standaloneDayName((index + 1) % 7, Locale.NarrowFormat).toUpperCase()
                     color: Theme.textMuted
                 }
             }
