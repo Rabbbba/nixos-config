@@ -9,5 +9,6 @@ ModuleWrapper 1.0 ModuleWrapper.qml
 Layouts 1.0 Layouts.qml
 Network 1.0 Network.qml
 Tidal 1.0 Tidal.qml
+Gpu 1.0 Gpu.qml
 
 singleton Theme 1.0 Theme.qml

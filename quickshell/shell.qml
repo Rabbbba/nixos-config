@@ -13,7 +13,7 @@ import "components"
 // Layout is 3 anchored groups inside the bar Rectangle:
 //   left Row    : Nix-logo button (Power popup) → Tags → Title → Layouts
 //   centered    : Clock (Calendar popup)
-//   right Row   : Tidal → Ram → Cpu → Network → Audio
+//   right Row   : Tidal → Gpu → Cpu → Ram → Network → Audio
 ShellRoot {
     settings.watchFiles: true
 
@@ -96,10 +96,13 @@ ShellRoot {
                     Tidal {
                         panelWindow: panel
                     }
-                    Ram {
+                    Gpu {
                         panelWindow: panel
                     }
                     Cpu {
+                        panelWindow: panel
+                    }
+                    Ram {
                         panelWindow: panel
                     }
                     Network {

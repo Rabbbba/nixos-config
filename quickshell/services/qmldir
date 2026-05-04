@@ -1,5 +1,6 @@
 module services
 
 singleton SystemUsage  1.0 SystemUsage.qml
+singleton GpuUsage     1.0 GpuUsage.qml
 singleton Players      1.0 Players.qml
 singleton Visibilities 1.0 Visibilities.qml
