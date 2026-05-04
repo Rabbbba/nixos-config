@@ -16,6 +16,11 @@ Item {
     // and the cava Process so they only run while the popup is visible.
     property bool popupVisible: false
 
+    // Number of cava bands. Must match the bars value in cava/config.
+    readonly property int barCount: 24
+
+    readonly property string artUrl: Players.tidal ? Players.tidal.trackArtUrl : ""
+
     // Format seconds as "m:ss" — for elapsed/total track times.
     function fmt(s) {
         const m = Math.floor(s / 60);
@@ -30,7 +35,7 @@ Item {
         fillMode: Image.PreserveAspectCrop
         smooth: true
         anchors.verticalCenter: parent.verticalCenter
-        source: Players.tidal ? Players.tidal.trackArtUrl : ""
+        source: root.artUrl
     }
 
     MultiEffect {
@@ -66,7 +71,7 @@ Item {
                 if (!data)
                     return;
                 const nums = data.split(";").filter(s => s.length > 0).map(s => parseInt(s, 10));
-                if (nums.length === 24)
+                if (nums.length === root.barCount)
                     progressBars.values = nums;
             }
         }
@@ -83,7 +88,7 @@ Item {
             fillMode: Image.PreserveAspectCrop
             smooth: true
             anchors.verticalCenter: parent.verticalCenter
-            source: Players.tidal ? Players.tidal.trackArtUrl : ""
+            source: root.artUrl
         }
 
         Column {
@@ -255,17 +260,17 @@ Item {
                     width: parent.width
                     height: 28
 
-                    property var values: new Array(24).fill(0)
+                    property var values: new Array(root.barCount).fill(0)
                     readonly property real progress: Players.tidal && Players.tidal.length > 0 ? Players.tidal.position / Players.tidal.length : 0
 
                     Repeater {
-                        model: 24
+                        model: root.barCount
                         Rectangle {
-                            width: (progressBars.width - 23 * 2) / 24
+                            width: (progressBars.width - (root.barCount - 1) * 2) / root.barCount
                             x: index * (width + 2)
                             anchors.bottom: parent.bottom
                             height: Math.max(4, (progressBars.values[index] / 100) * progressBars.height)
-                            color: (index + 0.5) / 24 < progressBars.progress ? Theme.accent : Theme.border
+                            color: (index + 0.5) / root.barCount < progressBars.progress ? Theme.accent : Theme.border
                             radius: 1
                         }
                     }
