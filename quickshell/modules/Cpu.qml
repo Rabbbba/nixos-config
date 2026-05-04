@@ -11,18 +11,16 @@ ModuleWrapper {
 
     StyledText {
         id: cpu
-
         font.pixelSize: Theme.fontSizeLg
         text: "󰘚 " + SystemUsage.cpuPercent.toFixed(0) + "%"
     }
 
-    Popout {
-        parentItem: root
-        panelWindow: root.panelWindow
+    ModulePopout {
+        wrapper: root
+        name: "cpu"
         implicitWidth: 360
         implicitHeight: 200
         alignement: "center"
-        visible: Visibilities.current === "cpu"
 
         CpuPopup {
             anchors.fill: parent

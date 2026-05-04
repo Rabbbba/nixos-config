@@ -55,14 +55,12 @@ ShellRoot {
                             onClicked: Visibilities.toggle("power")
                         }
 
-                        Popout {
-                            id: powerPop
-                            parentItem: nixBtn
-                            panelWindow: panel
+                        ModulePopout {
+                            wrapper: nixBtn
+                            name: "power"
                             alignement: "left"
                             width: 70
                             height: 200
-                            visible: Visibilities.current === "power"
 
                             PowerPopup {
                                 anchors.centerIn: parent
@@ -70,13 +68,13 @@ ShellRoot {
                         }
                     }
                     Tags {
-                        monitor: modelData.name
+                        monitor: panel.modelData.name
                     }
                     Title {
-                        monitor: modelData.name
+                        monitor: panel.modelData.name
                     }
                     Layouts {
-                        monitor: modelData.name
+                        monitor: panel.modelData.name
                     }
                 }
 

@@ -15,17 +15,15 @@ ModuleWrapper {
         text: "󰍛 " + SystemUsage.ramPercent.toFixed(0) + "%"
     }
 
-    Popout {
-        parentItem: root
-        panelWindow: root.panelWindow
-        implicitHeight: 200
-        implicitWidth: 320
+    ModulePopout {
+        wrapper: root
+        name: "ram"
         alignement: "center"
-        visible: Visibilities.current === "ram"
+        implicitWidth: 320
+        implicitHeight: 200
 
-        RamPopup {
-            anchors.fill: parent
-        }
+        RamPopup { anchors.fill: parent }
     }
+
     onClicked: Visibilities.toggle("ram")
 }

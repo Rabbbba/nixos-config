@@ -18,10 +18,8 @@ Item {
         Item {
             width: parent.width
             height: 24
-            StyledText {
+            SectionHeader {
                 text: "CPU"
-                anchors.left: parent.left
-                font.bold: true
             }
             StyledText {
                 text: Math.round(SystemUsage.cpuPercent) + " %"

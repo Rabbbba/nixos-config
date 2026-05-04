@@ -42,11 +42,10 @@ ModuleWrapper {
         }
     }
 
-    Popout {
-        parentItem: root
-        panelWindow: root.panelWindow
+    ModulePopout {
+        wrapper: root
+        name: "audio"
         alignement: "right"
-        visible: Visibilities.current === "audio"
         implicitWidth: 300
         implicitHeight: 200
 

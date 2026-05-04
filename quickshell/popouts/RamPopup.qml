@@ -15,44 +15,22 @@ Item {
         anchors.fill: parent
         anchors.margins: 16
         spacing: 16
+
         Column {
             width: parent.width
             spacing: 6
 
-            StyledText {
-                text: "Memory"
-                font.bold: true
-                color: Theme.text
+            SectionHeader { text: "Memory" }
+
+            KeyValueRow {
+                width: parent.width
+                label: root.kbToGib(SystemUsage.ramUsedKb) + " GiB / " + root.kbToGib(SystemUsage.ramTotalKb) + " GiB"
+                value: "(" + Math.round(SystemUsage.ramPercent) + "%)"
             }
 
-            Item {
+            ProgressBar {
                 width: parent.width
-                height: 18
-
-                StyledText {
-                    anchors.left: parent.left
-                    text: root.kbToGib(SystemUsage.ramUsedKb) + " GiB / " + root.kbToGib(SystemUsage.ramTotalKb) + " GiB"
-                }
-                StyledText {
-                    anchors.right: parent.right
-                    text: "(" + Math.round(SystemUsage.ramPercent) + "%)"
-                    color: Theme.textMuted
-                }
-            }
-
-            Rectangle {
-                width: parent.width
-                height: 8
-                color: Theme.moduleBg
-                radius: 4
-
-                Rectangle {
-                    anchors.left: parent.left
-                    height: parent.height
-                    width: parent.width * (SystemUsage.ramUsedKb / SystemUsage.ramTotalKb)
-                    color: Theme.accent
-                    radius: 4
-                }
+                value: SystemUsage.ramUsedKb / SystemUsage.ramTotalKb
             }
 
             StyledText {
@@ -66,35 +44,19 @@ Item {
             width: parent.width
             spacing: 6
 
-            StyledText {
-                text: "Swap"
-                font.bold: true
-                color: Theme.text
+            SectionHeader { text: "Swap" }
+
+            KeyValueRow {
+                width: parent.width
+                label: SystemUsage.swapTotalKb > 0
+                    ? root.kbToGib(SystemUsage.swapUsedKb) + " GiB / " + root.kbToGib(SystemUsage.swapTotalKb) + " GiB"
+                    : "no swap configured"
+                value: ""
             }
 
-            Item {
+            ProgressBar {
                 width: parent.width
-                height: 18
-
-                StyledText {
-                    anchors.left: parent.left
-                    text: SystemUsage.swapTotalKb > 0 ? root.kbToGib(SystemUsage.swapUsedKb) + " GiB / " + root.kbToGib(SystemUsage.swapTotalKb) + " GiB" : "no swap configured"
-                }
-            }
-
-            Rectangle {
-                width: parent.width
-                height: 8
-                color: Theme.moduleBg
-                radius: 4
-
-                Rectangle {
-                    anchors.left: parent.left
-                    height: parent.height
-                    width: SystemUsage.swapTotalKb > 0 ? parent.width * (SystemUsage.swapUsedKb / SystemUsage.swapTotalKb) : 0
-                    color: Theme.accent
-                    radius: 4
-                }
+                value: SystemUsage.swapTotalKb > 0 ? SystemUsage.swapUsedKb / SystemUsage.swapTotalKb : 0
             }
         }
     }

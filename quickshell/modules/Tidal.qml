@@ -10,8 +10,6 @@ ModuleWrapper {
     bgIdle: Theme.accent
     bgHover: Theme.moduleBg
 
-    property var panelWindow: null
-
     StyledText {
         text: Players.tidal ? "󰝚  " + Players.tidal.trackArtist + " - " + Players.tidal.trackTitle : ""
         color: root.hovered ? Theme.text : Theme.popupBg
@@ -20,15 +18,14 @@ ModuleWrapper {
         width: Math.min(implicitWidth, 300)
     }
 
-    Popout {
+    ModulePopout {
         id: popup
+        wrapper: root
+        name: "tidal"
         implicitWidth: 520
         implicitHeight: 250
-        parentItem: root
         padding: 4
         alignement: "left"
-        panelWindow: root.panelWindow
-        visible: Visibilities.current === "tidal"
 
         TidalPopup {
             anchors.fill: parent

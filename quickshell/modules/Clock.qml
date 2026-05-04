@@ -9,8 +9,6 @@ ModuleWrapper {
     bgIdle: Theme.accent
     bgHover: Theme.moduleBg
 
-    property var panelWindow: null
-
     StyledText {
         property date now: new Date()
         color: root.hovered ? Theme.text : Theme.popupBg
@@ -26,15 +24,12 @@ ModuleWrapper {
         }
     }
 
-    Popout {
-        id: popup
-        parentItem: root
-        panelWindow: root.panelWindow
+    ModulePopout {
+        wrapper: root
+        name: "calendar"
         implicitWidth: 280
         implicitHeight: 220
         alignement: "center"
-
-        visible: Visibilities.current === "calendar"
 
         CalendarPopup {
             anchors.centerIn: parent

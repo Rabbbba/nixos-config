@@ -21,10 +21,8 @@ Item {
         anchors.margins: 16
         spacing: 12
 
-        StyledText {
+        SectionHeader {
             text: "Audio output"
-            font.bold: true
-            color: Theme.text
         }
 
         Repeater {
