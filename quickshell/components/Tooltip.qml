@@ -34,7 +34,7 @@ PopupWindow {
             anchors.centerIn: parent
             text: tooltip.text
             color: Theme.text
-            font.pixelSize: Theme.fontSizeMd - 4
+            font.pixelSize: Theme.fontSizeSm
         }
     }
 

@@ -30,6 +30,8 @@ QtObject {
 
     /// Font family used everywhere — NerdFont required for icon glyphs
     readonly property string fontFamily: "Iosevka Nerd Font"
+    /// Smaller text size for tooltips and hints
+    readonly property int fontSizeSm: 14
     /// Default text size for module labels
     readonly property int fontSizeMd: 18
     /// Larger text size for emphasized labels (clock, layouts)
