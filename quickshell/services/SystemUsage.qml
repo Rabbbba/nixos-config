@@ -2,8 +2,9 @@ pragma Singleton
 import QtQuick
 import Quickshell.Io
 
-// Polls /proc/stat and /proc/meminfo every 2 s and exposes
-// cpuPercent / ramPercent for the Cpu and Ram bar modules.
+// Polls /proc/stat, /proc/meminfo, and /proc/loadavg every 500 ms and
+// exposes CPU (global + per-core), RAM, swap, and load-average state to
+// the Cpu and Ram bar modules and their popups.
 //
 // CPU % is computed from the delta of jiffies between two ticks
 // (idle vs. total), which is the standard way to read /proc/stat.
@@ -61,23 +62,23 @@ QtObject {
             const coresPercent = [];
             const newPrevCores = [];
 
-            coreLines.forEach((line, i) => {
-                const fields = line.trim().split(/\s+/).slice(1).map(Number);
-                const idle = fields[3] + fields[4];
-                const total = fields.reduce((a, b) => a + b, 0);
+            coreLines.forEach((coreLine, i) => {
+                const coreFields = coreLine.trim().split(/\s+/).slice(1).map(Number);
+                const coreIdle = coreFields[3] + coreFields[4];
+                const coreTotal = coreFields.reduce((a, b) => a + b, 0);
                 const prev = root._prevCores[i] || {
                     idle: 0,
                     total: 0
                 };
-                const totalDelta = total - prev.total;
-                const idleDelta = idle - prev.idle;
+                const coreTotalDelta = coreTotal - prev.total;
+                const coreIdleDelta = coreIdle - prev.idle;
                 let percent = 0;
-                if (prev.total > 0 && totalDelta > 0)
-                    percent = (1 - idleDelta / totalDelta) * 100;
+                if (prev.total > 0 && coreTotalDelta > 0)
+                    percent = (1 - coreIdleDelta / coreTotalDelta) * 100;
                 coresPercent.push(percent);
                 newPrevCores.push({
-                    idle,
-                    total
+                    idle: coreIdle,
+                    total: coreTotal
                 });
             });
             root.cpuCoresPercent = coresPercent;
