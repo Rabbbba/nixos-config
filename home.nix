@@ -81,6 +81,7 @@
     discord
     bitwarden-desktop
     mangohud
+    obsidian
 
     # Gaming
     protonup-qt # Gestion Proton-GE
@@ -108,17 +109,6 @@
     enable = true;
     enableZshIntegration = true;
     shellWrapperName = "y";
-  };
-
-  services.gammastep = {
-    enable = true;
-    provider = "manual";
-    latitude = 48.85;
-    longitude = 2.35;
-    temperature = {
-      day = 6500;
-      night = 4000;
-    };
   };
 
   home.sessionVariables = {
@@ -171,8 +161,68 @@
     enable = true;
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
+
+    shellAliases = {
+      brain = "cd ~/Documents/brain && claude";
+    };
+
+    initExtra = ''
+      # Veille hebdo: lance Claude Code dans le vault avec un prompt seedé.
+      # Usage: veille <topic>  (hyprland, quickshell, mesa, proton-ge, inspiration)
+      veille() {
+        if [[ -z "$1" ]]; then
+          echo "Usage: veille <topic>  (hyprland, quickshell, mesa, proton-ge, inspiration)"
+          return 1
+        fi
+        cd ~/Documents/brain && claude "Fais une veille sur $1 (7-30 derniers jours). Cherche releases, breaking changes, features pertinentes pour mon setup NixOS+Hyprland+RDNA4. Écris le résumé dans veille/$1-$(date +%Y-W%V).md avec sections : Releases, Breaking changes, À tester. Inclus les liens."
+      }
+    '';
   };
 
   programs.starship.enable = true;
+
+  # ── Systemd user services ──────────────────────────────────────────────────
+  # Walker launcher + elephant backend, managed by systemd so they survive
+  # rebuilds and restart on failure. hyprland-session.target is started by
+  # Hyprland (see hypr/modules/autostart.conf) — it pulls in graphical-session.target
+  # via BindsTo, which our services depend on.
+  systemd.user.targets.hyprland-session = {
+    Unit = {
+      Description = "Hyprland compositor session";
+      Documentation = [ "man:systemd.special(7)" ];
+      BindsTo = [ "graphical-session.target" ];
+      Wants = [ "graphical-session-pre.target" ];
+      After = [ "graphical-session-pre.target" ];
+    };
+  };
+
+  systemd.user.services.elephant = {
+    Unit = {
+      Description = "Elephant — data provider for walker";
+      PartOf = [ "graphical-session.target" ];
+      After = [ "graphical-session.target" ];
+    };
+    Service = {
+      ExecStart = "${pkgs.elephant}/bin/elephant";
+      Restart = "on-failure";
+      RestartSec = 2;
+    };
+    Install.WantedBy = [ "graphical-session.target" ];
+  };
+
+  systemd.user.services.walker = {
+    Unit = {
+      Description = "Walker — application launcher";
+      PartOf = [ "graphical-session.target" ];
+      After = [ "graphical-session.target" "elephant.service" ];
+      Requires = [ "elephant.service" ];
+    };
+    Service = {
+      ExecStart = "${pkgs.walker}/bin/walker --gapplication-service";
+      Restart = "on-failure";
+      RestartSec = 2;
+    };
+    Install.WantedBy = [ "graphical-session.target" ];
+  };
 
 }
