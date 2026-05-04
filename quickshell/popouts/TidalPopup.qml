@@ -30,11 +30,9 @@ Item {
 
     Image {
         id: bgArt
-        width: parent.width
-        height: parent.height
+        anchors.fill: parent
         fillMode: Image.PreserveAspectCrop
         smooth: true
-        anchors.verticalCenter: parent.verticalCenter
         source: root.artUrl
     }
 
