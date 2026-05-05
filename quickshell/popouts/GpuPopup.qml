@@ -35,6 +35,12 @@ Item {
                 width: parent.width
                 value: GpuUsage.gpuPercent / 100
             }
+
+            Sparkline {
+                width: parent.width
+                values: GpuUsage.gpuHistory
+                color: Theme.accent
+            }
         }
 
         Column {

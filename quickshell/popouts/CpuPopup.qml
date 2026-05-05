@@ -26,6 +26,11 @@ Item {
                 anchors.right: parent.right
             }
         }
+        Sparkline {
+            width: parent.width
+            values: SystemUsage.cpuHistory
+            color: Theme.accent
+        }
         Row {
             width: parent.width
             spacing: 2

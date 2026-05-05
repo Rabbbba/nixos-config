@@ -19,6 +19,19 @@ QtObject {
     property real vramTotal: 0   // bytes
     property real vramPercent: 0 // 0–100
 
+    // Rolling history of the last `_historyLength` GPU% samples, one per
+    // 500 ms tick. Sparkline component reads this directly.
+    readonly property int _historyLength: 60
+    property var gpuHistory: []
+
+    function _pushHistory(arr, value) {
+        const next = arr.slice();
+        next.push(value);
+        if (next.length > root._historyLength)
+            next.shift();
+        return next;
+    }
+
     property FileView _busyFile: FileView {
         id: busyFile
         path: root.cardPath + "/gpu_busy_percent"
@@ -53,6 +66,7 @@ QtObject {
             busyFile.reload();
             vramUsedFile.reload();
             vramTotalFile.reload();
+            root.gpuHistory = root._pushHistory(root.gpuHistory, root.gpuPercent);
         }
     }
 }

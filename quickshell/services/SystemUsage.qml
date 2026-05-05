@@ -23,6 +23,20 @@ QtObject {
     property real swapUsedKb: 0
     property real swapTotalKb: 0
 
+    // Rolling history of the last `_historyLength` samples, one entry per
+    // 500 ms tick. Sparkline component reads these directly.
+    readonly property int _historyLength: 60
+    property var cpuHistory: []
+    property var ramHistory: []
+
+    function _pushHistory(arr, value) {
+        const next = arr.slice();
+        next.push(value);
+        if (next.length > root._historyLength)
+            next.shift();
+        return next;
+    }
+
     property var loadAverage: ({
             l1: 0,
             l5: 0,
@@ -139,6 +153,8 @@ QtObject {
             cpuFile.reload();
             ramFile.reload();
             loadFile.reload();
+            root.cpuHistory = root._pushHistory(root.cpuHistory, root.cpuPercent);
+            root.ramHistory = root._pushHistory(root.ramHistory, root.ramPercent);
         }
     }
 }

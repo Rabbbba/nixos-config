@@ -20,7 +20,9 @@ Item {
             width: parent.width
             spacing: 6
 
-            SectionHeader { text: "Memory" }
+            SectionHeader {
+                text: "Memory"
+            }
 
             KeyValueRow {
                 width: parent.width
@@ -31,6 +33,12 @@ Item {
             ProgressBar {
                 width: parent.width
                 value: SystemUsage.ramUsedKb / SystemUsage.ramTotalKb
+            }
+
+            Sparkline {
+                width: parent.width
+                values: SystemUsage.ramHistory
+                color: Theme.accent
             }
 
             StyledText {
@@ -44,13 +52,13 @@ Item {
             width: parent.width
             spacing: 6
 
-            SectionHeader { text: "Swap" }
+            SectionHeader {
+                text: "Swap"
+            }
 
             KeyValueRow {
                 width: parent.width
-                label: SystemUsage.swapTotalKb > 0
-                    ? root.kbToGib(SystemUsage.swapUsedKb) + " GiB / " + root.kbToGib(SystemUsage.swapTotalKb) + " GiB"
-                    : "no swap configured"
+                label: SystemUsage.swapTotalKb > 0 ? root.kbToGib(SystemUsage.swapUsedKb) + " GiB / " + root.kbToGib(SystemUsage.swapTotalKb) + " GiB" : "no swap configured"
                 value: ""
             }
 
