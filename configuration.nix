@@ -105,6 +105,14 @@
   # LACT — contrôle GPU AMD (clocks, fan curve, stats)
   services.lact.enable = true;
 
+  # ── Bluetooth ───────────────────────────────────────────────────────────────
+  hardware.bluetooth = {
+    enable = true;
+    powerOnBoot = true;
+    settings.General.Experimental = true; # battery level reporting
+  };
+  services.blueman.enable = true; # GUI manager + system tray applet
+
   # ── Nix ─────────────────────────────────────────────────────────────────────
   nix.settings = {
     experimental-features = [
