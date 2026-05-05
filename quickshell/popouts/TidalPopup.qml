@@ -187,9 +187,9 @@ Item {
                                 return;
                             if (Players.tidal.volume > 0) {
                                 volIcon.previousVolume = Players.tidal.volume;
-                                Players.tidal.volume = 0;
+                                Players.setTidalVolume(0);
                             } else {
-                                Players.tidal.volume = volIcon.previousVolume > 0 ? volIcon.previousVolume : 1.0;
+                                Players.setTidalVolume(volIcon.previousVolume > 0 ? volIcon.previousVolume : 1.0);
                             }
                         }
                     }
@@ -200,7 +200,7 @@ Item {
                     width: parent.width - 28
                     height: 4
                     color: Theme.moduleBg
-                    radius: 2
+                    radius: 5
 
                     MouseArea {
                         anchors.fill: parent
@@ -212,7 +212,7 @@ Item {
                             if (!Players.tidal)
                                 return;
                             const ratio = Math.max(0, Math.min(1, x / width));
-                            Players.tidal.volume = ratio;
+                            Players.setTidalVolume(ratio);
                         }
 
                         onPressed: mouse => setVolume(mouse.x)
