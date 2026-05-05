@@ -69,6 +69,12 @@ Item {
         }
         Row {
             spacing: 12
+
+            StyledText {
+                text: "Tctl: " + Math.round(SystemUsage.cpuTemp) + " °C"
+                color: Theme.textMuted
+                font.bold: true
+            }
             StyledText {
                 text: "Load:"
                 color: Theme.textMuted

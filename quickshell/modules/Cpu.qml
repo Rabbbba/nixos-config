@@ -19,7 +19,7 @@ ModuleWrapper {
         wrapper: root
         name: "cpu"
         implicitWidth: 360
-        implicitHeight: 280
+        implicitHeight: 230
         alignment: "center"
 
         CpuPopup {

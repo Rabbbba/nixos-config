@@ -19,6 +19,14 @@ QtObject {
     property real vramTotal: 0   // bytes
     property real vramPercent: 0 // 0–100
 
+    // GPU temperatures in °C: edge (die border), junction (hottest spot),
+    // mem (VRAM). The hwmon directory is resolved at startup — only one
+    // hwmon* lives under cardPath/hwmon/ for the dGPU.
+    property real gpuTempEdge: 0
+    property real gpuTempJunction: 0
+    property real gpuTempMem: 0
+    property string _gpuHwmon: ""
+
     // Rolling history of the last `_historyLength` GPU% samples, one per
     // 500 ms tick. Sparkline component reads this directly.
     readonly property int _historyLength: 60
@@ -57,6 +65,49 @@ QtObject {
         onLoaded: root.vramTotal = parseInt(vramTotalFile.text().trim())
     }
 
+    // One-shot resolver: cardPath/hwmon/ contains a single hwmonN dir for
+    // the dGPU. Stdout is the resolved path; we then bind the temp FileViews.
+    property Process _resolveGpuHwmon: Process {
+        command: ["sh", "-c", "ls -d " + root.cardPath + "/hwmon/hwmon* 2>/dev/null | head -1"]
+        running: true
+        stdout: SplitParser {
+            onRead: data => {
+                if (data)
+                    root._gpuHwmon = data.trim();
+            }
+        }
+    }
+
+    property FileView _tempEdgeFile: FileView {
+        id: tempEdgeFile
+        path: root._gpuHwmon ? root._gpuHwmon + "/temp1_input" : ""
+        blockLoading: true
+        onLoaded: {
+            if (root._gpuHwmon)
+                root.gpuTempEdge = parseInt(tempEdgeFile.text().trim()) / 1000;
+        }
+    }
+
+    property FileView _tempJunctionFile: FileView {
+        id: tempJunctionFile
+        path: root._gpuHwmon ? root._gpuHwmon + "/temp2_input" : ""
+        blockLoading: true
+        onLoaded: {
+            if (root._gpuHwmon)
+                root.gpuTempJunction = parseInt(tempJunctionFile.text().trim()) / 1000;
+        }
+    }
+
+    property FileView _tempMemFile: FileView {
+        id: tempMemFile
+        path: root._gpuHwmon ? root._gpuHwmon + "/temp3_input" : ""
+        blockLoading: true
+        onLoaded: {
+            if (root._gpuHwmon)
+                root.gpuTempMem = parseInt(tempMemFile.text().trim()) / 1000;
+        }
+    }
+
     property Timer _poller: Timer {
         interval: 500
         running: true
@@ -66,6 +117,11 @@ QtObject {
             busyFile.reload();
             vramUsedFile.reload();
             vramTotalFile.reload();
+            if (root._gpuHwmon) {
+                tempEdgeFile.reload();
+                tempJunctionFile.reload();
+                tempMemFile.reload();
+            }
             root.gpuHistory = root._pushHistory(root.gpuHistory, root.gpuPercent);
         }
     }

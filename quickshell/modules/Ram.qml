@@ -20,9 +20,11 @@ ModuleWrapper {
         name: "ram"
         alignment: "center"
         implicitWidth: 320
-        implicitHeight: 280
+        implicitHeight: 230
 
-        RamPopup { anchors.fill: parent }
+        RamPopup {
+            anchors.fill: parent
+        }
     }
 
     onClicked: Visibilities.toggle("ram")

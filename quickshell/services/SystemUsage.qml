@@ -43,6 +43,12 @@ QtObject {
             l15: 0
         })
 
+    // CPU temperature (Tctl) in °C. The hwmon path is resolved at startup
+    // because hwmon numbering isn't stable across reboots — we scan
+    // /sys/class/hwmon/*/name for "k10temp".
+    property real cpuTemp: 0
+    property string _cpuHwmon: ""
+
     // Previous /proc/stat snapshot, used to compute deltas.
     property var _prev: ({
             total: 0,
@@ -144,6 +150,29 @@ QtObject {
         }
     }
 
+    // One-shot resolver: walks /sys/class/hwmon to find the k10temp chip.
+    // Stdout is the resolved hwmonN directory; we then bind cpuTempFile.path.
+    property Process _resolveCpuHwmon: Process {
+        command: ["sh", "-c", "for f in /sys/class/hwmon/*/name; do [ \"$(cat \"$f\")\" = \"k10temp\" ] && dirname \"$f\" && break; done"]
+        running: true
+        stdout: SplitParser {
+            onRead: data => {
+                if (data)
+                    root._cpuHwmon = data.trim();
+            }
+        }
+    }
+
+    property FileView _cpuTempFile: FileView {
+        id: cpuTempFile
+        path: root._cpuHwmon ? root._cpuHwmon + "/temp1_input" : ""
+        blockLoading: true
+        onLoaded: {
+            if (root._cpuHwmon)
+                root.cpuTemp = parseInt(cpuTempFile.text().trim()) / 1000;
+        }
+    }
+
     property Timer _poller: Timer {
         interval: 500
         running: true
@@ -153,6 +182,8 @@ QtObject {
             cpuFile.reload();
             ramFile.reload();
             loadFile.reload();
+            if (root._cpuHwmon)
+                cpuTempFile.reload();
             root.cpuHistory = root._pushHistory(root.cpuHistory, root.cpuPercent);
             root.ramHistory = root._pushHistory(root.ramHistory, root.ramPercent);
         }

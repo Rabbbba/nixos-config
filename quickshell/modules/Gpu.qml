@@ -18,7 +18,7 @@ ModuleWrapper {
         wrapper: root
         name: "gpu"
         implicitWidth: 360
-        implicitHeight: 260
+        implicitHeight: 320
         alignment: "center"
 
         GpuPopup {

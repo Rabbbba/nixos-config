@@ -61,5 +61,30 @@ Item {
                 value: GpuUsage.vramUsed / GpuUsage.vramTotal
             }
         }
+
+        Column {
+            width: parent.width
+            spacing: 6
+
+            SectionHeader {
+                text: "Thermal"
+            }
+
+            KeyValueRow {
+                width: parent.width
+                label: "Edge"
+                value: Math.round(GpuUsage.gpuTempEdge) + " °C"
+            }
+            KeyValueRow {
+                width: parent.width
+                label: "Junction"
+                value: Math.round(GpuUsage.gpuTempJunction) + " °C"
+            }
+            KeyValueRow {
+                width: parent.width
+                label: "Memory"
+                value: Math.round(GpuUsage.gpuTempMem) + " °C"
+            }
+        }
     }
 }
