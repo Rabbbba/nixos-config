@@ -10,6 +10,8 @@ ModuleWrapper {
     id: root
     property string monitor: ""
 
+    tooltip: "Layout: " + lyt.code
+
     StyledText {
         id: lyt
         property string code: "Master"

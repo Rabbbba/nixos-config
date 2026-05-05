@@ -5,8 +5,7 @@ import "../popouts"
 
 ModuleWrapper {
     id: root
-
-    tooltip: "Gpu usage"
+    tooltip: "GPU " + GpuUsage.gpuPercent.toFixed(0) + "% · Edge " + Math.round(GpuUsage.gpuTempEdge) + " °C"
 
     StyledText {
         id: gpu

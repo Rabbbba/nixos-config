@@ -7,7 +7,7 @@ import "../popouts"
 ModuleWrapper {
     id: root
 
-    tooltip: "Cpu usage"
+    tooltip: "CPU " + Math.round(SystemUsage.cpuPercent) + "% · Tctl " + Math.round(SystemUsage.cpuTemp) + " °C"
 
     StyledText {
         id: cpu

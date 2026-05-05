@@ -6,8 +6,7 @@ import "../popouts"
 // RAM usage % — value comes from the SystemUsage singleton (polls /proc/meminfo).
 ModuleWrapper {
     id: root
-
-    tooltip: "Ram usage"
+    tooltip: "RAM " + Math.round(SystemUsage.ramPercent) + "% (" + (SystemUsage.ramUsedKb / 1048576).toFixed(1) + " / " + (SystemUsage.ramTotalKb / 1048576).toFixed(1) + " GiB)"
     StyledText {
         id: ram
 
