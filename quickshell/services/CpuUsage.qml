@@ -2,40 +2,19 @@ pragma Singleton
 import QtQuick
 import Quickshell.Io
 
-// Polls /proc/stat, /proc/meminfo, and /proc/loadavg every 500 ms and
-// exposes CPU (global + per-core), RAM, swap, and load-average state to
-// the Cpu and Ram bar modules and their popups.
+// Polls /proc/stat, /proc/loadavg, and the k10temp hwmon every 500 ms
+// and exposes CPU (global + per-core), load average, and Tctl temperature
+// to the Cpu bar module and its popup.
 //
 // CPU % is computed from the delta of jiffies between two ticks
-// (idle vs. total), which is the standard way to read /proc/stat.
+// (idle vs. total), the standard way to read /proc/stat. Load average
+// lives here because it's fundamentally a CPU pressure metric.
 QtObject {
     id: root
 
     property real cpuPercent: 0
     property var cpuCoresPercent: []
     property var _prevCores: []
-
-    property real ramPercent: 0
-    property real ramUsedKb: 0
-    property real ramTotalKb: 0
-    property real ramBuffersKb: 0
-    property real ramCachedKb: 0
-    property real swapUsedKb: 0
-    property real swapTotalKb: 0
-
-    // Rolling history of the last `_historyLength` samples, one entry per
-    // 500 ms tick. Sparkline component reads these directly.
-    readonly property int _historyLength: 60
-    property var cpuHistory: []
-    property var ramHistory: []
-
-    function _pushHistory(arr, value) {
-        const next = arr.slice();
-        next.push(value);
-        if (next.length > root._historyLength)
-            next.shift();
-        return next;
-    }
 
     property var loadAverage: ({
             l1: 0,
@@ -48,6 +27,19 @@ QtObject {
     // /sys/class/hwmon/*/name for "k10temp".
     property real cpuTemp: 0
     property string _cpuHwmon: ""
+
+    // Rolling history of the last `_historyLength` samples, one entry per
+    // 500 ms tick. Sparkline reads cpuHistory directly.
+    readonly property int _historyLength: 60
+    property var cpuHistory: []
+
+    function _pushHistory(arr, value) {
+        const next = arr.slice();
+        next.push(value);
+        if (next.length > root._historyLength)
+            next.shift();
+        return next;
+    }
 
     // Previous /proc/stat snapshot, used to compute deltas.
     property var _prev: ({
@@ -106,31 +98,6 @@ QtObject {
         }
     }
 
-    property FileView _ramFile: FileView {
-        id: ramFile
-        path: "/proc/meminfo"
-        blockLoading: true
-
-        onLoaded: {
-            const content = ramFile.text();
-            const total = parseInt(content.match(/MemTotal:\s+(\d+)/)[1]);
-            const avail = parseInt(content.match(/MemAvailable:\s+(\d+)/)[1]);
-            root.ramPercent = ((total - avail) / total) * 100;
-
-            const buffers = parseInt(content.match(/Buffers:\s+(\d+)/)[1]);
-            const cached = parseInt(content.match(/Cached:\s+(\d+)/)[1]);
-            const swapTotal = parseInt(content.match(/SwapTotal:\s+(\d+)/)[1]);
-            const swapFree = parseInt(content.match(/SwapFree:\s+(\d+)/)[1]);
-
-            root.ramTotalKb = total;
-            root.ramUsedKb = total - avail;
-            root.ramBuffersKb = buffers;
-            root.ramCachedKb = cached;
-            root.swapTotalKb = swapTotal;
-            root.swapUsedKb = swapTotal - swapFree;
-        }
-    }
-
     property FileView _loadFile: FileView {
         id: loadFile
         path: "/proc/loadavg"
@@ -180,12 +147,10 @@ QtObject {
         triggeredOnStart: true
         onTriggered: {
             cpuFile.reload();
-            ramFile.reload();
             loadFile.reload();
             if (root._cpuHwmon)
                 cpuTempFile.reload();
             root.cpuHistory = root._pushHistory(root.cpuHistory, root.cpuPercent);
-            root.ramHistory = root._pushHistory(root.ramHistory, root.ramPercent);
         }
     }
 }

@@ -22,27 +22,27 @@ Item {
                 text: "CPU"
             }
             StyledText {
-                text: Math.round(SystemUsage.cpuPercent) + " %"
+                text: Math.round(CpuUsage.cpuPercent) + " %"
                 anchors.right: parent.right
             }
         }
         Sparkline {
             width: parent.width
-            values: SystemUsage.cpuHistory
+            values: CpuUsage.cpuHistory
             color: Theme.accent
         }
         Row {
             width: parent.width
             spacing: 2
             Repeater {
-                model: SystemUsage.cpuCoresPercent
+                model: CpuUsage.cpuCoresPercent
                 Rectangle {
                     id: bar
 
                     required property real modelData
                     required property int index
 
-                    width: (parent.width - (SystemUsage.cpuCoresPercent.length - 1) * 2) / SystemUsage.cpuCoresPercent.length
+                    width: (parent.width - (CpuUsage.cpuCoresPercent.length - 1) * 2) / CpuUsage.cpuCoresPercent.length
                     height: 60
                     color: Theme.moduleBg
                     radius: 2
@@ -71,7 +71,7 @@ Item {
             spacing: 12
 
             StyledText {
-                text: "Tctl: " + Math.round(SystemUsage.cpuTemp) + " °C"
+                text: "Tctl: " + Math.round(CpuUsage.cpuTemp) + " °C"
                 color: Theme.textMuted
                 font.bold: true
             }
@@ -80,15 +80,15 @@ Item {
                 color: Theme.textMuted
             }
             StyledText {
-                text: "1m:" + root.fmt(SystemUsage.loadAverage.l1)
+                text: "1m:" + root.fmt(CpuUsage.loadAverage.l1)
                 color: Theme.textMuted
             }
             StyledText {
-                text: "5m:" + root.fmt(SystemUsage.loadAverage.l5)
+                text: "5m:" + root.fmt(CpuUsage.loadAverage.l5)
                 color: Theme.textMuted
             }
             StyledText {
-                text: "15m:" + root.fmt(SystemUsage.loadAverage.l15)
+                text: "15m:" + root.fmt(CpuUsage.loadAverage.l15)
                 color: Theme.textMuted
             }
         }

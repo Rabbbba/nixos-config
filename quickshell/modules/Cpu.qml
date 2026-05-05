@@ -3,16 +3,16 @@ import "../services"
 import "../components"
 import "../popouts"
 
-// CPU usage % — value comes from the SystemUsage singleton (polls /proc/stat).
+// CPU usage % — value comes from the CpuUsage singleton (polls /proc/stat).
 ModuleWrapper {
     id: root
 
-    tooltip: "CPU " + Math.round(SystemUsage.cpuPercent) + "% · Tctl " + Math.round(SystemUsage.cpuTemp) + " °C"
+    tooltip: "CPU " + Math.round(CpuUsage.cpuPercent) + "% · Tctl " + Math.round(CpuUsage.cpuTemp) + " °C"
 
     StyledText {
         id: cpu
         font.pixelSize: Theme.fontSizeLg
-        text: "󰘚 " + SystemUsage.cpuPercent.toFixed(0) + "%"
+        text: "󰘚 " + CpuUsage.cpuPercent.toFixed(0) + "%"
     }
 
     ModulePopout {

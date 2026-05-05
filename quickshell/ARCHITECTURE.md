@@ -22,11 +22,14 @@ popouts/           Popup contents, decoupled from the modules that trigger them.
 
 services/          Global Singletons holding shared state.
                    Visibilities  — which popout is currently open
-                   SystemUsage   — CPU / RAM / load polled from /proc
+                   CpuUsage      — CPU% / cores / load average / Tctl temp from /proc + hwmon
+                   RamUsage      — RAM and swap from /proc/meminfo
+                   GpuUsage      — GPU% / VRAM / temps from /sys/class/drm/card1/device + hwmon
                    Players       — MPRIS player tracking (Tidal et al.)
 
 components/        Reusable visual / interactive primitives, no business logic.
-                   StyledText, IconButton, Popout, Tooltip.
+                   StyledText, IconButton, Popout, ModulePopout, Tooltip,
+                   SectionHeader, KeyValueRow, ProgressBar, Sparkline.
 ```
 
 ## How things connect
@@ -35,7 +38,7 @@ components/        Reusable visual / interactive primitives, no business logic.
 shell.qml
   └── Bar (one per screen)
         └── modules/Audio.qml   (extends ModuleWrapper)
-              ├── reads:  services/SystemUsage, Pipewire service, Theme
+              ├── reads:  Pipewire service, Theme
               ├── opens:  Popout { … } containing popouts/AudioPopup.qml
               └── coords: services/Visibilities  (which popup is shown)
 ```

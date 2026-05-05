@@ -26,23 +26,23 @@ Item {
 
             KeyValueRow {
                 width: parent.width
-                label: root.kbToGib(SystemUsage.ramUsedKb) + " GiB / " + root.kbToGib(SystemUsage.ramTotalKb) + " GiB"
-                value: "(" + Math.round(SystemUsage.ramPercent) + "%)"
+                label: root.kbToGib(RamUsage.ramUsedKb) + " GiB / " + root.kbToGib(RamUsage.ramTotalKb) + " GiB"
+                value: "(" + Math.round(RamUsage.ramPercent) + "%)"
             }
 
             ProgressBar {
                 width: parent.width
-                value: SystemUsage.ramUsedKb / SystemUsage.ramTotalKb
+                value: RamUsage.ramUsedKb / RamUsage.ramTotalKb
             }
 
             Sparkline {
                 width: parent.width
-                values: SystemUsage.ramHistory
+                values: RamUsage.ramHistory
                 color: Theme.accent
             }
 
             StyledText {
-                text: "Buffers + Cached: " + root.kbToGib(SystemUsage.ramBuffersKb + SystemUsage.ramCachedKb) + " GiB"
+                text: "Buffers + Cached: " + root.kbToGib(RamUsage.ramBuffersKb + RamUsage.ramCachedKb) + " GiB"
                 color: Theme.textMuted
                 font.pixelSize: Theme.fontSizeMd - 2
             }
@@ -58,13 +58,13 @@ Item {
 
             KeyValueRow {
                 width: parent.width
-                label: SystemUsage.swapTotalKb > 0 ? root.kbToGib(SystemUsage.swapUsedKb) + " GiB / " + root.kbToGib(SystemUsage.swapTotalKb) + " GiB" : "no swap configured"
+                label: RamUsage.swapTotalKb > 0 ? root.kbToGib(RamUsage.swapUsedKb) + " GiB / " + root.kbToGib(RamUsage.swapTotalKb) + " GiB" : "no swap configured"
                 value: ""
             }
 
             ProgressBar {
                 width: parent.width
-                value: SystemUsage.swapTotalKb > 0 ? SystemUsage.swapUsedKb / SystemUsage.swapTotalKb : 0
+                value: RamUsage.swapTotalKb > 0 ? RamUsage.swapUsedKb / RamUsage.swapTotalKb : 0
             }
         }
     }
