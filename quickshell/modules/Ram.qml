@@ -20,7 +20,7 @@ ModuleWrapper {
         name: "ram"
         alignment: "center"
         implicitWidth: 320
-        implicitHeight: 200
+        implicitHeight: 280
 
         RamPopup { anchors.fill: parent }
     }

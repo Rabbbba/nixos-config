@@ -23,7 +23,7 @@ ModuleWrapper {
         wrapper: root
         name: "tidal"
         implicitWidth: 520
-        implicitHeight: 250
+        implicitHeight: 270
         padding: 4
         alignment: "left"
 
