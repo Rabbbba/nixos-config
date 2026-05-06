@@ -9,7 +9,7 @@ import "popouts"
 import "services"
 import "components"
 
-// Top bar — lives only on the primary monitor (DP-2).
+// Top bar — lives only on the primary monitor (DP-1).
 // Layout is 3 anchored groups inside the bar Rectangle:
 //   left Row    : Nix-logo button (Power popup) → Tags → Title → Layouts
 //   centered    : Clock (Calendar popup)
@@ -19,7 +19,7 @@ ShellRoot {
 
     Variants {
         // Variants spawns one PanelWindow per matching screen.
-        model: Quickshell.screens.filter(s => s.name === "DP-2")
+        model: Quickshell.screens.filter(s => s.name === "DP-1")
         PanelWindow {
             id: panel
             color: "transparent"

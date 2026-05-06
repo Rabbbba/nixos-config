@@ -1,16 +1,18 @@
 #!/usr/bin/env bash
-# Adapte l'orientation du layout master selon le moniteur du workspace actif.
-# DP-1 (portrait) → orientationtop  (master en haut, stack en bas)
-# DP-2 (paysage)  → orientationleft (master à gauche, stack à droite)
+# Adapte l'orientation du layout master selon l'orientation physique du moniteur
+# du workspace actif (détectée via le `transform` Hyprland — 1/3 = rotated/portrait).
+# Portrait → orientationtop  (master en haut, stack en bas)
+# Paysage  → orientationleft (master à gauche, stack à droite)
 
 set -euo pipefail
 
 socket="$XDG_RUNTIME_DIR/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock"
 
 apply_orientation() {
-    local mon
+    local mon transform
     mon=$(hyprctl activeworkspace -j | jq -r '.monitor')
-    if [[ "$mon" == "DP-1" ]]; then
+    transform=$(hyprctl monitors -j | jq -r --arg m "$mon" '.[] | select(.name==$m) | .transform')
+    if [[ "$transform" == "1" || "$transform" == "3" ]]; then
         hyprctl dispatch layoutmsg orientationtop > /dev/null
     else
         hyprctl dispatch layoutmsg orientationleft > /dev/null
