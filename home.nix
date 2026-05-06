@@ -26,6 +26,9 @@
 
   home.sessionVariables.ELECTRON_OZONE_PLATFORM_HINT = "wayland";
 
+  # Scripts perso non-versionnés (llama-qwen, etc.)
+  home.sessionPath = [ "$HOME/.local/bin" ];
+
   # ── Packages ────────────────────────────────────────────────────────────────
   home.packages = with pkgs; [
     # Media
@@ -93,11 +96,13 @@
     # IA
     claude-code
     pi-coding-agent
+    opencode
 
     # Système
     amdgpu_top # Monitoring GPU AMD
     networkmanagerapplet # Tray network
     btop
+    bc # Calculatrice CLI — utilisé par watch-perf.sh pour stats llama
     jq # JSON parsing — utilisé par les scripts Hyprland
     socat # Socket cat — utilisé pour écouter events Hyprland
 
