@@ -102,6 +102,7 @@
   hardware.amdgpu.overdrive.enable = true; # Expose les sysfs OC pour LACT
   hardware.amdgpu.initrd.enable = true; # amdgpu chargé dès l'initrd (boot propre)
 
+
   # LACT — contrôle GPU AMD (clocks, fan curve, stats)
   services.lact.enable = true;
 
@@ -122,10 +123,13 @@
     substituters = [
       "https://cache.nixos.org"
       "https://nix-community.cachix.org"
+      # Cache binaire pour kernel cachyos (évite compile 40 min)
+      "https://attic.xuyh0120.win/lantian"
     ];
     trusted-public-keys = [
       "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
       "nix-community.cachix.org-1:mB9FSh9qf2dde0dGKs7wMzfk5fhMaIoI7P/I4tFMQeA="
+      "lantian:EeAUQ+W+6r7EtwnmYjeVwx5kOGEBpjlBfPlzGlTNvHc="
     ];
   };
 
@@ -151,7 +155,16 @@
     wl-clipboard
     bat # cat avec syntax highlighting
     nix-output-monitor # nom — progression colorée des builds (utilisé par nh)
+
+    # ROCm 7.2 — runtime HIP (RDNA4 gfx1201)
+    rocmPackages.rocminfo # Vérification détection GPU
+    rocmPackages.clr # HIP runtime (libhip)
+    rocmPackages.hipcc # Compilateur HIP
   ];
+
+  # Kernel CachyOS BORE — scheduler optimisé pour latence (gaming, desktop interactif).
+  # Source : xddxdd/nix-cachyos-kernel.
+  boot.kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-bore;
 
   # ── Disque jeux ─────────────────────────────────────────────────────────────
   fileSystems."/mnt/jeux" = {

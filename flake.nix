@@ -16,14 +16,19 @@
       url = "git+https://git.outfoxxed.me/outfoxxed/quickshell";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # Kernel CachyOS via xddxdd — BORE scheduler pour transferts CPU↔GPU intensifs
+    # NOTE : ne pas override son input nixpkgs (mismatch patches/kernel version).
+    nix-cachyos-kernel.url = "github:xddxdd/nix-cachyos-kernel/release";
   };
 
-  outputs = { self, nixpkgs, home-manager, quickshell }: {
+  outputs = { self, nixpkgs, home-manager, quickshell, nix-cachyos-kernel }: {
     nixosConfigurations.Rayane = nixpkgs.lib.nixosSystem {
       specialArgs = { inputs = { inherit home-manager quickshell; }; };
 
       modules = [
         ./configuration.nix
+        { nixpkgs.overlays = [ nix-cachyos-kernel.overlays.default ]; }
         home-manager.nixosModules.home-manager
         {
           home-manager.useGlobalPkgs = true;
