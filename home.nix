@@ -16,7 +16,7 @@
   # ── Dotfiles (symlinks vers /etc/nixos pour rester writables) ──────────────
   xdg.configFile."nvim".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/nvim";
   xdg.configFile."quickshell".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/quickshell";
-  xdg.configFile."ghostty".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/ghostty";
+  xdg.configFile."foot".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/foot";
   xdg.configFile."hypr".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/hypr";
   xdg.configFile."walker".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/walker";
   xdg.configFile."dunst".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/dunst";
@@ -26,7 +26,7 @@
 
   home.sessionVariables.ELECTRON_OZONE_PLATFORM_HINT = "wayland";
 
-  # Scripts perso non-versionnés (llama-qwen, etc.)
+  # Scripts perso non-versionnés
   home.sessionPath = [ "$HOME/.local/bin" ];
 
   # ── Packages ────────────────────────────────────────────────────────────────
@@ -40,7 +40,7 @@
     matugen
 
     # Terminal & shell
-    ghostty
+    foot
 
     # Éditeur & outils dev
     neovim
@@ -96,13 +96,12 @@
     # IA
     claude-code
     pi-coding-agent
-    opencode
 
     # Système
     amdgpu_top # Monitoring GPU AMD
     networkmanagerapplet # Tray network
     btop
-    bc # Calculatrice CLI — utilisé par watch-perf.sh pour stats llama
+    bc # Calculatrice CLI
     jq # JSON parsing — utilisé par les scripts Hyprland
     socat # Socket cat — utilisé pour écouter events Hyprland
 
@@ -166,22 +165,6 @@
     enable = true;
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
-
-    shellAliases = {
-      brain = "cd ~/Documents/brain && claude";
-    };
-
-    initExtra = ''
-      # Veille hebdo: lance Claude Code dans le vault avec un prompt seedé.
-      # Usage: veille <topic>  (hyprland, quickshell, mesa, proton-ge, inspiration)
-      veille() {
-        if [[ -z "$1" ]]; then
-          echo "Usage: veille <topic>  (hyprland, quickshell, mesa, proton-ge, inspiration)"
-          return 1
-        fi
-        cd ~/Documents/brain && claude "Fais une veille sur $1 (7-30 derniers jours). Cherche releases, breaking changes, features pertinentes pour mon setup NixOS+Hyprland+RDNA4. Écris le résumé dans veille/$1-$(date +%Y-W%V).md avec sections : Releases, Breaking changes, À tester. Inclus les liens."
-      }
-    '';
   };
 
   programs.starship.enable = true;
