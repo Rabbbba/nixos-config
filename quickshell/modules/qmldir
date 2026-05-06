@@ -10,5 +10,6 @@ Layouts 1.0 Layouts.qml
 Network 1.0 Network.qml
 Tidal 1.0 Tidal.qml
 Gpu 1.0 Gpu.qml
+SystemTray 1.0 SystemTray.qml
 
 singleton Theme 1.0 Theme.qml

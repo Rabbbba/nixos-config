@@ -93,6 +93,9 @@ ShellRoot {
                         rightMargin: 8
                     }
                     spacing: 12
+                    SystemTray {
+                        panelWindow: panel
+                    }
                     Tidal {
                         panelWindow: panel
                     }
