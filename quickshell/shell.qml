@@ -19,7 +19,7 @@ ShellRoot {
 
     Variants {
         // Variants spawns one PanelWindow per matching screen.
-        model: Quickshell.screens.filter(s => s.name === "DP-1")
+        model: Quickshell.screens.filter(s => s.model === "AW3423DWF")
         PanelWindow {
             id: panel
             color: "transparent"
