@@ -2,7 +2,7 @@
 # https://github.com/dunst-project/dunst/blob/master/docs/dunstrc.5.pod
 
 [global]
-    monitor = 0
+    monitor = primary
     follow = mouse
 
     width = 400
