@@ -25,7 +25,8 @@ PopupWindow {
         opacity: tooltip.visible ? 1 : 0
         Behavior on opacity {
             NumberAnimation {
-                duration: 100
+                duration: Theme.animFast
+                easing.type: Easing.OutCubic
             }
         }
 
