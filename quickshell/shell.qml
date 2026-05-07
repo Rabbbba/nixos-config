@@ -46,6 +46,7 @@ ShellRoot {
                         id: nixBtn
                         width: 32
                         height: 32
+                        property var panelWindow: panel
 
                         IconButton {
                             anchors.centerIn: parent
