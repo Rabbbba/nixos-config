@@ -32,7 +32,7 @@ Item {
 
             ProgressBar {
                 width: parent.width
-                value: RamUsage.ramUsedKb / RamUsage.ramTotalKb
+                value: RamUsage.ramTotalKb > 0 ? RamUsage.ramUsedKb / RamUsage.ramTotalKb : 0
             }
 
             Sparkline {
