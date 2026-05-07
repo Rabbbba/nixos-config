@@ -1,3 +1,4 @@
+pragma ComponentBehavior: Bound
 import QtQuick
 import "../modules"
 import "../components"
@@ -12,6 +13,13 @@ Item {
     readonly property int year: now.getFullYear()
     readonly property int month: now.getMonth()
     readonly property int today: now.getDate()
+
+    Timer {
+        interval: 60000
+        repeat: true
+        triggeredOnStart: true
+        onTriggered: root.now = new Date()
+    }
 
     // Monday = 0, Sunday = 6. JS's getDay() puts Sunday at 0, so shift by +6 mod 7.
     readonly property int firstDayOffset: ((new Date(year, month, 1).getDay()) + 6) % 7
