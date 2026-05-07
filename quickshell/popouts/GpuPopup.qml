@@ -58,7 +58,7 @@ Item {
 
             ProgressBar {
                 width: parent.width
-                value: GpuUsage.vramUsed / GpuUsage.vramTotal
+                value: GpuUsage.vramTotal > 0 ? GpuUsage.vramUsed / GpuUsage.vramTotal : 0
             }
         }
 
