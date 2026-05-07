@@ -5,6 +5,10 @@ TODO.md
 # Claude Code session state — local permissions, runtime metadata
 .claude/
 
+# pi-coding-agent — local AGENTS.md, prompts, mémoires (à la racine et dans les sous-dossiers)
+.pi/
+**/.pi/
+
 # Nix build artifacts
 result
 result-*
