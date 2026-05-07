@@ -16,7 +16,8 @@ ModuleWrapper {
     onWheel: angleDelta => {
         const step = 0.05;
         const cur = sink && sink.audio ? sink.audio.volume : 0;
-        sink.audio.volume = Math.max(0, Math.min(1, cur + (angleDelta.y > 0 ? step : -step)));
+        if(sink && sink.audio)
+          sink.audio.volume = Math.max(0, Math.min(1, cur + (angleDelta.y > 0 ? step : -step)));
     }
 
     StyledText {
