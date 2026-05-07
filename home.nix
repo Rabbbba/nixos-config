@@ -61,7 +61,7 @@
     # hyprland — fourni par programs.hyprland system-wide (configuration.nix)
     hyprlock # Lock screen
     hypridle # Idle daemon
-    swww # Wallpaper daemon (replaces hyprpaper)
+    awww # Wallpaper daemon (replaces hyprpaper)
     matugen # Material You palette generation from wallpaper
     cava # Audio spectrum visualizer feeding the Tidal popup bars
     walker # Lanceur d'apps
