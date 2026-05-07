@@ -24,7 +24,7 @@ ModuleWrapper {
             interval: 60000
             running: true
             repeat: true
-            onTriggered: parent.now = new Date()
+            onTriggered: root.now = new Date()
         }
     }
 
