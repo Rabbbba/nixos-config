@@ -9,30 +9,86 @@ Column {
     spacing: 8
 
     IconButton {
-        icon: "󰐥"
+        id: btnPower
+        icon: armed ? "✓" : "󰐥"
         iconSize: 40
-        iconColor: Theme.accent
-        onClicked: Quickshell.execDetached(["systemctl", "poweroff"])
+        iconColor: armed ? Theme.alert : Theme.accent
+        property bool armed: false
+        property Timer _t: Timer {
+            triggeredOnStart: false
+            interval: 3000
+            onTriggered: btnPower.armed = false
+        }
+        onClicked: {
+            if (armed)
+                Quickshell.execDetached(["systemctl", "poweroff"]);
+            else {
+                armed = true;
+                _t.start();
+            }
+        }
     }
 
     IconButton {
-        icon: "󰜉"
+        id: btnReboot
+        icon: armed ? "✓" : "󰜉"
         iconSize: 40
-        iconColor: Theme.accent
-        onClicked: Quickshell.execDetached(["systemctl", "reboot"])
+        iconColor: armed ? Theme.alert : Theme.accent
+        property bool armed: false
+        property Timer _t: Timer {
+            triggeredOnStart: false
+            interval: 3000
+            onTriggered: btnReboot.armed = false
+        }
+        onClicked: {
+            if (armed)
+                Quickshell.execDetached(["systemctl", "reboot"]);
+            else {
+                armed = true;
+                _t.start();
+            }
+        }
     }
 
     IconButton {
-        icon: "󰌾"
+        id: btnLock
+        icon: armed ? "✓" : "󰌾"
         iconSize: 40
-        iconColor: Theme.accent
-        onClicked: Quickshell.execDetached(["loginctl", "lock-session"])
+        iconColor: armed ? Theme.alert : Theme.accent
+        property bool armed: false
+        property Timer _t: Timer {
+            triggeredOnStart: false
+            interval: 3000
+            onTriggered: this.armed = false
+        }
+        onClicked: {
+            if (armed)
+                Quickshell.execDetached(["systemctl", "lock-session"]);
+            else {
+                armed = true;
+                _t.start();
+            }
+        }
     }
 
     IconButton {
-        icon: "󰗽"
+        id: btnLogout
+        icon: armed ? "✓" : "󰗽"
         iconSize: 40
-        iconColor: Theme.accent
-        onClicked: Quickshell.execDetached(["hyprctl", "dispatch", "exit"])
+        iconColor: armed ? Theme.alert : Theme.accent
+        property bool armed: false
+        property Timer _t: Timer {
+            triggeredOnStart: false
+            interval: 3000
+            onTriggered: btnLogout.armed = false
+        }
+        onClicked: {
+            if (armed)
+                Quickshell.execDetached(["hyprctl", "dispatch", "exit"]);
+            else {
+                armed = true;
+                _t.start();
+            }
+        }
     }
 }
