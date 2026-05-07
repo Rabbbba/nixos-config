@@ -60,8 +60,8 @@ ShellRoot {
                             wrapper: nixBtn
                             name: "power"
                             alignment: "left"
-                            width: 70
-                            height: 200
+                            implicitWidth: 70
+                            implicitHeight: 200
 
                             PowerPopup {
                                 anchors.centerIn: parent
