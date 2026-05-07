@@ -35,14 +35,23 @@ QtObject {
 
         onLoaded: {
             const content = ramFile.text();
-            const total = parseInt(content.match(/MemTotal:\s+(\d+)/)[1]);
-            const avail = parseInt(content.match(/MemAvailable:\s+(\d+)/)[1]);
+            const m = re => content.match(re);
+            const tot = m(/MemTotal:\s+(\d+)/);
+            const av = m(/MemAvailable:\s+(\d+)/);
+            const buf = m(/Buffers:\s+(\d+)/);
+            const cac = m(/Cached:\s+(\d+)/);
+            const stot = m(/SwapTotal:\s+(\d+)/);
+            const sfree = m(/SwapFree:\s+(\d+)/);
+            if (!tot || !av || !buf || !cac || !stot || !sfree)
+                return;
+            const total = parseInt(tot[1]);
+            const avail = parseInt(av[1]);
             root.ramPercent = ((total - avail) / total) * 100;
 
-            const buffers = parseInt(content.match(/Buffers:\s+(\d+)/)[1]);
-            const cached = parseInt(content.match(/Cached:\s+(\d+)/)[1]);
-            const swapTotal = parseInt(content.match(/SwapTotal:\s+(\d+)/)[1]);
-            const swapFree = parseInt(content.match(/SwapFree:\s+(\d+)/)[1]);
+            const buffers = parseInt(buf[1]);
+            const cached = parseInt(cac[1]);
+            const swapTotal = parseInt(stot[1]);
+            const swapFree = parseInt(sfree[1]);
 
             root.ramTotalKb = total;
             root.ramUsedKb = total - avail;
