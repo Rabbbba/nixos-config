@@ -41,11 +41,15 @@ ShellRoot {
                     bottom: true
                 }
 
-                // Input mask : seuls les 40px du top (la bar) capturent les clics.
-                // Le reste de la window est transparent ET clickthrough.
+                // Input region : seuls les 40px du top (la bar) capturent les clics.
+                // Bordures latérales/bottom = décoratives, click-through (Hyprland
+                // route en dessous, ce qui est OK car les ExclusionZone réservent
+                // déjà l'espace côté layout).
                 mask: Region {
-                    item: cutoutMask
-                    intersection: Intersection.Xor
+                    x: 0
+                    y: 0
+                    width: panel.width
+                    height: 40
                 }
 
                 Rectangle {
@@ -60,10 +64,6 @@ ShellRoot {
                     }
                 }
 
-                // Mask source : MultiEffect sample maskSource à la MÊME position
-                // que la source (borderFill), donc cutoutMask doit aussi spanner
-                // toute la zone du panel. Le Rectangle blanc à l'intérieur
-                // matérialise la zone du trou (alpha=1 dedans, 0 ailleurs).
                 Item {
                     id: cutoutMask
                     anchors.fill: parent
