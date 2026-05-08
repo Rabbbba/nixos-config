@@ -3,6 +3,7 @@
 //@ pragma DefaultEnv QSG_RENDER_LOOP=threaded
 
 import Quickshell
+import Quickshell.Wayland
 import QtQuick
 import "modules"
 import "popouts"
@@ -18,23 +19,44 @@ ShellRoot {
     settings.watchFiles: true
 
     Variants {
-        // Variants spawns one PanelWindow per matching screen.
+        // Variants spawns one Scope (containing PanelWindow + 4 ExclusionZones)
+        // per matching screen. Caelestia pattern — single delegate per Variants.
         model: Quickshell.screens.filter(s => s.model === "AW3423DWF")
+
+        Scope {
+            id: scope
+            required property var modelData
+
         PanelWindow {
             id: panel
             color: "transparent"
-            implicitHeight: 40
-            required property var modelData
+            WlrLayershell.exclusionMode: ExclusionMode.Ignore
+            WlrLayershell.layer: WlrLayer.Top
             anchors {
                 top: true
                 left: true
                 right: true
+                bottom: true
             }
 
-            screen: modelData
+            // Input mask : seuls les 40px du top (la bar) capturent les clics.
+            // Le reste de la window est transparent ET clickthrough.
+            mask: Region {
+                x: 0
+                y: 0
+                width: panel.width
+                height: 40
+            }
+
+            screen: scope.modelData
 
             Rectangle {
-                anchors.fill: parent
+                anchors {
+                    top: parent.top
+                    right: parent.right
+                    left: parent.left
+                }
+                height: 40
                 color: Theme.windowBg
                 Row {
                     anchors {
@@ -69,13 +91,13 @@ ShellRoot {
                         }
                     }
                     Tags {
-                        monitor: panel.modelData.name
+                        monitor: scope.modelData.name
                     }
                     Title {
-                        monitor: panel.modelData.name
+                        monitor: scope.modelData.name
                     }
                     Layouts {
-                        monitor: panel.modelData.name
+                        monitor: scope.modelData.name
                     }
                 }
 
@@ -117,6 +139,27 @@ ShellRoot {
                     }
                 }
             }
+        }
+        ExclusionZone {
+            modelData: scope.modelData
+            anchorSide: "bottom"
+            exclusiveZoneSize: 20
+        }
+        ExclusionZone {
+            modelData: scope.modelData
+            anchorSide: "left"
+            exclusiveZoneSize: 20
+        }
+        ExclusionZone {
+            modelData: scope.modelData
+            anchorSide: "right"
+            exclusiveZoneSize: 20
+        }
+        ExclusionZone {
+            modelData: scope.modelData
+            anchorSide: "top"
+            exclusiveZoneSize: 40
+        }
         }
     }
 }
