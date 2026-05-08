@@ -20,11 +20,17 @@
     # Kernel CachyOS via xddxdd — BORE scheduler pour transferts CPU↔GPU intensifs
     # NOTE : ne pas override son input nixpkgs (mismatch patches/kernel version).
     nix-cachyos-kernel.url = "github:xddxdd/nix-cachyos-kernel/release";
+
+    # Zen Browser — Firefox fork avec UI moderne (split tabs, workspaces, sidebar)
+    zen-browser = {
+      url = "github:0xc000022070/zen-browser-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, home-manager, quickshell, nix-cachyos-kernel }: {
+  outputs = { self, nixpkgs, home-manager, quickshell, nix-cachyos-kernel, zen-browser }: {
     nixosConfigurations.Rayane = nixpkgs.lib.nixosSystem {
-      specialArgs = { inputs = { inherit home-manager quickshell; }; };
+      specialArgs = { inputs = { inherit home-manager quickshell zen-browser; }; };
 
       modules = [
         ./configuration.nix
@@ -33,7 +39,7 @@
         {
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
-          home-manager.extraSpecialArgs = { inputs = { inherit home-manager quickshell; }; };
+          home-manager.extraSpecialArgs = { inputs = { inherit home-manager quickshell zen-browser; }; };
           home-manager.users.rayane = import ./home.nix;
         }
       ];

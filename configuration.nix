@@ -19,7 +19,7 @@
     localNetworkGameTransfers.openFirewall = true; # Transferts jeux entre PC
   };
   programs.zsh.enable = true;
-  programs.firefox.enable = true;
+  # programs.firefox.enable = true;  # remplacé par Zen Browser (cf home.nix + flake input zen-browser)
 
   programs.gamemode = {
     enable = true;

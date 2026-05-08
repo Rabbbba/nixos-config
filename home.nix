@@ -81,7 +81,8 @@
     cliphist # Historique presse-papiers
 
     # Apps
-    discord
+    vesktop  # Discord client with proper Wayland support (replaced upstream discord)
+    inputs.zen-browser.packages.${pkgs.system}.default  # Firefox fork avec UI moderne
     bitwarden-desktop
     mangohud
     obsidian
