@@ -8,6 +8,7 @@ import "../components"
 // Lives inside the Clock module's Popout.
 Item {
     id: root
+    anchors.fill: parent
     property date now: new Date()
 
     readonly property int year: now.getFullYear()
@@ -52,8 +53,12 @@ Item {
             Repeater {
                 model: 7
                 StyledText {
+                    required property int index
+
                     width: root.cellSize
+                    height: root.cellSize
                     horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
                     text: Qt.locale().standaloneDayName((index + 1) % 7, Locale.NarrowFormat).toUpperCase()
                     color: Theme.textMuted
                 }
@@ -72,8 +77,12 @@ Item {
             Repeater {
                 model: root.daysInMonth
                 StyledText {
+                    required property int index
+
                     width: root.cellSize
+                    height: root.cellSize
                     horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
                     text: index + 1
                     color: (index + 1) === root.today ? Theme.accent : Theme.text
                     font.bold: (index + 1) === root.today
