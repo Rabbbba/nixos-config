@@ -9,6 +9,9 @@ import "../services"
 ModuleWrapper {
     id: root
 
+    bgIdle: Theme.moduleBg
+    bgHover: Theme.accent
+
     property PwNode sink: Pipewire.defaultAudioSink
     tooltip: sink ? sink.description + " · " + Math.round(sink.audio.volume * 100) + "%" : ""
 
@@ -16,14 +19,15 @@ ModuleWrapper {
     onWheel: angleDelta => {
         const step = 0.05;
         const cur = sink && sink.audio ? sink.audio.volume : 0;
-        if(sink && sink.audio)
-          sink.audio.volume = Math.max(0, Math.min(1, cur + (angleDelta.y > 0 ? step : -step)));
+        if (sink && sink.audio)
+            sink.audio.volume = Math.max(0, Math.min(1, cur + (angleDelta.y > 0 ? step : -step)));
     }
 
     StyledText {
         id: audio
 
         font.pixelSize: Theme.fontSizeLg
+        color: root.hovered ? Theme.popupBg : Theme.text
 
         text: {
             if (!root.sink || !root.sink.audio)

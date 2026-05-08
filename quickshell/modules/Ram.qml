@@ -7,10 +7,16 @@ import "../popouts"
 ModuleWrapper {
     id: root
     tooltip: "RAM " + Math.round(RamUsage.ramPercent) + "% (" + (RamUsage.ramUsedKb / 1048576).toFixed(1) + " / " + (RamUsage.ramTotalKb / 1048576).toFixed(1) + " GiB)"
+
+    bgIdle: Theme.moduleBg
+    bgHover: Theme.accent
+
     StyledText {
         id: ram
 
         font.pixelSize: Theme.fontSizeLg
+        color: root.hovered ? Theme.popupBg : Theme.text
+
         text: "󰍛 " + RamUsage.ramPercent.toFixed(0) + "%"
     }
 

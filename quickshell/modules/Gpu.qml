@@ -7,10 +7,14 @@ ModuleWrapper {
     id: root
     tooltip: "GPU " + GpuUsage.gpuPercent.toFixed(0) + "% · Edge " + Math.round(GpuUsage.gpuTempEdge) + " °C"
 
+    bgIdle: Theme.moduleBg
+    bgHover: Theme.accent
+
     StyledText {
         id: gpu
         font.pixelSize: Theme.fontSizeLg
         text: "󰢮 " + GpuUsage.gpuPercent.toFixed(0) + "%"
+        color: root.hovered ? Theme.popupBg : Theme.text
     }
 
     ModulePopout {

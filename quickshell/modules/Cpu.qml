@@ -7,12 +7,16 @@ import "../popouts"
 ModuleWrapper {
     id: root
 
+    bgIdle: Theme.moduleBg
+    bgHover: Theme.accent
+
     tooltip: "CPU " + Math.round(CpuUsage.cpuPercent) + "% · Tctl " + Math.round(CpuUsage.cpuTemp) + " °C"
 
     StyledText {
         id: cpu
         font.pixelSize: Theme.fontSizeLg
         text: "󰘚 " + CpuUsage.cpuPercent.toFixed(0) + "%"
+        color: root.hovered ? Theme.popupBg : Theme.text
     }
 
     ModulePopout {

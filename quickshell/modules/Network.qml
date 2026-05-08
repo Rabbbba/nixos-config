@@ -8,6 +8,9 @@ import "../components"
 ModuleWrapper {
     id: root
 
+    bgIdle: Theme.moduleBg
+    bgHover: Theme.accent
+
     tooltip: net.state === "wifi" ? "Wi-Fi: " + net.ssid + " (" + net.signal + "%)" : net.state === "ethernet" ? "Ethernet" : "Offline"
     StyledText {
         id: net
@@ -16,6 +19,7 @@ ModuleWrapper {
         property int signal: 0
 
         font.pixelSize: Theme.fontSizeLg
+        color: root.hovered ? Theme.popupBg : Theme.text
 
         text: {
             if (state === "ethernet")
