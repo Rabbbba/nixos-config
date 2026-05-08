@@ -72,7 +72,7 @@ PopupWindow {
         }
 
         const localX = alignment === "center" ? parentItem.width / 2 : alignment === "right" ? parentItem.width : 0;
-        const popoutOffset = alignment === "center" ? container.implicitWidth / 2 : alignment === "right" ? container.implicitWidth : 0;
+        const popoutOffset = alignment === "center" ? container.width / 2 : alignment === "right" ? container.width : 0;
 
         anchor.rect.x = parentItem.mapToItem(panelWindow.contentItem, localX, 0).x - popoutOffset;
         anchor.rect.y = parentItem.mapToItem(panelWindow.contentItem, 0, parentItem.height).y;

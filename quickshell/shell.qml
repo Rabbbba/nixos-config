@@ -23,18 +23,23 @@ ShellRoot {
         PanelWindow {
             id: panel
             color: "transparent"
-            implicitHeight: 40
+            exclusionMode: ExclusionMode.Ignore
+            implicitHeight: screen.height
             required property var modelData
+            mask: Region { x: 0; y: 0; width: panel.width; height: 40 }
             anchors {
                 top: true
                 left: true
+                bottom: true
                 right: true
             }
 
             screen: modelData
 
             Rectangle {
-                anchors.fill: parent
+                id: barStrip
+                anchors { top: parent.top; left: parent.left; right: parent.right }
+                height: 40
                 color: Theme.windowBg
                 Row {
                     anchors {
