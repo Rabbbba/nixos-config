@@ -12,84 +12,43 @@ import "popouts"
 import "services"
 import "components"
 
-// Top bar — lives only on the primary monitor (DP-1).
-// Layout is 3 anchored groups inside the bar Rectangle:
-//   left Row    : Nix-logo button (Power popup) → Tags → Title → Layouts
-//   centered    : Clock (Calendar popup)
-//   right Row   : Tidal → Gpu → Cpu → Ram → Network → Audio
+// Per-monitor delegate (via Variants → Scope):
+//   panelBar    — interactive 40px top bar, layer Top (captures clicks).
+//                 Auto-reserves its 40px exclusive zone via anchors.
+//   panelBorder — decorative full-screen border, layer Bottom (click-through).
+//                 Sits BELOW app windows so it doesn't mask in-game overlays
+//                 (Steam friends popups, Discord, etc.). Stays visible in the
+//                 20px reserved by the ExclusionZones since nothing else is
+//                 drawn there.
+//   ExclusionZone × 3 — reserve left/right/bottom 20px in the layer-shell
+//                       layout. Top is handled by panelBar itself.
 ShellRoot {
     settings.watchFiles: true
 
     Variants {
-        // Variants spawns one Scope (containing PanelWindow + 4 ExclusionZones)
-        // per matching screen. Caelestia pattern — single delegate per Variants.
         model: Quickshell.screens.filter(s => s.model === "AW3423DWF")
 
         Scope {
             id: scope
             required property var modelData
 
+            // ───────────────────── Bar interactive ─────────────────────
             PanelWindow {
-                id: panel
+                id: panelBar
                 color: "transparent"
-                WlrLayershell.exclusionMode: ExclusionMode.Ignore
                 WlrLayershell.layer: WlrLayer.Top
+                implicitHeight: 40
                 anchors {
                     top: true
                     left: true
                     right: true
-                    bottom: true
                 }
-
-                // Input region : seuls les 40px du top (la bar) capturent les clics.
-                // Bordures latérales/bottom = décoratives, click-through (Hyprland
-                // route en dessous, ce qui est OK car les ExclusionZone réservent
-                // déjà l'espace côté layout).
-                mask: Region {
-                    x: 0
-                    y: 0
-                    width: panel.width
-                    height: 40
-                }
-
-                Rectangle {
-                    id: borderFill
-                    anchors.fill: parent
-                    color: Theme.windowBg
-                    layer.enabled: true
-                    layer.effect: MultiEffect {
-                        maskEnabled: true
-                        maskInverted: true
-                        maskSource: cutoutMask
-                    }
-                }
-
-                Item {
-                    id: cutoutMask
-                    anchors.fill: parent
-                    visible: false
-                    layer.enabled: true
-
-                    Rectangle {
-                        x: 20
-                        y: 40
-                        width: parent.width - 40
-                        height: parent.height - 60
-                        radius: 24
-                        color: "white"
-                    }
-                }
-
                 screen: scope.modelData
 
                 Rectangle {
-                    anchors {
-                        top: parent.top
-                        right: parent.right
-                        left: parent.left
-                    }
-                    height: 40
+                    anchors.fill: parent
                     color: Theme.windowBg
+
                     Row {
                         anchors {
                             left: parent.left
@@ -100,11 +59,11 @@ ShellRoot {
                             id: nixBtn
                             width: 32
                             height: 32
-                            property var panelWindow: panel
+                            property var panelWindow: panelBar
 
                             IconButton {
                                 anchors.centerIn: parent
-                                icon: ""
+                                icon: ""
                                 iconSize: 22
                                 iconColor: Theme.text
                                 onClicked: Visibilities.toggle("power")
@@ -134,7 +93,7 @@ ShellRoot {
                     }
 
                     Clock {
-                        panelWindow: panel
+                        panelWindow: panelBar
                         anchors {
                             horizontalCenter: parent.horizontalCenter
                             verticalCenter: parent.verticalCenter
@@ -149,34 +108,78 @@ ShellRoot {
                         }
                         spacing: 12
                         SystemTray {
-                            panelWindow: panel
+                            panelWindow: panelBar
                         }
                         Tidal {
-                            panelWindow: panel
+                            panelWindow: panelBar
                         }
                         Gpu {
-                            panelWindow: panel
+                            panelWindow: panelBar
                         }
                         Cpu {
-                            panelWindow: panel
+                            panelWindow: panelBar
                         }
                         Ram {
-                            panelWindow: panel
+                            panelWindow: panelBar
                         }
                         Network {
-                            panelWindow: panel
+                            panelWindow: panelBar
                         }
                         Audio {
-                            panelWindow: panel
+                            panelWindow: panelBar
                         }
                     }
                 }
             }
-            ExclusionZone {
-                modelData: scope.modelData
-                anchorSide: "bottom"
-                exclusiveZoneSize: 20
+
+            // ───────────────────── Bordure décorative ──────────────────
+            PanelWindow {
+                id: panelBorder
+                color: "transparent"
+                WlrLayershell.exclusionMode: ExclusionMode.Ignore
+                WlrLayershell.layer: WlrLayer.Bottom
+                anchors {
+                    top: true
+                    left: true
+                    right: true
+                    bottom: true
+                }
+                screen: scope.modelData
+
+                // Mask vide → totalement click-through. Le rendu reste visible
+                // mais aucun event pointer n'est capturé par cette surface.
+                mask: Region {}
+
+                Rectangle {
+                    id: borderFill
+                    anchors.fill: parent
+                    color: Theme.windowBg
+                    layer.enabled: true
+                    layer.effect: MultiEffect {
+                        maskEnabled: true
+                        maskInverted: true
+                        maskSource: cutoutMask
+                    }
+                }
+
+                Item {
+                    id: cutoutMask
+                    anchors.fill: parent
+                    visible: false
+                    layer.enabled: true
+
+                    Rectangle {
+                        x: 20
+                        y: 40
+                        width: parent.width - 40
+                        height: parent.height - 60
+                        radius: 24
+                        color: "white"
+                    }
+                }
             }
+
+            // ───────────────────── ExclusionZones ──────────────────────
             ExclusionZone {
                 modelData: scope.modelData
                 anchorSide: "left"
@@ -189,8 +192,8 @@ ShellRoot {
             }
             ExclusionZone {
                 modelData: scope.modelData
-                anchorSide: "top"
-                exclusiveZoneSize: 40
+                anchorSide: "bottom"
+                exclusiveZoneSize: 20
             }
         }
     }
