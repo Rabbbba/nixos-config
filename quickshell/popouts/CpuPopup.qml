@@ -14,7 +14,7 @@ Item {
     anchors.fill: parent
 
     /**
-     * Format a load-average value to 2 decimals.
+     * Format a load-average value as a string with two decimal places.
      * @param n Numeric load value.
      */
     function fmt(n: real): string {

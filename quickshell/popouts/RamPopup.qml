@@ -14,7 +14,7 @@ Item {
     anchors.fill: parent
 
     /**
-     * Convert a kB value to GiB with one decimal.
+     * Convert a kB value to a GiB string with one decimal (no unit suffix).
      * @param kb Value in kB (as exposed by `/proc/meminfo`).
      */
     function kbToGib(kb: real): string {

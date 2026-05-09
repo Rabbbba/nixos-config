@@ -29,7 +29,8 @@ Item {
     readonly property string artUrl: Players.tidal ? Players.tidal.trackArtUrl : ""
 
     /**
-     * Format a duration in seconds as `m:ss` — for elapsed/total track times.
+     * Format a duration in seconds as a `m:ss` string (zero-padded seconds) —
+     * for elapsed/total track times.
      * @param s Seconds (may be fractional).
      */
     function fmt(s: real): string {

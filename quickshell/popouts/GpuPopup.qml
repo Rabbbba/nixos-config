@@ -14,7 +14,7 @@ Item {
     anchors.fill: parent
 
     /**
-     * Format a byte count as `X.XX GiB` (binary gibibyte, 1024³ bytes).
+     * Format a byte count as a `"X.XX GiB"` string (binary gibibyte, 1024³ bytes).
      * @param bytes Byte count.
      */
     function fmtGi(bytes: real): string {
