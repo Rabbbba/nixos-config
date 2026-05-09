@@ -38,28 +38,11 @@ jobs:
             nixfmt --check $files
           '
 
-  qml:
-    name: QML (qmllint)
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: cachix/install-nix-action@v30
-        with:
-          nix_path: nixpkgs=channel:nixos-unstable
-          extra_nix_config: |
-            experimental-features = nix-command flakes
-
-      - name: qmllint
-        # `--enable=` désactivé via flag pour les categories qui ne s'appliquent
-        # pas (Quickshell utilise des types custom non vus par qmllint sans
-        # importPaths supplémentaires). Continue-on-error: warnings affichés
-        # mais ne bloquent pas le build (le strict-mode Doxygen reste
-        # l'autorité sur ce qui doit être documenté).
-        continue-on-error: true
-        run: |
-          nix develop --command bash -c '
-            find quickshell -name "*.qml" -print0 | xargs -0 qmllint
-          '
+  # Pas de job qmllint : Quickshell utilise des types custom (PanelWindow,
+  # Singleton, Variants...) que qmllint ne connaît pas sans importPaths
+  # spécifiques, et faire passer les warnings demanderait un fichier de
+  # config conséquent pour peu de valeur. Le strict-mode Doxygen + le
+  # pre-commit hook + le LSP en édition couvrent la qualité QML.
 
   shell:
     name: Shell (shellcheck)
