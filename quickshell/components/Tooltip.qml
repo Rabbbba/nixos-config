@@ -2,10 +2,21 @@ import QtQuick
 import Quickshell
 import "../modules"
 
+/**
+ * @brief Small tooltip popup anchored below a parent item.
+ *
+ * Used by @ref modules::ModuleWrapper and @ref modules::SystemTray on hover.
+ * Anchor is recomputed on every visibility change so the tooltip stays
+ * centered horizontally on @ref parentItem and 4 px below it.
+ */
 PopupWindow {
     id: tooltip
+
+    /** Item the tooltip is anchored to (tooltip is centered horizontally on it). */
     required property Item parentItem
+    /** PanelWindow used as the anchor reference for coordinate mapping. */
     required property var panelWindow
+    /** Tooltip text. Empty string makes the tooltip invisible. */
     property string text: ""
 
     color: "transparent"

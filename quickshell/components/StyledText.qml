@@ -1,8 +1,13 @@
 import QtQuick
 import "../modules"
 
-// Text with theme defaults — used everywhere instead of raw `Text {}`
-// so colors and fonts stay consistent and ellipsis is on by default.
+/**
+ * @brief Themed @c Text — used everywhere instead of raw @c Text.
+ *
+ * Pre-applies the theme text color, the project font family, and enables
+ * right-side ellipsis by default — so colors and fonts stay consistent
+ * across the whole shell.
+ */
 Text {
     color: Theme.text
     font.family: Theme.fontFamily

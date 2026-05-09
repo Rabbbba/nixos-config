@@ -2,9 +2,13 @@ import QtQuick
 import Quickshell.Io
 import "../components"
 
-// Network module. Polls `nmcli` every 5 s for the active connection and,
-// when on Wi-Fi, also for the signal strength of the in-use AP.
-// Renders one of: ethernet glyph, Wi-Fi glyph + SSID, or "offline" glyph.
+/**
+ * @brief Bar module showing the active network connection (Ethernet / Wi-Fi / Offline).
+ *
+ * Polls `nmcli` every 5 s for the active connection and, when on Wi-Fi, also
+ * for the signal strength of the in-use AP. Renders one of: ethernet glyph,
+ * Wi-Fi glyph + SSID, or "offline" glyph.
+ */
 ModuleWrapper {
     id: root
 

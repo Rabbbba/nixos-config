@@ -3,8 +3,14 @@ import Quickshell                  // for execDetached
 import "../modules"
 import "../components"
 
-// Vertical stack of 4 power actions, lives inside the Nix-logo button's Popout.
-// Glyphs (in order): poweroff, reboot, lock, logout.
+/**
+ * @brief Vertical stack of 4 power actions — lives inside the Nix-logo button's popout.
+ *
+ * Glyphs (top-to-bottom): poweroff, reboot, lock, logout. Each button uses a
+ * two-step "arm + confirm" pattern: the first click swaps the icon to a check
+ * mark for 3 s; a second click within that window actually triggers the action.
+ * Falls back to idle if no second click arrives in time.
+ */
 Column {
     spacing: 8
 
@@ -59,7 +65,7 @@ Column {
         property Timer _t: Timer {
             triggeredOnStart: false
             interval: 3000
-            onTriggered: this.armed = false
+            onTriggered: btnLock.armed = false
         }
         onClicked: {
             if (armed)

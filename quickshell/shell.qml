@@ -12,16 +12,20 @@ import "popouts"
 import "services"
 import "components"
 
-// Per-monitor delegate (via Variants → Scope):
-//   panelBar    — interactive 40px top bar, layer Top (captures clicks).
-//                 Auto-reserves its 40px exclusive zone via anchors.
-//   panelBorder — decorative full-screen border, layer Bottom (click-through).
-//                 Sits BELOW app windows so it doesn't mask in-game overlays
-//                 (Steam friends popups, Discord, etc.). Stays visible in the
-//                 20px reserved by the ExclusionZones since nothing else is
-//                 drawn there.
-//   ExclusionZone × 3 — reserve left/right/bottom 20px in the layer-shell
-//                       layout. Top is handled by panelBar itself.
+/**
+ * @brief Top-level shell entry point — instantiates one bar per matching monitor.
+ *
+ * Per-monitor delegate (built via @c Variants → @c Scope):
+ * - **panelBar**: interactive 40 px top bar on layer @c Top (captures clicks).
+ *   Auto-reserves its 40 px exclusive zone via anchors.
+ * - **panelBorder**: decorative full-screen border on layer @c Bottom
+ *   (click-through). Sits BELOW app windows so it doesn't mask in-game
+ *   overlays (Steam friends popups, Discord, etc.). Stays visible in the
+ *   20 px reserved by the @ref components::ExclusionZone instances since
+ *   nothing else is drawn there.
+ * - **3× ExclusionZone**: reserve left/right/bottom 20 px in the
+ *   layer-shell layout. Top is handled by @c panelBar itself.
+ */
 ShellRoot {
     settings.watchFiles: true
 
@@ -63,7 +67,7 @@ ShellRoot {
 
                             IconButton {
                                 anchors.centerIn: parent
-                                icon: ""
+                                icon: ""
                                 iconSize: 22
                                 iconColor: Theme.text
                                 onClicked: Visibilities.toggle("power")
@@ -132,7 +136,7 @@ ShellRoot {
                 }
             }
 
-            // ───────────────────── Bordure décorative ──────────────────
+            // ───────────────────── Decorative border ───────────────────
             PanelWindow {
                 id: panelBorder
                 color: "transparent"
@@ -146,8 +150,8 @@ ShellRoot {
                 }
                 screen: scope.modelData
 
-                // Mask vide → totalement click-through. Le rendu reste visible
-                // mais aucun event pointer n'est capturé par cette surface.
+                // Empty mask → fully click-through. The render stays visible
+                // but no pointer event is captured by this surface.
                 mask: Region {}
 
                 Rectangle {

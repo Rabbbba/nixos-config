@@ -3,11 +3,21 @@ import "../services"
 import "../modules"
 import "../components"
 
+/**
+ * @brief RAM popup body — memory usage, sparkline, buffers/cached, and swap.
+ *
+ * Reads from the @ref services::RamUsage singleton. Meant to be placed inside
+ * a @ref components::Popout (sized by the call site).
+ */
 Item {
     id: root
     anchors.fill: parent
 
-    function kbToGib(kb) {
+    /**
+     * Convert a kB value to GiB with one decimal.
+     * @param kb Value in kB (as exposed by `/proc/meminfo`).
+     */
+    function kbToGib(kb: real): string {
         return (kb / 1048576).toFixed(1);
     }
 

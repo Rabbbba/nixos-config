@@ -2,35 +2,42 @@ pragma Singleton
 import QtQuick
 import Quickshell.Io
 
-// Polls /proc/stat, /proc/loadavg, and the k10temp hwmon every 500 ms
-// and exposes CPU (global + per-core), load average, and Tctl temperature
-// to the Cpu bar module and its popup.
-//
-// CPU % is computed from the delta of jiffies between two ticks
-// (idle vs. total), the standard way to read /proc/stat. Load average
-// lives here because it's fundamentally a CPU pressure metric.
+/**
+ * @brief Singleton exposing CPU usage, load average, and temperature.
+ *
+ * Polls `/proc/stat`, `/proc/loadavg`, and the `k10temp` hwmon every
+ * 500 ms. CPU % is computed from the delta of jiffies (idle vs total)
+ * between two ticks — the standard way to read `/proc/stat`. Load average
+ * lives here because it's fundamentally a CPU pressure metric.
+ *
+ * The hwmon path is resolved at startup (hwmon numbering is not stable
+ * across reboots) by scanning `/sys/class/hwmon/* /name` for "k10temp".
+ */
 QtObject {
     id: root
 
+    /** Global CPU usage as a percentage (0–100). */
     property real cpuPercent: 0
+    /** Per-core usage as percentages (length = number of logical cores). */
     property var cpuCoresPercent: []
     property var _prevCores: []
 
+    /** Load average over 1, 5, and 15 minutes (object `{l1, l5, l15}`). */
     property var loadAverage: ({
             l1: 0,
             l5: 0,
             l15: 0
         })
 
-    // CPU temperature (Tctl) in °C. The hwmon path is resolved at startup
-    // because hwmon numbering isn't stable across reboots — we scan
-    // /sys/class/hwmon/*/name for "k10temp".
+    /** CPU temperature (Tctl) in °C. */
     property real cpuTemp: 0
     property string _cpuHwmon: ""
 
-    // Rolling history of the last `_historyLength` samples, one entry per
-    // 500 ms tick. Sparkline reads cpuHistory directly.
     readonly property int _historyLength: 60
+    /**
+     * Rolling history of the last 60 @ref cpuPercent samples (one per
+     * 500 ms tick). Read directly by the Sparkline component.
+     */
     property var cpuHistory: []
 
     function _pushHistory(arr, value) {
@@ -118,7 +125,7 @@ QtObject {
     }
 
     // One-shot resolver: walks /sys/class/hwmon to find the k10temp chip.
-    // Stdout is the resolved hwmonN directory; we then bind cpuTempFile.path.
+    // stdout = the resolved hwmonN directory; we then bind cpuTempFile.path.
     property Process _resolveCpuHwmon: Process {
         command: ["sh", "-c", "for f in /sys/class/hwmon/*/name; do [ \"$(cat \"$f\")\" = \"k10temp\" ] && dirname \"$f\" && break; done"]
         running: true

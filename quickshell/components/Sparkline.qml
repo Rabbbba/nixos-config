@@ -2,12 +2,22 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import "../modules"
 
+/**
+ * @brief Bar-chart sparkline — one bar per value, normalized to @ref maxValue.
+ *
+ * Used by Cpu/Ram/Gpu popups to show rolling history (one entry per poll tick).
+ * Bars are drawn from the bottom up, anchored to the bottom of the item.
+ */
 Item {
     id: root
 
+    /** Array of numeric values to display (one bar per entry). */
     property var values: []
+    /** Maximum reference value used for normalization. */
     property real maxValue: 100
+    /** Color applied to each bar. Defaults to the theme accent. */
     property color color: Theme.accent
+    /** Horizontal spacing between bars in pixels. */
     property int barSpacing: 2
 
     implicitHeight: 28

@@ -5,24 +5,34 @@ import "../services"
 import "../modules"
 import "../components"
 
-// Rich Tidal player popup body — meant to be placed inside a Popout.
-// Shows a blurred album-art background, cover, title/artist/album,
-// transport buttons (shuffle, prev, play/pause, next, loop), volume slider,
-// and a 24-band cava equalizer that doubles as a seek bar.
+/**
+ * @brief Rich Tidal player popup body — meant to be placed inside a Popout.
+ *
+ * Shows a blurred album-art background, cover, title/artist/album, transport
+ * buttons (shuffle, prev, play/pause, next, loop), volume slider, and a 24-band
+ * cava equalizer that doubles as a seek bar. Reads/writes the Tidal MPRIS
+ * player via the @ref services::Players singleton.
+ */
 Item {
     id: root
 
-    // Bound from the consuming Popout — gates the position-poke Timer
-    // and the cava Process so they only run while the popup is visible.
+    /**
+     * Bound from the consuming @ref components::Popout — gates the
+     * position-poke @c Timer and the cava @c Process so they only run while
+     * the popup is visible.
+     */
     property bool popupVisible: false
 
-    // Number of cava bands. Must match the bars value in cava/config.
+    /** Number of cava bands. Must match the @c bars value in `cava/config`. */
     readonly property int barCount: 24
 
     readonly property string artUrl: Players.tidal ? Players.tidal.trackArtUrl : ""
 
-    // Format seconds as "m:ss" — for elapsed/total track times.
-    function fmt(s) {
+    /**
+     * Format a duration in seconds as `m:ss` — for elapsed/total track times.
+     * @param s Seconds (may be fractional).
+     */
+    function fmt(s: real): string {
         const m = Math.floor(s / 60);
         const sec = Math.floor(s % 60);
         return m + ":" + (sec < 10 ? "0" : "") + sec;

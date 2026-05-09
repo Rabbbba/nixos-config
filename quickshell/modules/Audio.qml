@@ -4,14 +4,19 @@ import "../components"
 import "../popouts"
 import "../services"
 
-// Audio module: shows the default Pipewire sink's volume / mute state.
-// Scroll on the module to nudge volume by ±5 %.
+/**
+ * @brief Audio module: shows the default Pipewire sink's volume and mute state.
+ *
+ * Scrolling on the module nudges the sink volume by ±5 %, clamped to [0, 1].
+ * Clicking opens the @c AudioPopup popout.
+ */
 ModuleWrapper {
     id: root
 
     bgIdle: Theme.moduleBg
     bgHover: Theme.accent
 
+    /** Currently default Pipewire audio sink. */
     property PwNode sink: Pipewire.defaultAudioSink
     tooltip: sink ? sink.description + " · " + Math.round(sink.audio.volume * 100) + "%" : ""
 

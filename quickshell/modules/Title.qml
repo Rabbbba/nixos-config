@@ -2,11 +2,16 @@ import QtQuick
 import Quickshell.Hyprland
 import "../components"
 
-// Active window title — only renders if the focused toplevel lives on
-// this module's monitor (so the bar doesn't echo the other monitor's title).
-// Width is capped at 400 px and ellipsized via StyledText.
+/**
+ * @brief Active window title — only renders for toplevels on this module's monitor.
+ *
+ * Avoids echoing the other monitor's title. Width is capped at 400 px and
+ * ellipsized via @ref components::StyledText.
+ */
 ModuleWrapper {
     id: root
+
+    /** Name of the monitor whose active toplevel title is displayed. */
     property string monitor: ""
 
     StyledText {

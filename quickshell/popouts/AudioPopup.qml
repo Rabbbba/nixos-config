@@ -3,12 +3,21 @@ import Quickshell.Services.Pipewire
 import "../modules"
 import "../components"
 
-// Audio output selector — lists physical sinks, click a row to make it the default.
+/**
+ * @brief Audio output selector — lists physical sinks with per-row volume slider.
+ *
+ * Click a row's name to make that sink the default Pipewire audio sink. The
+ * track at the bottom of each row doubles as a per-sink volume slider (drag
+ * to set). Only physical sinks are shown (no app streams).
+ */
 Item {
     id: root
     anchors.fill: parent
 
-    // Keep only physical audio sinks: no app streams, must expose an audio object.
+    /**
+     * Filtered list of physical audio sinks (no app streams, must expose
+     * an audio object). Updated reactively as Pipewire nodes come and go.
+     */
     readonly property var sinks: Pipewire.nodes.values.filter(n => n.isSink && !n.isStream && n.audio !== null)
 
     // Pipewire bindings are lazy — track every sink we display so live state (volume, muted) stays current.

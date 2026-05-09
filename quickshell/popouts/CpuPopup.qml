@@ -3,11 +3,21 @@ import "../services"
 import "../modules"
 import "../components"
 
+/**
+ * @brief CPU popup body — global usage, sparkline, per-core bars, Tctl, load avg.
+ *
+ * Reads from the @ref services::CpuUsage singleton. Meant to be placed inside
+ * a @ref components::Popout (sized by the call site).
+ */
 Item {
     id: root
     anchors.fill: parent
 
-    function fmt(n) {
+    /**
+     * Format a load-average value to 2 decimals.
+     * @param n Numeric load value.
+     */
+    function fmt(n: real): string {
         return n.toFixed(2);
     }
 

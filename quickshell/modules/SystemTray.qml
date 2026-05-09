@@ -4,11 +4,22 @@ import Quickshell.Services.SystemTray
 import Quickshell.Widgets
 import "../components"
 
+/**
+ * @brief StatusNotifier system tray — renders one icon per registered tray item.
+ *
+ * Left-click activates the item, right-click triggers the secondary action.
+ * Hovering an icon for 300 ms shows a tooltip combining the item's title and
+ * description. The whole row is hidden when no tray items are registered.
+ */
 Item {
     id: root
+
+    /** Reference to the @c PanelWindow hosting this tray (needed for tooltips). */
     property var panelWindow: null
 
+    /** Side length of each tray icon in pixels. */
     readonly property int iconSize: 21
+    /** Horizontal spacing between tray icons in pixels. */
     readonly property int itemSpacing: 8
 
     visible: SystemTray.items.values.length > 0

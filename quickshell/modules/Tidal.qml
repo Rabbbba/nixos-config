@@ -3,8 +3,13 @@ import "../services"
 import "../components"
 import "../popouts"
 
-// Tidal "now playing" pill in the bar — clicking opens a rich popup
-// (TidalPopup) with album art, transport controls, volume, and equalizer.
+/**
+ * @brief "Now playing" pill for Tidal — opens a rich popup on click.
+ *
+ * Shows `<artist> - <title>` from the @ref services::Players singleton.
+ * Clicking opens @ref popouts::TidalPopup (album art, transport controls,
+ * volume slider, cava equalizer doubling as a seek bar).
+ */
 ModuleWrapper {
     id: root
     bgIdle: Theme.accent

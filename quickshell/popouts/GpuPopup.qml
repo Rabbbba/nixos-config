@@ -3,12 +3,21 @@ import "../services"
 import "../modules"
 import "../components"
 
+/**
+ * @brief GPU popup body — usage + sparkline, VRAM, and temperatures.
+ *
+ * Reads from the @ref services::GpuUsage singleton. Meant to be placed inside
+ * a @ref components::Popout (sized by the call site).
+ */
 Item {
     id: root
     anchors.fill: parent
 
-    // Format bytes → "X.XX GiB" (binary gibibyte, 1024³ = 1073741824).
-    function fmtGi(bytes) {
+    /**
+     * Format a byte count as `X.XX GiB` (binary gibibyte, 1024³ bytes).
+     * @param bytes Byte count.
+     */
+    function fmtGi(bytes: real): string {
         return (bytes / 1073741824).toFixed(2) + " GiB";
     }
 

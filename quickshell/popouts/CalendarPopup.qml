@@ -3,16 +3,25 @@ import QtQuick
 import "../modules"
 import "../components"
 
-// Static month view: header + weekday row + 7-column grid of day cells.
-// Today's cell is highlighted in the theme accent.
-// Lives inside the Clock module's Popout.
+/**
+ * @brief Static month view: header + weekday row + 7-column grid of day cells.
+ *
+ * Today's cell is highlighted in the theme accent. Lives inside the
+ * @ref modules::Clock module's popout. Refreshes once a minute (so a session
+ * spanning midnight rolls over without restart).
+ */
 Item {
     id: root
     anchors.fill: parent
+
+    /** Reference date — drives @ref year, @ref month, @ref today. Refreshed every 60 s. */
     property date now: new Date()
 
+    /** Calendar year being displayed (derived from @ref now). */
     readonly property int year: now.getFullYear()
+    /** Calendar month being displayed, 0-indexed (derived from @ref now). */
     readonly property int month: now.getMonth()
+    /** Day-of-month for today, used to highlight the right cell. */
     readonly property int today: now.getDate()
 
     Timer {

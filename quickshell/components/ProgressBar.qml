@@ -1,12 +1,21 @@
 import QtQuick
 import "../modules"
 
-// Horizontal progress bar. value is clamped to [0, 1].
-//     ProgressBar { value: 0.42 }
-//     ProgressBar { value: 0.8; fillColor: Theme.alert }
+/**
+ * @brief Horizontal progress bar — value is clamped to [0, 1].
+ *
+ * Examples:
+ * @code
+ * ProgressBar { value: 0.42 }
+ * ProgressBar { value: 0.8; fillColor: Theme.alert }
+ * @endcode
+ */
 Rectangle {
     id: root
+
+    /** Progress value in [0, 1]. Out-of-range values are clamped. */
     property real value: 0
+    /** Fill color of the progress bar. Defaults to the theme accent. */
     property color fillColor: Theme.accent
 
     implicitHeight: 8

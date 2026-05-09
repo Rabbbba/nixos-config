@@ -3,7 +3,14 @@ import "../services"
 import "../components"
 import "../popouts"
 
-// CPU usage % — value comes from the CpuUsage singleton (polls /proc/stat).
+/**
+ * @brief Bar module displaying CPU usage as a percentage.
+ *
+ * The value is read from the @ref services::CpuUsage singleton, which polls
+ * `/proc/stat`. Clicking opens the @ref popouts::CpuPopup popout (history graph).
+ *
+ * Tooltip: "CPU XX% · Tctl YY °C" (XX = usage, YY = package temperature).
+ */
 ModuleWrapper {
     id: root
 

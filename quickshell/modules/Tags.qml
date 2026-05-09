@@ -3,12 +3,17 @@ import Quickshell
 import Quickshell.Hyprland
 import "../components"
 
-// Hyprland workspace ("tag") indicators. One pill per workspace on this
-// monitor, click to switch, scroll to step through workspaces.
-// Active pill is wider + colored; occupied / urgent / hover have their own colors.
+/**
+ * @brief Hyprland workspace ("tag") indicators — one pill per workspace on this monitor.
+ *
+ * Click to switch workspace, scroll to step through workspaces. The active
+ * pill is wider and colored with the theme accent; occupied / urgent / hover
+ * states each have their own color in the theme palette.
+ */
 Row {
     id: tags
 
+    /** Name of the monitor whose workspaces are displayed. */
     property string monitor: ""
 
     spacing: 4

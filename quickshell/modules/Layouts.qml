@@ -3,11 +3,17 @@ import Quickshell.Io
 import Quickshell.Hyprland
 import "../components"
 
-// Hyprland layout name ("Master" / "Dwindle" / ...). Hyprland doesn't emit
-// a dedicated layout-change signal, so we re-probe `hyprctl getoption` whenever
-// the active toplevel changes — that's a good-enough proxy for layout shifts.
+/**
+ * @brief Bar module showing the current Hyprland layout name (Master / Dwindle / …).
+ *
+ * Hyprland doesn't emit a dedicated layout-change signal, so we re-probe
+ * `hyprctl getoption general:layout -j` whenever the active toplevel changes —
+ * a good-enough proxy for layout shifts.
+ */
 ModuleWrapper {
     id: root
+
+    /** Name of the monitor this module belongs to (filters layout updates). */
     property string monitor: ""
 
     tooltip: "Layout: " + lyt.code

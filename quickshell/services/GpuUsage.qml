@@ -2,34 +2,47 @@ pragma Singleton
 import QtQuick
 import Quickshell.Io
 
-// Polls /sys/class/drm/cardN/device/{gpu_busy_percent, mem_info_vram_used,
-// mem_info_vram_total} every 500 ms and exposes GPU utilization + VRAM
-// state to the Gpu bar module and its popup.
-//
-// On AM5 boxes the iGPU lives on card0 (~512 M VRAM) and the dGPU on card1.
-// We hardcode card1 — could be detected dynamically by picking the card
-// with the largest VRAM, but that's overkill for a single-machine config.
+/**
+ * @brief Singleton exposing GPU utilization, VRAM state, and temperatures.
+ *
+ * Polls `/sys/class/drm/cardN/device/{gpu_busy_percent, mem_info_vram_used,
+ * mem_info_vram_total}` every 500 ms.
+ *
+ * On AM5 boxes the iGPU lives on card0 (~512 M VRAM) and the dGPU on card1.
+ * We hardcode card1 — dynamic detection (largest VRAM) is possible but
+ * overkill for a single-machine config.
+ *
+ * The hwmon directory is resolved at startup since only one `hwmon*` lives
+ * under `cardPath/hwmon/` for the dGPU.
+ */
 QtObject {
     id: root
 
+    /** sysfs path to the GPU device (card0 = iGPU, card1 = dGPU on AM5). */
     readonly property string cardPath: "/sys/class/drm/card1/device"
 
+    /** GPU utilization as a percentage (0–100). */
     property real gpuPercent: 0
-    property real vramUsed: 0    // bytes
-    property real vramTotal: 0   // bytes
-    property real vramPercent: 0 // 0–100
+    /** Used VRAM in bytes. */
+    property real vramUsed: 0
+    /** Total VRAM in bytes. */
+    property real vramTotal: 0
+    /** Used VRAM as a percentage (0–100). */
+    property real vramPercent: 0
 
-    // GPU temperatures in °C: edge (die border), junction (hottest spot),
-    // mem (VRAM). The hwmon directory is resolved at startup — only one
-    // hwmon* lives under cardPath/hwmon/ for the dGPU.
+    /** Edge (die border) temperature in °C. */
     property real gpuTempEdge: 0
+    /** Junction (hottest spot) temperature in °C. */
     property real gpuTempJunction: 0
+    /** VRAM memory temperature in °C. */
     property real gpuTempMem: 0
     property string _gpuHwmon: ""
 
-    // Rolling history of the last `_historyLength` GPU% samples, one per
-    // 500 ms tick. Sparkline component reads this directly.
     readonly property int _historyLength: 60
+    /**
+     * Rolling history of the last 60 @ref gpuPercent samples (one per
+     * 500 ms tick). Read directly by the Sparkline component.
+     */
     property var gpuHistory: []
 
     function _pushHistory(arr, value) {
@@ -66,7 +79,7 @@ QtObject {
     }
 
     // One-shot resolver: cardPath/hwmon/ contains a single hwmonN dir for
-    // the dGPU. Stdout is the resolved path; we then bind the temp FileViews.
+    // the dGPU. stdout is the resolved path; we then bind the temp FileViews.
     property Process _resolveGpuHwmon: Process {
         command: ["sh", "-c", "ls -d " + root.cardPath + "/hwmon/hwmon* 2>/dev/null | head -1"]
         running: true
