@@ -11,7 +11,8 @@ import Quickshell.Io
  * lives here because it's fundamentally a CPU pressure metric.
  *
  * The hwmon path is resolved at startup (hwmon numbering is not stable
- * across reboots) by scanning `/sys/class/hwmon/* /name` for "k10temp".
+ * across reboots) by scanning each `name` file under `/sys/class/hwmon`
+ * for "k10temp".
  */
 QtObject {
     id: root
