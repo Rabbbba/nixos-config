@@ -1,0 +1,42 @@
+name: Build
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+# Une seule build à la fois (les builds Nix sont CPU/disk intensifs).
+concurrency:
+  group: build
+  cancel-in-progress: false
+
+jobs:
+  nixos:
+    name: NixOS toplevel build
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: cachix/install-nix-action@v30
+        with:
+          # Substituters supplémentaires : cache.nixos.org est par défaut, on
+          # ajoute hyprland qui héberge ses builds (gros gain sur Hyprland +
+          # ses libs vs build local).
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+            substituters = https://cache.nixos.org https://hyprland.cachix.org
+            trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc=
+
+      # Build de la toplevel system derivation = équivalent de `nh os switch`
+      # mais sans installer. Si ça compile, n'importe quelle machine peut
+      # `nh os switch` ce commit. Filet de sécurité ultime contre les
+      # régressions (package supprimé upstream, option dépréciée, etc.).
+      - name: nix build .#nixosConfigurations.Rayane.config.system.build.toplevel
+        run: |
+          nix build \
+            --no-link \
+            --print-build-logs \
+            .#nixosConfigurations.Rayane.config.system.build.toplevel
