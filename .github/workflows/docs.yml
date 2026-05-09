@@ -21,6 +21,13 @@ jobs:
   build:
     name: Build (strict)
     runs-on: ubuntu-latest
+    # Force UTF-8: sans ça doxyqml plante sur les caractères non-ASCII
+    # (ex: `°C` dans les commentaires) car Python ouvre les fichiers selon
+    # locale.getpreferredencoding() qui peut résoudre en ASCII sur le runner.
+    env:
+      LANG: C.UTF-8
+      LC_ALL: C.UTF-8
+      PYTHONIOENCODING: utf-8
     steps:
       - uses: actions/checkout@v4
 
@@ -29,7 +36,6 @@ jobs:
 
       # Installe uv (même runtime que local) pour que doxyqml-wrapper.sh
       # utilise la même version (latest) avec le même Python que Rayane.
-      # Évite les bugs d'encoding UTF-8 vus avec pip install + Python 3.10.
       - uses: astral-sh/setup-uv@v6
 
       - name: Make wrapper executable
