@@ -51,11 +51,14 @@
     vscode-langservers-extracted # LSP HTML/CSS/JSON
     stylua # Formateur Lua
     prettier # Formateur JS/MD/YAML
-    qt6.qtdeclarative # Fourni qmlls (LSP qml)
+    qt6.qtdeclarative # Fourni qmlformat (LSP qmlls aussi mais on utilise qml-language-server à la place)
+    inputs.qml-language-server.packages.${pkgs.system}.default # LSP QML Go/tree-sitter
     taplo # Formateur TOML
     shfmt # Formateur Shell
     nodejs
     ripgrep
+    doxygen # Génération doc (cf quickshell/Doxyfile)
+    graphviz # Diagrammes d'héritage pour Doxygen (DOT)
 
     # Window manager & desktop
     # hyprland — fourni par programs.hyprland system-wide (configuration.nix)

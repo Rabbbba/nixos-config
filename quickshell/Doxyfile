@@ -1,0 +1,55 @@
+# Doxygen config minimal pour Quickshell-bar (test).
+# Lance: nix-shell -p doxygen --run "doxygen Doxyfile"
+# Sortie: doc/html/index.html
+
+PROJECT_NAME           = "Quickshell Bar"
+PROJECT_BRIEF          = "Bar Quickshell custom (modules CPU/RAM/GPU/Audio/Tidal/...)"
+OUTPUT_DIRECTORY       = doc
+
+INPUT                  = .
+RECURSIVE              = YES
+FILE_PATTERNS          = *.qml
+EXCLUDE                = doc
+
+# QML n'est pas natif Doxygen — on utilise doxyqml comme INPUT_FILTER:
+# il transforme chaque .qml en pseudo-C++ (property -> Q_PROPERTY, signal ->
+# Q_SIGNALS) avant que Doxygen le voie. doxyqml est lancé via uvx (download
+# en cache au 1er run, sans installation persistante).
+FILTER_PATTERNS        = "*.qml=./doxyqml-wrapper.sh"
+EXTENSION_MAPPING      = qml=C++
+
+# EXTRACT_ALL = NO requis pour que WARN_IF_UNDOCUMENTED produise des warnings.
+# Conséquence: un élément sans /** */ disparaît du HTML — incitation passive
+# à documenter, complémentaire des warnings.
+EXTRACT_ALL            = NO
+# EXTRACT_PRIVATE = NO élimine le bruit: doxyqml classe automatiquement
+# tout ce qui n'est PAS une `property`/`signal` déclarée (anchors, child Items,
+# width/height, etc.) sous `private:`. Du coup seules les vraies APIs publiques
+# sont exigées.
+EXTRACT_PRIVATE        = NO
+EXTRACT_STATIC         = YES
+
+# Exclure les symboles préfixés `_` (convention QML pour "privé"). doxyqml
+# ne distingue pas property/_property — on filtre via le nom.
+EXCLUDE_SYMBOLS        = _*
+
+# La 1ère phrase d'un /** ... */ devient automatiquement le @brief.
+JAVADOC_AUTOBRIEF      = YES
+
+# Sortie HTML uniquement.
+GENERATE_HTML          = YES
+GENERATE_LATEX         = NO
+
+# Moins de bruit dans le terminal.
+QUIET                  = YES
+# Phase 1 (actuelle): warn-only pour lister les éléments non documentés
+# sans bloquer. Phase 2: ajouter WARN_AS_ERROR = FAIL_ON_WARNINGS quand
+# tous les composants sont documentés.
+WARN_IF_UNDOCUMENTED   = YES
+# Toutes les functions publiques sont typées (`function f(arg: type): type`),
+# donc doxyqml génère `type f(type arg)` parsable par Doxygen et @param
+# se valide correctement.
+WARN_NO_PARAMDOC       = YES
+# Strict mode: doxygen exit non-zero si warnings → utilisable dans pre-commit
+# hook ou CI pour bloquer toute régression de doc.
+WARN_AS_ERROR          = FAIL_ON_WARNINGS

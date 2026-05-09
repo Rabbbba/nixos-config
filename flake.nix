@@ -26,11 +26,17 @@
       url = "github:0xc000022070/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # qml-language-server — LSP QML Go/tree-sitter (alternative à qmlls Qt)
+    qml-language-server = {
+      url = "github:cushycush/qml-language-server";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, home-manager, quickshell, nix-cachyos-kernel, zen-browser }: {
+  outputs = { self, nixpkgs, home-manager, quickshell, nix-cachyos-kernel, zen-browser, qml-language-server }: {
     nixosConfigurations.Rayane = nixpkgs.lib.nixosSystem {
-      specialArgs = { inputs = { inherit home-manager quickshell zen-browser; }; };
+      specialArgs = { inputs = { inherit home-manager quickshell zen-browser qml-language-server; }; };
 
       modules = [
         ./configuration.nix
@@ -39,7 +45,7 @@
         {
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
-          home-manager.extraSpecialArgs = { inputs = { inherit home-manager quickshell zen-browser; }; };
+          home-manager.extraSpecialArgs = { inputs = { inherit home-manager quickshell zen-browser qml-language-server; }; };
           home-manager.users.rayane = import ./home.nix;
         }
       ];
