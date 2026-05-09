@@ -44,6 +44,10 @@
       qml-language-server,
       ...
     }:
+    let
+      system = "x86_64-linux";
+      pkgs = nixpkgs.legacyPackages.${system};
+    in
     {
       nixosConfigurations.Rayane = nixpkgs.lib.nixosSystem {
         specialArgs = {
@@ -77,6 +81,41 @@
             home-manager.users.rayane = import ./home.nix;
           }
         ];
+      };
+
+      # Devshell : `nix develop` (ou auto-load via `direnv` + `.envrc`).
+      # Source de vérité pour les outils utilisés en local ET dans le CI
+      # (cf. .github/workflows/lint.yml qui utilise `nix develop --command`).
+      devShells.${system}.default = pkgs.mkShell {
+        packages = with pkgs; [
+          # Documentation
+          doxygen
+          graphviz
+          uv # pour `uvx doxyqml` (cf. quickshell/doxyqml-wrapper.sh)
+
+          # Linters Nix
+          statix # détecteur d'anti-patterns
+          deadnix # détecteur de code mort
+          nixfmt-rfc-style # formateur Nix (style RFC 166)
+
+          # Linters QML / shell
+          qt6.qtdeclarative # fournit qmllint, qmlformat
+          shellcheck
+        ];
+
+        shellHook = ''
+          echo ""
+          echo "  nixos-config devshell ready."
+          echo ""
+          echo "  Common commands:"
+          echo "    cd quickshell && doxygen Doxyfile     build docs locally"
+          echo "    statix check .                        nix anti-pattern lint"
+          echo "    deadnix .                             find unused nix code"
+          echo "    nixfmt --check **/*.nix               check nix formatting"
+          echo "    qmllint quickshell/**/*.qml           qml lint"
+          echo "    shellcheck hypr/scripts/*.sh          shell lint"
+          echo ""
+        '';
       };
     };
 }
