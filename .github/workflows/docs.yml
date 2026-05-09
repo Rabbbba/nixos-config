@@ -1,0 +1,60 @@
+name: Documentation
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+# Pages a besoin de ces permissions pour publier.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Évite des deploys concurrents (le dernier push gagne).
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build (strict)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install doxygen + graphviz
+        run: sudo apt-get update && sudo apt-get install -y doxygen graphviz
+
+      - name: Install doxyqml
+        run: pip install --user doxyqml
+
+      - name: Make wrapper executable
+        run: chmod +x quickshell/doxyqml-wrapper.sh
+
+      # WARN_AS_ERROR = FAIL_ON_WARNINGS dans le Doxyfile → exit ≠ 0
+      # si un membre QML public est non documenté.
+      - name: Build documentation
+        working-directory: quickshell
+        run: doxygen Doxyfile
+
+      - name: Upload Pages artifact
+        # Ne déploie que sur push master, pas sur PR.
+        if: github.event_name == 'push'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: quickshell/doc/html
+
+  deploy:
+    name: Deploy to Pages
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
