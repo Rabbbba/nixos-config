@@ -118,7 +118,6 @@
   hardware.amdgpu.overdrive.enable = true; # Expose les sysfs OC pour LACT
   hardware.amdgpu.initrd.enable = true; # amdgpu chargé dès l'initrd (boot propre)
 
-
   # LACT — contrôle GPU AMD (clocks, fan curve, stats)
   services.lact.enable = true;
 

@@ -84,8 +84,8 @@
     cliphist # Historique presse-papiers
 
     # Apps
-    vesktop  # Discord client with proper Wayland support (replaced upstream discord)
-    inputs.zen-browser.packages.${pkgs.system}.default  # Firefox fork avec UI moderne
+    vesktop # Discord client with proper Wayland support (replaced upstream discord)
+    inputs.zen-browser.packages.${pkgs.system}.default # Firefox fork avec UI moderne
     bitwarden-desktop
     mangohud
     obsidian
@@ -122,7 +122,9 @@
   home.sessionVariables = {
     XCURSOR_THEME = "Bibata-Modern-Amber";
     XCURSOR_SIZE = "24";
-    QML_IMPORT_PATH = "${pkgs.qt6.qtdeclarative}/lib/qt-6/qml:${inputs.quickshell.packages.${pkgs.system}.default}/lib/qt-6/qml";
+    QML_IMPORT_PATH = "${pkgs.qt6.qtdeclarative}/lib/qt-6/qml:${
+      inputs.quickshell.packages.${pkgs.system}.default
+    }/lib/qt-6/qml";
   };
 
   #Qt
@@ -207,7 +209,10 @@
     Unit = {
       Description = "Walker — application launcher";
       PartOf = [ "graphical-session.target" ];
-      After = [ "graphical-session.target" "elephant.service" ];
+      After = [
+        "graphical-session.target"
+        "elephant.service"
+      ];
       Requires = [ "elephant.service" ];
     };
     Service = {

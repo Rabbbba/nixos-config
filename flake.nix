@@ -34,21 +34,49 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, quickshell, nix-cachyos-kernel, zen-browser, qml-language-server }: {
-    nixosConfigurations.Rayane = nixpkgs.lib.nixosSystem {
-      specialArgs = { inputs = { inherit home-manager quickshell zen-browser qml-language-server; }; };
+  outputs =
+    {
+      self,
+      nixpkgs,
+      home-manager,
+      quickshell,
+      nix-cachyos-kernel,
+      zen-browser,
+      qml-language-server,
+    }:
+    {
+      nixosConfigurations.Rayane = nixpkgs.lib.nixosSystem {
+        specialArgs = {
+          inputs = {
+            inherit
+              home-manager
+              quickshell
+              zen-browser
+              qml-language-server
+              ;
+          };
+        };
 
-      modules = [
-        ./configuration.nix
-        { nixpkgs.overlays = [ nix-cachyos-kernel.overlays.default ]; }
-        home-manager.nixosModules.home-manager
-        {
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          home-manager.extraSpecialArgs = { inputs = { inherit home-manager quickshell zen-browser qml-language-server; }; };
-          home-manager.users.rayane = import ./home.nix;
-        }
-      ];
+        modules = [
+          ./configuration.nix
+          { nixpkgs.overlays = [ nix-cachyos-kernel.overlays.default ]; }
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.extraSpecialArgs = {
+              inputs = {
+                inherit
+                  home-manager
+                  quickshell
+                  zen-browser
+                  qml-language-server
+                  ;
+              };
+            };
+            home-manager.users.rayane = import ./home.nix;
+          }
+        ];
+      };
     };
-  };
 }
