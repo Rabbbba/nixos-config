@@ -23,17 +23,29 @@ vim.lsp.config("nixd", {
 })
 vim.lsp.enable("nixd")
 
--- Pour revert au LSP officiel Qt, dé-commenter ce bloc et commenter le suivant:
--- vim.lsp.config("qmlls", {
--- 	cmd = { "qmlls", "-E" },
--- 	capabilities = require("cmp_nvim_lsp").default_capabilities(),
--- })
--- vim.lsp.enable("qmlls")
+-- qmldir EXCLU intentionnellement de root_markers: chaque sous-dossier
+-- (modules/, popouts/...) contient son propre qmldir, ce qui ferait que le
+-- LSP considère le sous-dossier comme racine et n'indexerait pas les autres
+-- dossiers du projet.
+--
+-- Note: aucun LSP QML actuel ne fait fonctionner go-to-definition correctement
+-- sur ce projet. qmlls a besoin d'un buildDir CMake (qu'on n'a pas car QML pur),
+-- qml-language-server ne suit pas les imports relatifs `import "../foo"`.
+-- On accepte la limitation: hover (K) et autocomplete fonctionnent, c'est l'essentiel.
 
 vim.lsp.config("qml-language-server", {
 	cmd = { "qml-language-server" },
 	filetypes = { "qml" },
-	root_markers = { "qmldir", "shell.qml", ".git" },
+	root_markers = { "shell.qml", ".git" },
 	capabilities = require("cmp_nvim_lsp").default_capabilities(),
 })
 vim.lsp.enable("qml-language-server")
+
+-- Alternative: qmlls (Qt officiel). À activer si on a un jour un buildDir CMake valide.
+-- vim.lsp.config("qmlls", {
+-- 	cmd = { "qmlls", "-E" },
+-- 	filetypes = { "qml" },
+-- 	root_markers = { "shell.qml", ".git" },
+-- 	capabilities = require("cmp_nvim_lsp").default_capabilities(),
+-- })
+-- vim.lsp.enable("qmlls")

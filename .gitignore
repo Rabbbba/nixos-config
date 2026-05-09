@@ -25,3 +25,7 @@ quickshell/modules/Theme.qml
 
 # Doxygen output (généré par `doxygen quickshell/Doxyfile`)
 quickshell/doc/
+
+# Auto-régénéré par Quickshell pour qmlls; contient des paths /nix/store/ avec
+# des hashes spécifiques à un build, donc non portable.
+quickshell/.qmlls.ini
