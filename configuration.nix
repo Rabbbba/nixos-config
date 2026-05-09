@@ -32,6 +32,22 @@
     flake = "/etc/nixos";
   };
 
+  # nix-ld — permet de runner les binaires Linux génériques (releases GitHub,
+  # binaires statiques téléchargés) directement, sans wrapper steam-run.
+  # Ajouté pour codebase-memory-mcp (knowledge graph indexer pour pi).
+  programs.nix-ld = {
+    enable = true;
+    libraries = with pkgs; [
+      stdenv.cc.cc.lib
+      zlib
+      openssl
+      glibc
+      curl
+      libxml2
+      libxcrypt
+    ];
+  };
+
   # Compression de la swap en RAM (utile sans vraie swap disque)
   zramSwap.enable = true;
 
