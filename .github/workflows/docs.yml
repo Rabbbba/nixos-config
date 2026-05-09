@@ -27,8 +27,10 @@ jobs:
       - name: Install doxygen + graphviz
         run: sudo apt-get update && sudo apt-get install -y doxygen graphviz
 
-      - name: Install doxyqml
-        run: pip install --user doxyqml
+      # Installe uv (même runtime que local) pour que doxyqml-wrapper.sh
+      # utilise la même version (latest) avec le même Python que Rayane.
+      # Évite les bugs d'encoding UTF-8 vus avec pip install + Python 3.10.
+      - uses: astral-sh/setup-uv@v6
 
       - name: Make wrapper executable
         run: chmod +x quickshell/doxyqml-wrapper.sh
