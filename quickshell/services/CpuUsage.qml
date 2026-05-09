@@ -29,7 +29,7 @@ QtObject {
             l15: 0
         })
 
-    /** CPU temperature (Tctl) in °C. */
+    /** CPU temperature (Tctl) in degC. */
     property real cpuTemp: 0
     property string _cpuHwmon: ""
 

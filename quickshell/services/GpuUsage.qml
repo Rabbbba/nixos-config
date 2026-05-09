@@ -30,11 +30,11 @@ QtObject {
     /** Used VRAM as a percentage (0–100). */
     property real vramPercent: 0
 
-    /** Edge (die border) temperature in °C. */
+    /** Edge (die border) temperature in degC. */
     property real gpuTempEdge: 0
-    /** Junction (hottest spot) temperature in °C. */
+    /** Junction (hottest spot) temperature in degC. */
     property real gpuTempJunction: 0
-    /** VRAM memory temperature in °C. */
+    /** VRAM memory temperature in degC. */
     property real gpuTempMem: 0
     property string _gpuHwmon: ""
 

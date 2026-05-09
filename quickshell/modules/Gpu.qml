@@ -9,7 +9,7 @@ import "../popouts"
  * The value is read from the @ref services::GpuUsage singleton (sysfs polling).
  * Clicking opens the @ref popouts::GpuPopup popout (history graph + VRAM + thermals).
  *
- * Tooltip: "GPU XX% · Edge YY °C" (XX = usage, YY = edge temperature).
+ * Tooltip: "GPU XX% - Edge YY degC" (XX = usage, YY = edge temperature).
  */
 ModuleWrapper {
     id: root
