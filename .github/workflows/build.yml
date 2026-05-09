@@ -22,13 +22,22 @@ jobs:
 
       - uses: cachix/install-nix-action@v30
         with:
-          # Substituters supplémentaires : cache.nixos.org est par défaut, on
-          # ajoute hyprland qui héberge ses builds (gros gain sur Hyprland +
-          # ses libs vs build local).
+          # cache.nixos.org est par défaut. hyprland.cachix.org évite de
+          # rebuilder Hyprland et ses libs à partir des sources.
+          # cachix-action ci-dessous ajoute automatiquement rabbbba-nixos.
           extra_nix_config: |
             experimental-features = nix-command flakes
             substituters = https://cache.nixos.org https://hyprland.cachix.org
             trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc=
+
+      # Cachix push : ajoute rabbbba-nixos aux substituters de la session
+      # (download depuis le cache si déjà buildé), puis signe et upload chaque
+      # dérivation buildée pendant ce job. Premier run = ~10 min, runs suivants
+      # sans changements = ~30 sec.
+      - uses: cachix/cachix-action@v15
+        with:
+          name: rabbbba-nixos
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
 
       # Build de la toplevel system derivation = équivalent de `nh os switch`
       # mais sans installer. Si ça compile, n'importe quelle machine peut

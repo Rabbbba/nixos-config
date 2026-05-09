@@ -2,6 +2,7 @@
 
 [![Documentation](https://github.com/Rabbbba/nixos-config/actions/workflows/docs.yml/badge.svg)](https://rabbbba.github.io/nixos-config/)
 [![Lint](https://github.com/Rabbbba/nixos-config/actions/workflows/lint.yml/badge.svg)](https://github.com/Rabbbba/nixos-config/actions/workflows/lint.yml)
+[![Build](https://github.com/Rabbbba/nixos-config/actions/workflows/build.yml/badge.svg)](https://github.com/Rabbbba/nixos-config/actions/workflows/build.yml)
 
 My personal NixOS desktop — flake-based, **Hyprland on Wayland**, with a **custom Quickshell QML bar** built from scratch instead of Waybar.
 
