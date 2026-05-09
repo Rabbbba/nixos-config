@@ -5,6 +5,9 @@ on:
     branches: [master]
   pull_request:
     branches: [master]
+  # Permet de déclencher manuellement depuis l'onglet Actions (bouton "Run workflow"),
+  # utile pour redéployer Pages sans avoir à push un commit vide.
+  workflow_dispatch:
 
 # Pages a besoin de ces permissions pour publier.
 permissions:

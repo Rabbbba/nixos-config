@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# Vérifie que la doc Doxygen passe avant chaque commit qui touche du QML.
+# Strict mode actif (WARN_AS_ERROR) → bloque le commit si du code QML public
+# est non documenté ou si la doc a une erreur.
+#
+# Activation (une fois par clone):
+#   git config core.hooksPath .githooks
+#
+# Skip ponctuel (debug):
+#   git commit --no-verify
+
+set -e
+
+if ! git diff --cached --name-only --diff-filter=ACM | grep -qE '^quickshell/.*\.qml$'; then
+    exit 0
+fi
+
+if ! command -v doxygen >/dev/null 2>&1; then
+    echo "[pre-commit] doxygen pas dans le PATH — skip (rebuild avec 'nh os switch')" >&2
+    exit 0
+fi
+
+echo "[pre-commit] Quickshell QML modifies, verification de la doc Doxygen..."
+
+cd "$(git rev-parse --show-toplevel)/quickshell"
+if ! doxygen Doxyfile >/dev/null 2>&1; then
+    echo "[pre-commit] FAIL — relance manuellement pour voir les erreurs:" >&2
+    echo "             cd quickshell && doxygen Doxyfile" >&2
+    exit 1
+fi
+
+echo "[pre-commit] OK"
