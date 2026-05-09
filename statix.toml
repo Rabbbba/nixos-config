@@ -1,0 +1,10 @@
+# statix configuration — see https://github.com/nerdypepper/statix
+#
+# W20 (repeated_keys): we deliberately split attribute paths across thematic
+# sections (e.g. `services.networkmanager.enable` next to network code,
+# `services.pulse.enable` next to audio code) for readability. Auto-collapsing
+# them under a single `services = { ... }` block would hurt navigation in
+# configuration.nix and home.nix.
+disabled = ["repeated_keys"]
+
+ignore = [".direnv", ".git", "result", "result-*"]
