@@ -1,0 +1,84 @@
+name: Lint
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+# Tous les jobs utilisent `nix develop --command <tool>` pour ré-utiliser
+# exactement les mêmes versions d'outils que le devshell local — pas de
+# divergence local-vs-CI.
+
+jobs:
+  nix:
+    name: Nix (statix + deadnix + nixfmt)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v30
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+
+      - name: statix check
+        run: nix develop --command statix check .
+
+      # hardware-configuration.nix exclu : auto-généré par nixos-generate-config,
+      # ne doit pas être édité à la main (perdu au prochain regen).
+      - name: deadnix
+        run: nix develop --command deadnix --fail --exclude hardware-configuration.nix .
+
+      - name: nixfmt --check
+        run: |
+          nix develop --command bash -c '
+            files=$(find . -name "*.nix" -not -path "./.git/*")
+            nixfmt --check $files
+          '
+
+  qml:
+    name: QML (qmllint)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v30
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+
+      - name: qmllint
+        # `--enable=` désactivé via flag pour les categories qui ne s'appliquent
+        # pas (Quickshell utilise des types custom non vus par qmllint sans
+        # importPaths supplémentaires). Continue-on-error: warnings affichés
+        # mais ne bloquent pas le build (le strict-mode Doxygen reste
+        # l'autorité sur ce qui doit être documenté).
+        continue-on-error: true
+        run: |
+          nix develop --command bash -c '
+            find quickshell -name "*.qml" -print0 | xargs -0 qmllint
+          '
+
+  shell:
+    name: Shell (shellcheck)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v30
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+
+      - name: shellcheck
+        run: |
+          nix develop --command bash -c '
+            files=$(find . -type f \( -name "*.sh" -o -name "*.bash" \) -not -path "./.git/*")
+            if [ -n "$files" ]; then
+              shellcheck $files
+            else
+              echo "No shell scripts found."
+            fi
+          '
