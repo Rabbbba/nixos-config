@@ -36,13 +36,13 @@
 
   outputs =
     {
-      self,
       nixpkgs,
       home-manager,
       quickshell,
       nix-cachyos-kernel,
       zen-browser,
       qml-language-server,
+      ...
     }:
     {
       nixosConfigurations.Rayane = nixpkgs.lib.nixosSystem {
