@@ -16,7 +16,11 @@ jobs:
   nixos:
     name: NixOS toplevel build
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    # 180 min car le premier build doit compiler from-scratch nix-cachyos-kernel
+    # et zen-browser (pas de cache public pour ces deux inputs). Une fois Cachix
+    # populé, les builds suivants prennent ~5 min, sauf si l'un de ces deux
+    # inputs est mis à jour (cf. flake.lock).
+    timeout-minutes: 180
     steps:
       - uses: actions/checkout@v4
 
