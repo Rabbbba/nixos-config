@@ -161,6 +161,9 @@
   environment.sessionVariables = {
     # Active le backend Wayland natif de Proton (au lieu de XWayland) pour tous les jeux Steam
     PROTON_ENABLE_WAYLAND = "1";
+    # Active le wrapper Wayland des Electron NixOS-wrappés (Vesktop, etc.) — sinon
+    # ils tournent en XWayland et le screen share via PipeWire renvoie un buffer vide.
+    NIXOS_OZONE_WL = "1";
   };
 
   # ── Packages système (les packages user vont dans home.nix) ────────────────
