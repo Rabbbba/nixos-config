@@ -34,11 +34,11 @@ jobs:
   nixos:
     name: NixOS toplevel build
     runs-on: ubuntu-latest
-    # 180 min car le premier build doit compiler from-scratch nix-cachyos-kernel
-    # et zen-browser (pas de cache public pour ces deux inputs). Une fois Cachix
-    # populé, les builds suivants prennent ~5 min, sauf si l'un de ces deux
-    # inputs est mis à jour (cf. flake.lock).
-    timeout-minutes: 180
+    # 300 min (5h) car le premier build doit compiler from-scratch
+    # nix-cachyos-kernel (~2h sur runner GitHub 4 vCPU) et zen-browser
+    # (~40 min). Une fois Cachix populé via `cachix watch-store`, les
+    # runs suivants prennent ~2-5 min car tout est servi depuis le cache.
+    timeout-minutes: 300
     steps:
       - uses: actions/checkout@v4
 
@@ -52,10 +52,11 @@ jobs:
             substituters = https://cache.nixos.org https://hyprland.cachix.org
             trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc=
 
-      # Cachix push : ajoute rabbbba-nixos aux substituters de la session
-      # (download depuis le cache si déjà buildé), puis signe et upload chaque
-      # dérivation buildée pendant ce job. Premier run = ~10 min, runs suivants
-      # sans changements = ~30 sec.
+      # Cachix push : configure auth + ajoute rabbbba-nixos aux substituters
+      # de la session. Le post-step de cette action push aussi tous les paths
+      # buildés à la fin (filet de sécurité), mais le `cachix watch-store`
+      # ci-dessous push EN CONTINU pendant le build — comme ça si on timeout,
+      # on garde tout ce qui a déjà été compilé.
       - uses: cachix/cachix-action@v15
         with:
           name: rabbbba-nixos
@@ -65,8 +66,17 @@ jobs:
       # mais sans installer. Si ça compile, n'importe quelle machine peut
       # `nh os switch` ce commit. Filet de sécurité ultime contre les
       # régressions (package supprimé upstream, option dépréciée, etc.).
+      #
+      # `cachix watch-store` tourne en background et push chaque store path
+      # nouvellement créé. Crucial pour les premiers builds longs : si on
+      # timeout, le travail déjà fait n'est pas perdu.
       - name: nix build .#nixosConfigurations.Rayane.config.system.build.toplevel
         run: |
+          # Push streaming: surveille /nix/store et push les nouveaux paths.
+          cachix watch-store rabbbba-nixos &
+          WATCH_PID=$!
+          # On nettoie watch-store même en cas d'échec (sinon le job reste pendu).
+          trap "kill $WATCH_PID 2>/dev/null || true; wait $WATCH_PID 2>/dev/null || true" EXIT
           nix build \
             --no-link \
             --print-build-logs \
