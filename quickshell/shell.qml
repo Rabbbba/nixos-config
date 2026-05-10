@@ -126,6 +126,9 @@ ShellRoot {
                         Ram {
                             panelWindow: panelBar
                         }
+                        Bluetooth {
+                            panelWindow: panelBar
+                        }
                         Network {
                             panelWindow: panelBar
                         }
