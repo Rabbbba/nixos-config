@@ -98,9 +98,10 @@
           deadnix # détecteur de code mort
           nixfmt-rfc-style # formateur Nix (style RFC 166)
 
-          # Linters QML / shell
+          # Linters QML / shell / lua
           qt6.qtdeclarative # fournit qmllint, qmlformat
           shellcheck
+          stylua # formateur Lua (config dans stylua.toml)
         ];
 
         shellHook = ''
@@ -114,6 +115,7 @@
           echo "    nixfmt --check **/*.nix               check nix formatting"
           echo "    qmllint quickshell/**/*.qml           qml lint"
           echo "    shellcheck hypr/scripts/*.sh          shell lint"
+          echo "    stylua --check nvim/                  lua format check"
           echo ""
         '';
       };

@@ -1,0 +1,12 @@
+# stylua configuration — https://github.com/JohnnyMorganz/StyLua
+#
+# We keep tabs for Lua (the NvChad / Neovim Lua convention) even though the
+# rest of the repo uses spaces. The .editorconfig has a matching `[*.lua]`
+# block so editors that read editorconfig do the same.
+
+column_width = 120
+line_endings = "Unix"
+indent_type = "Tabs"
+indent_width = 2
+quote_style = "AutoPreferDouble"
+call_parentheses = "Always"
