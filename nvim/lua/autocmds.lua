@@ -116,17 +116,18 @@ autocmd({ "BufNewFile", "BufReadPost" }, {
 			},
 		}
 
-		local template = templates[folder] or {
-			"import QtQuick",
-			"",
-			"/**",
-			" * @brief TODO: short description.",
-			" */",
-			"Item {",
-			"    id: root",
-			"",
-			"}",
-		}
+		local template = templates[folder]
+			or {
+				"import QtQuick",
+				"",
+				"/**",
+				" * @brief TODO: short description.",
+				" */",
+				"Item {",
+				"    id: root",
+				"",
+				"}",
+			}
 
 		vim.api.nvim_buf_set_lines(ctx.buf, 0, -1, false, template)
 
