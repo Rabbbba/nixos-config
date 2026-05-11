@@ -108,6 +108,7 @@
     bc # Calculatrice CLI
     jq # JSON parsing — utilisé par les scripts Hyprland
     socat # Socket cat — utilisé pour écouter events Hyprland
+    hyprpolkitagent # Agent polkit pour Hyprland (requis pour LACT, gparted, etc.)
 
     # Fonts
     nerd-fonts.iosevka
@@ -125,6 +126,14 @@
     QML_IMPORT_PATH = "${pkgs.qt6.qtdeclarative}/lib/qt-6/qml:${
       inputs.quickshell.packages.${pkgs.system}.default
     }/lib/qt-6/qml";
+
+    # Gaming — réduit les stutters de compilation shader (UE5 notamment).
+    # Par défaut Mesa cap le cache à 1 GiB ; un AAA récent évince ses propres
+    # entrées en cours de session, ce qui re-déclenche des compiles à chaud.
+    MESA_SHADER_CACHE_MAX_SIZE = "10G";
+    # Index unique au lieu de millions de petits fichiers — réduit la pression
+    # inode + IO sur btrfs au démarrage des jeux avec gros cache shader.
+    MESA_DISK_CACHE_SINGLE_FILE = "1";
   };
 
   #Qt

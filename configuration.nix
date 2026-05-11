@@ -51,6 +51,12 @@
   # Compression de la swap en RAM (utile sans vraie swap disque)
   zramSwap.enable = true;
 
+  # Le module zramSwap met swappiness à 100 par défaut. Trop agressif pour notre
+  # usage (30 GiB de RAM, jeux + inference LLM en RAM/VRAM) : le kernel pré-swap
+  # des pages "froides" qu'on retouche ensuite → major page faults = stutters.
+  # 10 = ne swap que sous vraie pression mémoire.
+  boot.kernel.sysctl."vm.swappiness" = 10;
+
   # Swayosd — udev pour les permissions backlight/input
   services.udev.packages = [ pkgs.swayosd ];
 
@@ -115,10 +121,18 @@
   hardware.graphics.enable = true;
   hardware.graphics.enable32Bit = true; # 32-bit pour les jeux
   hardware.amdgpu.opencl.enable = true;
-  hardware.amdgpu.overdrive.enable = true; # Expose les sysfs OC pour LACT
+  # overdrive.enable=true REMIS 2026-05-11 PM : ajoute amdgpu.ppfeaturemask=0xfffd7fff
+  # qui DÉSACTIVE PP_GFXOFF. Sans ça, le GPU fait des transitions GFXOFF/GFX entre
+  # chaque token decode (~10ms wake-up cost) → throughput plafonne à ~9 t/s sur
+  # workloads intermittents (LLM). Avec PP_GFXOFF désactivé + profile_peak forcé,
+  # le GPU reste vraiment stable au peak entre les tokens → ~25 t/s soutenu.
+  hardware.amdgpu.overdrive.enable = true;
   hardware.amdgpu.initrd.enable = true; # amdgpu chargé dès l'initrd (boot propre)
 
-  # LACT — contrôle GPU AMD (clocks, fan curve, stats)
+  # Microcode CPU AMD (patches Zen 4 pour le 7800X3D — stabilité + perfs)
+  hardware.cpu.amd.updateMicrocode = true;
+
+  # LACT — GUI monitoring/OC GPU AMD
   services.lact.enable = true;
 
   # ── Bluetooth ───────────────────────────────────────────────────────────────
@@ -164,6 +178,12 @@
     # Active le wrapper Wayland des Electron NixOS-wrappés (Vesktop, etc.) — sinon
     # ils tournent en XWayland et le screen share via PipeWire renvoie un buffer vide.
     NIXOS_OZONE_WL = "1";
+    # Hyprland (wlroots) en backend Vulkan natif — meilleur sur RDNA4 que l'OpenGL ES default
+    WLR_RENDERER = "vulkan";
+    # Optims RADV pour RDNA4 : sam = path optimisé Resizable BAR (déjà activé côté HW),
+    # nv_ms = Mesh Shader optimisations (jeux récents), gpl = Graphics Pipeline Library
+    # (réduit massivement les stutters de compilation shader, surtout UE5)
+    RADV_PERFTEST = "sam,nv_ms,gpl";
   };
 
   # ── Packages système (les packages user vont dans home.nix) ────────────────
