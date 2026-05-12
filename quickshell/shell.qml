@@ -4,6 +4,7 @@
 
 pragma ComponentBehavior: Bound
 import Quickshell
+import Quickshell.Hyprland
 import Quickshell.Wayland
 import QtQuick.Effects
 import QtQuick
@@ -97,6 +98,7 @@ ShellRoot {
                     }
 
                     Clock {
+                        id: clockModule
                         panelWindow: panelBar
                         anchors {
                             horizontalCenter: parent.horizontalCenter
@@ -182,6 +184,68 @@ ShellRoot {
                         height: parent.height - 60
                         radius: 24
                         color: "white"
+                    }
+                }
+            }
+
+            // ───────────────────── Popout container ────────────────────
+            // Fullscreen PanelWindow with input mask — 40 px bar + visible
+            // popout zone are clickable; everything else passes through.
+            // Popouts are Item children positioned via mapToGlobal/mapFromGlobal.
+            PanelWindow {
+                id: panelPopout
+                color: "transparent"
+                WlrLayershell.layer: WlrLayer.Top
+                exclusionMode: ExclusionMode.Ignore
+                anchors {
+                    top: true
+                    left: true
+                    right: true
+                    bottom: true
+                }
+                screen: scope.modelData
+
+                // Mask: bar strip (40 px) + exact popout zone when visible.
+                // Nested Region defaults to Combine (union).
+                mask: Region {
+                    x: 0; y: 0
+                    width: parent.width; height: 40
+
+                    Region {
+                        x: calendarPopout.x
+                        y: calendarPopout.y
+                        width: calendarPopout.visible ? calendarPopout.implicitWidth : 0
+                        height: calendarPopout.visible ? calendarPopout.implicitHeight : 0
+                    }
+                }
+
+                // Whitelist panelPopout so clicks on bar+popout retain focus.
+                // Click elsewhere → grab clears → close.
+                HyprlandFocusGrab {
+                    id: popoutGrab
+                    windows: [ panelPopout.QsWindow.window ]
+
+                    property bool calendarOpen:
+                        Visibilities.current === "calendar"
+
+                    active: calendarOpen
+
+                    onCleared: Visibilities.close()
+                }
+
+                // ───────────────────── Calendar popout instance ──────
+                // Child of panelPopout so QsWindow resolves correctly.
+                PopoutItem {
+                    id: calendarPopout
+                    panelWindow: panelPopout
+                    wrapper: clockModule
+                    name: "calendar"
+                    alignment: "center"
+                    implicitWidth: 280
+                    implicitHeight: 220
+
+                    CalendarPopup {
+                        anchors.centerIn: parent
                     }
                 }
             }

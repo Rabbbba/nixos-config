@@ -1,6 +1,5 @@
 import QtQuick
 import "../components"
-import "../popouts"
 import "../services"
 
 /**
@@ -32,18 +31,6 @@ ModuleWrapper {
             running: true
             repeat: true
             onTriggered: root.now = new Date()
-        }
-    }
-
-    ModulePopout {
-        wrapper: root
-        name: "calendar"
-        implicitWidth: 280
-        implicitHeight: 220
-        alignment: "center"
-
-        CalendarPopup {
-            anchors.centerIn: parent
         }
     }
 

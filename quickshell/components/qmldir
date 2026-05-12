@@ -2,6 +2,7 @@ module components
 
 StyledText 1.0 StyledText.qml
 Popout 1.0 Popout.qml
+PopoutItem 1.0 PopoutItem.qml
 IconButton 1.0 IconButton.qml
 Tooltip 1.0 Tooltip.qml
 ModulePopout 1.0 ModulePopout.qml
