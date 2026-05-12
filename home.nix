@@ -46,6 +46,8 @@
     neovim
     nixd # LSP Nix
     nixfmt # Formateur Nix
+    statix # Linter anti-patterns Nix
+    deadnix # Détecte bindings let inutilisés
     clang-tools # LSP C/C++
     bash-language-server # LSP Bash
     vscode-langservers-extracted # LSP HTML/CSS/JSON

@@ -193,11 +193,6 @@
     wl-clipboard
     bat # cat avec syntax highlighting
     nix-output-monitor # nom — progression colorée des builds (utilisé par nh)
-
-    # ROCm 7.2 — runtime HIP (RDNA4 gfx1201)
-    rocmPackages.rocminfo # Vérification détection GPU
-    rocmPackages.clr # HIP runtime (libhip)
-    rocmPackages.hipcc # Compilateur HIP
   ];
 
   # Kernel CachyOS BORE — scheduler optimisé pour latence (gaming, desktop interactif).
