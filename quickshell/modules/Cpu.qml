@@ -1,7 +1,6 @@
 import QtQuick
 import "../services"
 import "../components"
-import "../popouts"
 
 /**
  * @brief Bar module displaying CPU usage as a percentage.
@@ -24,18 +23,6 @@ ModuleWrapper {
         font.pixelSize: Theme.fontSizeLg
         text: "󰘚 " + CpuUsage.cpuPercent.toFixed(0) + "%"
         color: root.hovered ? Theme.popupBg : Theme.text
-    }
-
-    ModulePopout {
-        wrapper: root
-        name: "cpu"
-        implicitWidth: 360
-        implicitHeight: 230
-        alignment: "center"
-
-        CpuPopup {
-            anchors.fill: parent
-        }
     }
 
     onClicked: Visibilities.toggle("cpu")

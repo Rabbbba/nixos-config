@@ -38,6 +38,7 @@ ShellRoot {
             required property var modelData
 
             // ───────────────────── Bar interactive ─────────────────────
+            // qmllint disable uncreatable-type
             PanelWindow {
                 id: panelBar
                 color: "transparent"
@@ -123,6 +124,7 @@ ShellRoot {
                             panelWindow: panelBar
                         }
                         Cpu {
+                            id: cpuModule
                             panelWindow: panelBar
                         }
                         Ram {
@@ -142,6 +144,7 @@ ShellRoot {
             }
 
             // ───────────────────── Decorative border ───────────────────
+            // qmllint disable uncreatable-type
             PanelWindow {
                 id: panelBorder
                 color: "transparent"
@@ -189,9 +192,11 @@ ShellRoot {
             }
 
             // ───────────────────── Popout container ────────────────────
-            // Fullscreen PanelWindow with input mask — 40 px bar + visible
-            // popout zone are clickable; everything else passes through.
-            // Popouts are Item children positioned via mapToGlobal/mapFromGlobal.
+            // Fullscreen PanelWindow hosting all popouts as Item children,
+            // positioned via mapToGlobal/mapFromGlobal. Mask is empty at rest
+            // (full click-through to panelBar below) and activates only the
+            // visible popout zone(s) via nested Regions.
+            // qmllint disable uncreatable-type
             PanelWindow {
                 id: panelPopout
                 color: "transparent"
@@ -205,17 +210,27 @@ ShellRoot {
                 }
                 screen: scope.modelData
 
-                // Mask: bar strip (40 px) + exact popout zone when visible.
-                // Nested Region defaults to Combine (union).
+                // Mask = union of visible popout zones (Region default is Combine).
+                // The root Region is intentionally empty (no x/y/width/height)
+                // so panelPopout stays click-through at rest — clicks reach
+                // panelBar (same Top layer, below in z-order) normally.
+                //
+                // DO NOT add a bar strip (e.g. `width: panelPopout.width; height: 40`)
+                // here: it would absorb every click destined to panelBar.
+                // HyprlandFocusGrab handles "click inside whitelisted window"
+                // via `windows: [...]`, not via mask geometry.
                 mask: Region {
-                    x: 0; y: 0
-                    width: parent.width; height: 40
-
                     Region {
                         x: calendarPopout.x
                         y: calendarPopout.y
                         width: calendarPopout.visible ? calendarPopout.implicitWidth : 0
                         height: calendarPopout.visible ? calendarPopout.implicitHeight : 0
+                    }
+                    Region {
+                        x: cpuPopout.x
+                        y: cpuPopout.y
+                        width: cpuPopout.visible ? cpuPopout.implicitWidth : 0
+                        height: cpuPopout.visible ? cpuPopout.implicitHeight : 0
                     }
                 }
 
@@ -223,13 +238,8 @@ ShellRoot {
                 // Click elsewhere → grab clears → close.
                 HyprlandFocusGrab {
                     id: popoutGrab
-                    windows: [ panelPopout ]
-
-                    property bool calendarOpen:
-                        Visibilities.current === "calendar"
-
-                    active: calendarOpen
-
+                    windows: [panelPopout]
+                    active: Visibilities.current !== ""
                     onCleared: Visibilities.close()
                 }
 
@@ -246,6 +256,20 @@ ShellRoot {
 
                     CalendarPopup {
                         anchors.centerIn: parent
+                    }
+                }
+
+                PopoutItem {
+                    id: cpuPopout
+                    panelWindow: panelPopout
+                    wrapper: cpuModule
+                    name: "cpu"
+                    alignment: "center"
+                    implicitWidth: 360
+                    implicitHeight: 230
+
+                    CpuPopup {
+                        anchors.fill: parent
                     }
                 }
             }
