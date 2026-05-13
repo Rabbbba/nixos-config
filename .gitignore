@@ -29,3 +29,20 @@ quickshell/doc/
 # Auto-régénéré par Quickshell pour qmlls; contient des paths /nix/store/ avec
 # des hashes spécifiques à un build, donc non portable.
 quickshell/.qmlls.ini
+
+# pi-coding-agent sandbox placeholders — stubs vides + read-only créés
+# en pré-seed des paths sensibles (bwrap a besoin que le target existe
+# pour `--ro-bind /dev/null target`). Inoffensifs, juste à exclure du
+# worktree pour ne pas polluer l'arbre.
+/.bash_profile
+/.bashrc
+/.env
+/.gitconfig
+/.gitmodules
+/.idea
+/.mcp.json
+/.profile
+/.ripgreprc
+/.vscode
+/.zprofile
+/.zshrc
