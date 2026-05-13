@@ -55,6 +55,15 @@ ShellRoot {
                     anchors.fill: parent
                     color: Theme.windowBg
 
+                    // Catch-all for clicks on empty bar space — closes the open popout.
+                    // Placed as first child of the opaque Rectangle so it sits below
+                    // the Row/Clock siblings that declare their own MouseAreas.
+                    MouseArea {
+                        anchors.fill: parent
+                        enabled: Visibilities.current !== ""
+                        onClicked: Visibilities.close()
+                    }
+
                     Row {
                         anchors {
                             left: parent.left
@@ -118,9 +127,11 @@ ShellRoot {
                             panelWindow: panelBar
                         }
                         Tidal {
+                            id: tidalModule
                             panelWindow: panelBar
                         }
                         Gpu {
+                            id: gpuModule
                             panelWindow: panelBar
                         }
                         Cpu {
@@ -128,15 +139,18 @@ ShellRoot {
                             panelWindow: panelBar
                         }
                         Ram {
+                            id: ramModule
                             panelWindow: panelBar
                         }
                         Bluetooth {
+                            id: btModule
                             panelWindow: panelBar
                         }
                         Network {
                             panelWindow: panelBar
                         }
                         Audio {
+                            id: audioModule
                             panelWindow: panelBar
                         }
                     }
@@ -232,13 +246,48 @@ ShellRoot {
                         width: cpuPopout.visible ? cpuPopout.implicitWidth : 0
                         height: cpuPopout.visible ? cpuPopout.implicitHeight : 0
                     }
+
+                    Region {
+                        x: audioPopout.x
+                        y: audioPopout.y
+                        width: audioPopout.visible ? audioPopout.implicitWidth : 0
+                        height: audioPopout.visible ? audioPopout.implicitHeight : 0
+                    }
+
+                    Region {
+                        x: gpuPopout.x
+                        y: gpuPopout.y
+                        width: gpuPopout.visible ? gpuPopout.implicitWidth : 0
+                        height: gpuPopout.visible ? gpuPopout.implicitHeight : 0
+                    }
+
+                    Region {
+                        x: ramPopout.x
+                        y: ramPopout.y
+                        width: ramPopout.visible ? gpuPopout.implicitWidth : 0
+                        height: ramPopout.visible ? ramPopout.implicitHeight : 0
+                    }
+
+                    Region {
+                        x: tidalPopout.x
+                        y: tidalPopout.y
+                        width: tidalPopout.visible ? tidalPopout.implicitWidth : 0
+                        height: tidalPopout.visible ? tidalPopout.implicitHeight : 0
+                    }
+                    Region {
+                        x: btPopout.x
+                        y: btPopout.y
+                        width: btPopout.visible ? btPopout.implicitWidth : 0
+                        height: btPopout.visible ? btPopout.implicitHeight : 0
+                    }
                 }
 
-                // Whitelist panelPopout so clicks on bar+popout retain focus.
-                // Click elsewhere → grab clears → close.
+                // Whitelist panelPopout so clicks inside the popout retain focus.
+                // Click elsewhere → grab clears. Closing on bar empty-space is
+                // handled by the MouseArea catch-all in panelBar's Rectangle.
                 HyprlandFocusGrab {
                     id: popoutGrab
-                    windows: [panelPopout]
+                    windows: [panelPopout.QsWindow.window]
                     active: Visibilities.current !== ""
                     onCleared: Visibilities.close()
                 }
@@ -272,6 +321,84 @@ ShellRoot {
                         anchors.fill: parent
                     }
                 }
+
+                PopoutItem {
+                    id: audioPopout
+                    panelWindow: panelPopout
+                    wrapper: audioModule
+                    name: "audio"
+                    alignment: "right"
+                    implicitWidth: 300
+                    implicitHeight: 200
+
+                    AudioPopup {
+                        anchors.fill: parent
+                    }
+                }
+
+                PopoutItem {
+                    id: gpuPopout
+                    panelWindow: panelPopout
+                    wrapper: gpuModule
+                    name: "gpu"
+                    alignment: "center"
+                    implicitWidth: 360
+                    implicitHeight: 320
+
+                    GpuPopup {
+                        anchors.fill: parent
+                    }
+                }
+
+                PopoutItem {
+                    id: ramPopout
+                    panelWindow: panelPopout
+                    wrapper: ramModule
+                    name: "ram"
+                    alignment: "center"
+                    implicitWidth: 320
+                    implicitHeight: 230
+
+                    RamPopup {
+                        anchors.fill: parent
+                    }
+                }
+
+                PopoutItem {
+                    id: tidalPopout
+                    panelWindow: panelPopout
+                    wrapper: tidalModule
+                    name: "tidal"
+                    alignment: "center"
+                    implicitHeight: 270
+                    implicitWidth: 520
+
+                    TidalPopup {
+                        anchors.fill: parent
+                        visible: tidalPopout.visible
+                    }
+                }
+
+                PopoutItem {
+                    id: btPopout
+                    panelWindow: panelPopout
+                    wrapper: btModule
+                    name: "bluetooth"
+                    alignment: "center"
+                    implicitWidth: 320
+                    implicitHeight: 320
+
+                    BluetoothPopup {
+                        anchors.fill: parent
+                        bluetoothOn: btPopout.wrapper.bluetoothOn
+                        onPowerToggleRequested: {
+                            btModule.bluetoothOn = !btModule.bluetoothOn;
+                            Quickshell.execDetached(["rfkill", btModule.bluetoothOn ? "unblock" : "block", "bluetooth"]);
+                            btModule.refreshState();
+                        }
+                    }
+                }
+
             }
 
             // ───────────────────── ExclusionZones ──────────────────────

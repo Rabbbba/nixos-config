@@ -1,14 +1,13 @@
 import QtQuick
 import Quickshell.Services.Pipewire
 import "../components"
-import "../popouts"
 import "../services"
 
 /**
  * @brief Audio module: shows the default Pipewire sink's volume and mute state.
  *
  * Scrolling on the module nudges the sink volume by ±5 %, clamped to [0, 1].
- * Clicking opens the @c AudioPopup popout.
+ * Clicking toggles the @ref popouts::AudioPopup via @c Visibilities.
  */
 ModuleWrapper {
     id: root
@@ -49,18 +48,6 @@ ModuleWrapper {
         // as undefined. Tracking the sink keeps it live.
         PwObjectTracker {
             objects: root.sink ? [root.sink] : []
-        }
-    }
-
-    ModulePopout {
-        wrapper: root
-        name: "audio"
-        alignment: "right"
-        implicitWidth: 300
-        implicitHeight: 200
-
-        AudioPopup {
-            anchors.fill: parent
         }
     }
 

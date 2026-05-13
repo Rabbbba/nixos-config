@@ -1,13 +1,12 @@
 import QtQuick
 import "../services"
 import "../components"
-import "../popouts"
 
 /**
  * @brief Bar module displaying RAM usage as a percentage.
  *
  * The value is read from the @ref services::RamUsage singleton (polls `/proc/meminfo`).
- * Clicking opens the @ref popouts::RamPopup popout (history + buffers + swap).
+ * Clicking toggles the RAM popout via @c Visibilities.
  *
  * Tooltip: "RAM XX% (used / total GiB)".
  */
@@ -25,18 +24,6 @@ ModuleWrapper {
         color: root.hovered ? Theme.popupBg : Theme.text
 
         text: "󰍛 " + RamUsage.ramPercent.toFixed(0) + "%"
-    }
-
-    ModulePopout {
-        wrapper: root
-        name: "ram"
-        alignment: "center"
-        implicitWidth: 320
-        implicitHeight: 230
-
-        RamPopup {
-            anchors.fill: parent
-        }
     }
 
     onClicked: Visibilities.toggle("ram")

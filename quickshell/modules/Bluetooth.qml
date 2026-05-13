@@ -1,8 +1,6 @@
 import QtQuick
-import Quickshell
 import Quickshell.Io
 import "../components"
-import "../popouts"
 import "../services"
 
 /**
@@ -10,8 +8,8 @@ import "../services"
  *
  * Polls `rfkill list bluetooth` every 5 s for the `Soft blocked:` field —
  * deterministic on systems with multiple Bluetooth controllers, unlike
- * `bluetoothctl show` which picks an arbitrary controller. Clicking opens
- * the @c BluetoothPopup popout.
+ * `bluetoothctl show` which picks an arbitrary controller. Clicking toggles
+ * the Bluetooth popout via @c Visibilities.
  */
 ModuleWrapper {
     id: root
@@ -58,40 +56,10 @@ ModuleWrapper {
         onTriggered: root.refreshState()
     }
 
-    // Single-shot 800 ms refresh fired after a user-triggered toggle.
-    Timer {
-        id: postActionTimer
-        interval: 800
-        repeat: false
-        onTriggered: root.refreshState()
-    }
-
     StyledText {
         text: root.bluetoothOn ? "󰂯" : "󰂲"
         font.pixelSize: Theme.fontSizeLg
         color: root.hovered ? Theme.popupBg : Theme.text
-    }
-
-    ModulePopout {
-        wrapper: root
-        name: "bluetooth"
-        alignment: "right"
-        implicitWidth: 320
-        implicitHeight: 320
-
-        BluetoothPopup {
-            anchors.fill: parent
-            bluetoothOn: root.bluetoothOn
-
-            onPowerToggleRequested: {
-                // Optimistic flip — the UI updates instantly while rfkill
-                // runs in the background. The 800 ms refresh corrects the
-                // value if the action failed.
-                root.bluetoothOn = !root.bluetoothOn;
-                Quickshell.execDetached(["rfkill", root.bluetoothOn ? "unblock" : "block", "bluetooth"]);
-                postActionTimer.restart();
-            }
-        }
     }
 
     onClicked: Visibilities.toggle("bluetooth")
