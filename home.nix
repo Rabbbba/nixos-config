@@ -86,7 +86,17 @@
     cliphist # Historique presse-papiers
 
     # Apps
-    vesktop # Discord client with proper Wayland support (replaced upstream discord)
+    # Vesktop : Discord client with proper Wayland support (replaced upstream discord).
+    # Wrap pour fix screenshare RDNA4 — Chromium WebRTC ne sait pas encoder les
+    # DMA-BUF remontés par xdg-desktop-portal-hyprland sur RDNA4 (frame noire
+    # côté viewer, seul le curseur overlay passe). Force la copie CPU.
+    (pkgs.vesktop.overrideAttrs (old: {
+      postFixup = (old.postFixup or "") + ''
+        wrapProgram $out/bin/vesktop \
+          --add-flags "--disable-gpu-memory-buffer-video-frames" \
+          --add-flags "--disable-features=AcceleratedVideoEncoder"
+      '';
+    }))
     inputs.zen-browser.packages.${pkgs.system}.default # Firefox fork avec UI moderne
     bitwarden-desktop
     mangohud
