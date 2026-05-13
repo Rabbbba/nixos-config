@@ -264,7 +264,7 @@ ShellRoot {
                     Region {
                         x: ramPopout.x
                         y: ramPopout.y
-                        width: ramPopout.visible ? gpuPopout.implicitWidth : 0
+                        width: ramPopout.visible ? ramPopout.implicitWidth : 0
                         height: ramPopout.visible ? ramPopout.implicitHeight : 0
                     }
 
