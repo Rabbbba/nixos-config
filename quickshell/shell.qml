@@ -223,7 +223,7 @@ ShellRoot {
                 // Click elsewhere → grab clears → close.
                 HyprlandFocusGrab {
                     id: popoutGrab
-                    windows: [ panelPopout.QsWindow.window ]
+                    windows: [ panelPopout ]
 
                     property bool calendarOpen:
                         Visibilities.current === "calendar"
