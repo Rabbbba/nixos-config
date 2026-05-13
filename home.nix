@@ -102,6 +102,7 @@
     # IA
     claude-code
     pi-coding-agent
+    bubblewrap # Sandbox userland — requis par pi-sandbox pour isoler skills/cmds
 
     # Système
     amdgpu_top # Monitoring GPU AMD
