@@ -28,24 +28,27 @@ vim.lsp.enable("nixd")
 -- LSP considère le sous-dossier comme racine et n'indexerait pas les autres
 -- dossiers du projet.
 --
--- Note: aucun LSP QML actuel ne fait fonctionner go-to-definition correctement
--- sur ce projet. qmlls a besoin d'un buildDir CMake (qu'on n'a pas car QML pur),
--- qml-language-server ne suit pas les imports relatifs `import "../foo"`.
--- On accepte la limitation: hover (K) et autocomplete fonctionnent, c'est l'essentiel.
+-- Choix LSP QML : qmlls (Qt officiel) — moteur qmllint sous-jacent, catche les
+-- [unqualified] (identifier non résolu, ex: `windows: [ window ]` au lieu de
+-- `windows: [ panelPopout ]`) que qml-language-server (Go/tree-sitter) rate.
+-- Options projet (no-cmake-calls) dans quickshell/.qmlls.ini.
+-- `-E` lit QML_IMPORT_PATH (set dans home.nix) pour les modules Quickshell + Qt.
 
-vim.lsp.config("qml-language-server", {
-	cmd = { "qml-language-server" },
+vim.lsp.config("qmlls", {
+	cmd = { "qmlls", "-E" },
 	filetypes = { "qml" },
-	root_markers = { "shell.qml", ".git" },
+	root_markers = { "shell.qml", ".qmlls.ini", ".git" },
 	capabilities = require("cmp_nvim_lsp").default_capabilities(),
 })
-vim.lsp.enable("qml-language-server")
+vim.lsp.enable("qmlls")
 
--- Alternative: qmlls (Qt officiel). À activer si on a un jour un buildDir CMake valide.
--- vim.lsp.config("qmlls", {
--- 	cmd = { "qmlls", "-E" },
+-- Alternative gardée en commentaire : qml-language-server (Go/tree-sitter).
+-- Plus permissif (ne flag pas les unqualified) — à réactiver si qmlls devient
+-- trop bruyant ou si ses faux positifs gênent.
+-- vim.lsp.config("qml-language-server", {
+-- 	cmd = { "qml-language-server" },
 -- 	filetypes = { "qml" },
 -- 	root_markers = { "shell.qml", ".git" },
 -- 	capabilities = require("cmp_nvim_lsp").default_capabilities(),
 -- })
--- vim.lsp.enable("qmlls")
+-- vim.lsp.enable("qml-language-server")
