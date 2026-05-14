@@ -83,6 +83,11 @@ QtObject {
      *  @param kbps The speed value in KiB/s (1024-based bytes per second).
      */
     function formatSpeed(kbps: real): string {
+        // Transients during interface toggles (Wi-Fi off/on, default route
+        // change) can yield NaN through parseInt('') in the stats reader;
+        // guard the formatter so the bar never renders "NaNGb".
+        if (!Number.isFinite(kbps) || kbps < 0)
+            return "0Mb";
         // KiB/s → bytes/s → bits/s → Mbps (decimal, base 1000).
         const mbps = kbps * 1024 * 8 / 1000000;
         const rounded = Math.round(mbps);
