@@ -376,6 +376,7 @@ ShellRoot {
                     TidalPopup {
                         anchors.fill: parent
                         visible: tidalPopout.visible
+                        popupVisible: tidalPopout.visible
                     }
                 }
 
