@@ -102,9 +102,24 @@
           qt6.qtdeclarative # fournit qmllint, qmlformat
           shellcheck
           stylua # formateur Lua (config dans stylua.toml)
+
+          # Plugin Quickshell C++ — headers Qt6 + wrapper Nix
+          # (gcc/cmake/pkg-config viennent du home.nix global)
+          qt6.qtbase # QObject, QTimer, Qt Core/Gui
+          qt6.qtdeclarative # Qt6::Qml — nécessaire pour QML_ELEMENT macro
+          qt6.qtshadertools # Dépendance transitive de Qt6Quick
+          qt6.wrapQtAppsHook # patche les rpath Qt automatiquement pour la dérivation
+          libGL # WrapOpenGL — dépendance transitive de Qt6Gui sur NixOS
         ];
 
         shellHook = ''
+          # Qt6 sur NixOS éclate ses composants en plusieurs paquets (qtbase,
+          # qtdeclarative, qtshadertools…). `find_package(Qt6 COMPONENTS …)`
+          # de CMake n'agrège pas tout seul ; on lui donne explicitement les
+          # racines via CMAKE_PREFIX_PATH pour qu'il résolve les Config.cmake
+          # de chaque composant.
+          export CMAKE_PREFIX_PATH="${pkgs.qt6.qtbase}:${pkgs.qt6.qtdeclarative}:${pkgs.qt6.qtshadertools}''${CMAKE_PREFIX_PATH:+:$CMAKE_PREFIX_PATH}"
+
           echo ""
           echo "  nixos-config devshell ready."
           echo ""
@@ -116,6 +131,10 @@
           echo "    qmllint quickshell/**/*.qml           qml lint"
           echo "    shellcheck hypr/scripts/*.sh          shell lint"
           echo "    stylua --check nvim/                  lua format check"
+          echo ""
+          echo "  C++ / Qt6 plugin :"
+          echo "    cmake -B build -S .                   configure"
+          echo "    cmake --build build                   compile"
           echo ""
         '';
       };

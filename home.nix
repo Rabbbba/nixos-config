@@ -48,7 +48,18 @@
     nixfmt # Formateur Nix
     statix # Linter anti-patterns Nix
     deadnix # Détecte bindings let inutilisés
-    clang-tools # LSP C/C++
+    # ─── C/C++ toolchain ─────────────────────────────────────────────
+    # `clang-tools` fournit déjà clangd/clang-tidy/clang-format (LSP côté
+    # éditeur). Pour COMPILER, il faut une toolchain complète :
+    gcc # Compilateur principal (g++, gcc, libstdc++)
+    cmake # Build system standard C++ (out-of-source builds)
+    ninja # Backend make rapide, utilisé par cmake -G Ninja
+    pkg-config # Résout les paths/flags des libs système (Qt, libsensors, etc.)
+    gdb # Debugger principal
+    bear # Génère compile_commands.json depuis n'importe quel build → clangd
+    cppcheck # Linter statique additionnel (à côté de clang-tidy)
+    valgrind # Memcheck, helgrind, callgrind — pour quand tu touches au heap
+    clang-tools # LSP C/C++ (clangd, clang-tidy, clang-format)
     bash-language-server # LSP Bash
     vscode-langservers-extracted # LSP HTML/CSS/JSON
     stylua # Formateur Lua
