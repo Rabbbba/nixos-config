@@ -1,16 +1,16 @@
 import QtQuick
-import Quickshell.Io
+import Quickshell.Networking
 import "../components"
 import "../services"
 
 /**
  * @brief Bar module showing the active network connection (Ethernet / Wi-Fi / Offline).
  *
- * Polls `nmcli` every 5 s for the active connection and, when on Wi-Fi, also
- * for the signal strength of the in-use AP. Renders one of: ethernet glyph,
- * Wi-Fi glyph + SSID, or "offline" glyph.
- *
- * Also shows live download/upload speed from @ref services::NetworkSpeed.
+ * Reads NetworkManager state directly through @c Quickshell.Networking — no
+ * nmcli polling. Renders one of: ethernet glyph, Wi-Fi bar-icon, or "offline"
+ * glyph, followed by the live download/upload speed pair from
+ * @ref services::NetworkSpeed. Clicking opens the @ref popouts::WifiPopup
+ * via @ref services::Visibilities.
  */
 ModuleWrapper {
     id: root
@@ -18,7 +18,77 @@ ModuleWrapper {
     bgIdle: Theme.moduleBg
     bgHover: Theme.accent
 
-    tooltip: net.state === "wifi" ? "Wi-Fi: " + net.ssid + " (" + net.signal + "%)" : net.state === "ethernet" ? "Ethernet" : "Offline"
+    /** First WifiDevice found in @c Networking.devices, or null. */
+    readonly property var wifiDevice: {
+        for (const d of Networking.devices.values) {
+            if (d.type === DeviceType.Wifi)
+                return d;
+        }
+        return null;
+    }
+
+    /** First WiredDevice found in @c Networking.devices, or null. */
+    readonly property var wiredDevice: {
+        for (const d of Networking.devices.values) {
+            if (d.type === DeviceType.Wired)
+                return d;
+        }
+        return null;
+    }
+
+    /** Currently connected WifiNetwork on @ref wifiDevice, or null. */
+    readonly property var activeWifi: {
+        if (!root.wifiDevice)
+            return null;
+        for (const n of root.wifiDevice.networks.values) {
+            if (n.connected)
+                return n;
+        }
+        return null;
+    }
+
+    /** Connection kind: `"ethernet"`, `"wifi"`, or `"offline"`. */
+    readonly property string netState: {
+        if (root.wiredDevice && root.wiredDevice.connected)
+            return "ethernet";
+        if (root.activeWifi)
+            return "wifi";
+        return "offline";
+    }
+
+    /** SSID of the active Wi-Fi connection, or `""` when not on Wi-Fi. */
+    readonly property string ssid: root.activeWifi ? root.activeWifi.name : ""
+
+    /** Signal strength of the active Wi-Fi connection in [0, 100], or 0. */
+    readonly property int signalPct: root.activeWifi ? Math.round(root.activeWifi.signalStrength * 100) : 0
+
+    /**
+     * Display-only smoothed view of @c NetworkSpeed.downloadKbps. The raw
+     * service value updates in 2 s steps with large jumps; a NumberAnimation
+     * on this proxy interpolates between samples so the label transitions
+     * smoothly without losing the underlying history sparkline data.
+     */
+    property real downKbpsView: NetworkSpeed.downloadKbps
+
+    /** Display-only smoothed view of @c NetworkSpeed.uploadKbps — see @ref downKbpsView. */
+    property real upKbpsView: NetworkSpeed.uploadKbps
+
+    Behavior on downKbpsView {
+        NumberAnimation {
+            duration: 900
+            easing.type: Easing.OutCubic
+        }
+    }
+    Behavior on upKbpsView {
+        NumberAnimation {
+            duration: 900
+            easing.type: Easing.OutCubic
+        }
+    }
+
+    tooltip: netState === "wifi" ? "Wi-Fi: " + ssid + " (" + signalPct + "%)" : netState === "ethernet" ? "Ethernet" : "Offline"
+
+    onClicked: Visibilities.toggle("network")
 
     // Worst-case width of a formatted speed string ("999.9M" at Md size).
     // Reserves a stable slot so the module width doesn't jiggle.
@@ -33,94 +103,25 @@ ModuleWrapper {
         spacing: 6
 
         StyledText {
-            id: net
-            property string state: "offline"   // "ethernet" | "wifi" | "offline"
-            property string ssid: ""
-            property int signal: 0
-
             font.pixelSize: Theme.fontSizeLg
             color: root.hovered ? Theme.popupBg : Theme.text
 
             text: {
-                if (state === "ethernet")
+                if (root.netState === "ethernet")
                     return "󰈀";
-                if (state === "wifi")
-                    return wifiIcon();
+                if (root.netState === "wifi") {
+                    const pct = root.signalPct;
+                    if (pct > 75)
+                        return "󰤨";
+                    if (pct > 50)
+                        return "󰤥";
+                    if (pct > 25)
+                        return "󰤢";
+                    if (pct > 0)
+                        return "󰤟";
+                    return "󰤯";
+                }
                 return "󰤭";
-            }
-
-            // 4-step bar icon based on signal %, plus an off-state glyph at 0.
-            function wifiIcon() {
-                if (signal > 75)
-                    return "󰤨";
-                if (signal > 50)
-                    return "󰤥";
-                if (signal > 25)
-                    return "󰤢";
-                if (signal > 0)
-                    return "󰤟";
-                return "󰤯";
-            }
-
-            Process {
-                id: stateProc
-                command: ["sh", "-c", "nmcli -t -f TYPE,STATE,CONNECTION device | grep -E '(ethernet|wifi):connected:' | head -1"]
-                running: false
-
-                stdout: SplitParser {
-                    splitMarker: "\n"
-                    onRead: data => {
-                        if (!data) {
-                            net.state = "offline";
-                            net.ssid = "";
-                            return;
-                        }
-                        const parts = data.split(":");
-                        const type = parts[0];
-                        const conn = parts[2] || "";
-                        if (type === "ethernet") {
-                            net.state = "ethernet";
-                            net.ssid = "";
-                        } else if (type === "wifi") {
-                            net.state = "wifi";
-                            net.ssid = conn;
-                            signalProc.running = false;
-                            signalProc.running = true;
-                        }
-                    }
-                }
-
-                // If no line came out (no connection), reset to offline.
-                onExited: {
-                    if (net.state === "wifi" || net.state === "ethernet")
-                        return;
-                    net.state = "offline";
-                }
-            }
-
-            Process {
-                id: signalProc
-                command: ["sh", "-c", "nmcli -t -f IN-USE,SIGNAL dev wifi | grep '^\\*' | cut -d: -f2"]
-                running: false
-                stdout: SplitParser {
-                    splitMarker: "\n"
-                    onRead: data => {
-                        net.signal = parseInt(data) || 0;
-                    }
-                }
-            }
-
-            // Re-run the state probe every 5 s. Toggling running false→true
-            // is how Quickshell's Process restarts.
-            Timer {
-                interval: 5000
-                running: true
-                repeat: true
-                triggeredOnStart: true
-                onTriggered: {
-                    stateProc.running = false;
-                    stateProc.running = true;
-                }
             }
         }
 
@@ -133,7 +134,7 @@ ModuleWrapper {
             verticalAlignment: Text.AlignVCenter
         }
         StyledText {
-            text: NetworkSpeed.formatSpeed(NetworkSpeed.downloadKbps)
+            text: NetworkSpeed.formatSpeed(root.downKbpsView)
             font.family: Theme.fontFamily
             font.pixelSize: Theme.fontSizeMd
             color: root.hovered ? Theme.popupBg : Theme.text
@@ -153,7 +154,7 @@ ModuleWrapper {
             verticalAlignment: Text.AlignVCenter
         }
         StyledText {
-            text: NetworkSpeed.formatSpeed(NetworkSpeed.uploadKbps)
+            text: NetworkSpeed.formatSpeed(root.upKbpsView)
             font.family: Theme.fontFamily
             font.pixelSize: Theme.fontSizeMd
             color: root.hovered ? Theme.popupBg : Theme.text
