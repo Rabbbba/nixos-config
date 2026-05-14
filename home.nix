@@ -90,11 +90,17 @@
     # Wrap pour fix screenshare RDNA4 — Chromium WebRTC ne sait pas encoder les
     # DMA-BUF remontés par xdg-desktop-portal-hyprland sur RDNA4 (frame noire
     # côté viewer, seul le curseur overlay passe). Force la copie CPU.
+    # WebRTCPipeWireCapturer : route la capture par xdg-desktop-portal au lieu
+    # du desktopCapturer Electron — sans ça pas de picker portail Qt et un seul
+    # écran auto-sélectionné dans le custom picker Vesktop.
+    # AcceleratedVideoEncoder désactivé : retest 2026-05-14 → crash Vesktop au
+    # démarrage du screen share. On reste en encodage software OpenH264.
     (pkgs.vesktop.overrideAttrs (old: {
       postFixup = (old.postFixup or "") + ''
         wrapProgram $out/bin/vesktop \
           --add-flags "--disable-gpu-memory-buffer-video-frames" \
-          --add-flags "--disable-features=AcceleratedVideoEncoder"
+          --add-flags "--disable-features=AcceleratedVideoEncoder" \
+          --add-flags "--enable-features=WebRTCPipeWireCapturer"
       '';
     }))
     inputs.zen-browser.packages.${pkgs.system}.default # Firefox fork avec UI moderne
@@ -114,7 +120,6 @@
     pi-coding-agent
     bubblewrap # Sandbox userland — requis par pi-sandbox pour isoler skills/cmds
 
-    # Système
     amdgpu_top # Monitoring GPU AMD
     networkmanagerapplet # Tray network
     btop
