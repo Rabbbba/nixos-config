@@ -2,6 +2,19 @@ require("nvchad.configs.lspconfig").defaults()
 
 vim.lsp.config("clangd", {
 	capabilities = require("cmp_nvim_lsp").default_capabilities(),
+	cmd = {
+		"clangd",
+		"--background-index", -- indexation projet en arrière-plan (defs cross-file)
+		"--clang-tidy", -- intègre clang-tidy dans les diagnostics LSP
+		"--header-insertion=iwyu", -- propose les #include manquants (style include-what-you-use)
+		"--completion-style=detailed", -- complétion plus riche (overloads séparés, params nommés)
+		"--function-arg-placeholders", -- snippets <args> à la complétion
+		"--all-scopes-completion", -- complète aussi les symboles hors namespace courant
+	},
+	-- Cherche compile_commands.json à la racine projet ; sinon clangd
+	-- fonctionne sur fichier unique en best-effort. Pour les projets
+	-- multi-fichiers hors CMake, utiliser `bear -- ./tools/compile.sh -c f.cpp`.
+	root_markers = { "compile_commands.json", "CMakeLists.txt", ".git" },
 })
 vim.lsp.enable("clangd")
 
