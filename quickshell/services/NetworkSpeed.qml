@@ -68,18 +68,27 @@ QtObject {
             return speed;
     }
 
-    /** @brief Format a speed value in KiB/s as a compact integer string in MiB/s or GiB/s.
+    /** @brief Format a speed value in KiB/s as Mbps / Gbps, matching the
+     *  marketing convention used by Steam, Speedtest, and ISP plans.
      *
-     *  Sub-MiB values round to "0M" — at the time / s scale relevant for a
-     *  desktop status bar, traffic below ~500 KiB/s is keepalive / DNS
-     *  background noise that we would rather hide than display as "0.x K".
-     *  Above 1 GiB/s the unit switches to "G".
-     *  @param kbps The speed value in KiB/s (1024-based).
+     *  The underlying sysfs counter is bytes; we convert to bits per second
+     *  in base 1000 (NOT base 1024) because that is what the network world
+     *  uses — keeps the bar number aligned with what Steam shows in its
+     *  download UI and with the speed your ISP sold you. Lowercase `b` in
+     *  the suffix disambiguates bits from bytes.
+     *
+     *  Below 1000 Mbps we display an integer "Mb"; above, we switch to
+     *  "Gb" with one decimal so a gigabit fiber under load reads "1.2Gb"
+     *  rather than rounding to "1Gb".
+     *  @param kbps The speed value in KiB/s (1024-based bytes per second).
      */
     function formatSpeed(kbps: real): string {
-        if (kbps < 1048576)
-            return Math.round(kbps / 1024) + "M";
-        return Math.round(kbps / 1048576) + "G";
+        // KiB/s → bytes/s → bits/s → Mbps (decimal, base 1000).
+        const mbps = kbps * 1024 * 8 / 1000000;
+        const rounded = Math.round(mbps);
+        if (rounded < 1000)
+            return rounded + "Mb";
+        return (mbps / 1000).toFixed(1) + "Gb";
     }
 
     /** @brief Pending rx_bytes value received from the first line of Process output (64-bit safe). */

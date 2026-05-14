@@ -90,14 +90,15 @@ ModuleWrapper {
 
     onClicked: Visibilities.toggle("network")
 
-    // Worst-case width of a formatted speed string ("999M" at Md size).
+    // Worst-case width of a formatted speed string ("999Mb" at Md size).
     // Reserves a stable slot so the module width doesn't jiggle as digits
-    // come and go.
+    // come and go. Above ~1 Gbps the format switches to "1.2Gb" which is
+    // the same character count, so the slot stays valid up to 10 Gbps.
     TextMetrics {
         id: speedMetrics
         font.family: Theme.fontFamily
         font.pixelSize: Theme.fontSizeMd
-        text: "999M"
+        text: "999Mb"
     }
 
     Row {
