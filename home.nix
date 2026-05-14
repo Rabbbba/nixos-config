@@ -86,23 +86,16 @@
     cliphist # Historique presse-papiers
 
     # Apps
-    # Vesktop : Discord client with proper Wayland support (replaced upstream discord).
-    # Wrap pour fix screenshare RDNA4 — Chromium WebRTC ne sait pas encoder les
-    # DMA-BUF remontés par xdg-desktop-portal-hyprland sur RDNA4 (frame noire
-    # côté viewer, seul le curseur overlay passe). Force la copie CPU.
-    # WebRTCPipeWireCapturer : route la capture par xdg-desktop-portal au lieu
-    # du desktopCapturer Electron — sans ça pas de picker portail Qt et un seul
-    # écran auto-sélectionné dans le custom picker Vesktop.
-    # AcceleratedVideoEncoder désactivé : retest 2026-05-14 → crash Vesktop au
-    # démarrage du screen share. On reste en encodage software OpenH264.
-    (pkgs.vesktop.overrideAttrs (old: {
-      postFixup = (old.postFixup or "") + ''
-        wrapProgram $out/bin/vesktop \
-          --add-flags "--disable-gpu-memory-buffer-video-frames" \
-          --add-flags "--disable-features=AcceleratedVideoEncoder" \
-          --add-flags "--enable-features=WebRTCPipeWireCapturer"
-      '';
-    }))
+    # Vesktop : Discord client avec support Wayland (remplace discord upstream).
+    # ⚠️ NE PAS LANCER via walker — le launcher casse le pipeline Chromium
+    # video_capture (cgroup app.slice + fork detaché → "Bind context provider
+    # failed", picker portail ne s'ouvre pas, frame noire côté viewer).
+    # Utiliser Super+D (bind Hyprland → exec direct, scope systemd propre).
+    # Historique : on traînait des flags --disable-gpu-memory-buffer-video-frames
+    # / --disable-features=AcceleratedVideoEncoder / --enable-features=
+    # WebRTCPipeWireCapturer pour "fixer" la frame noire RDNA4 — en fait c'était
+    # walker depuis le début, les flags étaient inutiles. Vanilla suffit.
+    pkgs.vesktop
     inputs.zen-browser.packages.${pkgs.system}.default # Firefox fork avec UI moderne
     bitwarden-desktop
     mangohud
