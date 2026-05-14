@@ -68,16 +68,18 @@ QtObject {
             return speed;
     }
 
-    /** @brief Format a speed value in KiB/s as a compact string with a single-letter unit.
-     *  Auto-selects K/M/G based on magnitude; one decimal up to M, two in G.
-     *  @param kbps The speed value in KiB/s.
+    /** @brief Format a speed value in KiB/s as a compact integer string in MiB/s or GiB/s.
+     *
+     *  Sub-MiB values round to "0M" — at the time / s scale relevant for a
+     *  desktop status bar, traffic below ~500 KiB/s is keepalive / DNS
+     *  background noise that we would rather hide than display as "0.x K".
+     *  Above 1 GiB/s the unit switches to "G".
+     *  @param kbps The speed value in KiB/s (1024-based).
      */
     function formatSpeed(kbps: real): string {
-        if (kbps < 1024)
-            return kbps.toFixed(1) + "K";
         if (kbps < 1048576)
-            return (kbps / 1024).toFixed(1) + "M";
-        return (kbps / 1048576).toFixed(2) + "G";
+            return Math.round(kbps / 1024) + "M";
+        return Math.round(kbps / 1048576) + "G";
     }
 
     /** @brief Pending rx_bytes value received from the first line of Process output (64-bit safe). */
