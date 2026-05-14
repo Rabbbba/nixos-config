@@ -27,13 +27,24 @@ ModuleWrapper {
             sink.audio.volume = Math.max(0, Math.min(1, cur + (angleDelta.y > 0 ? step : -step)));
     }
 
+    // Worst-case slot width (icon + "100%") — keeps the module width stable.
+    TextMetrics {
+        id: audioMetrics
+        font.family: Theme.fontFamily
+        font.pixelSize: Theme.fontSizeLg
+        text: audio.text.split(" ")[0] + " 100%"
+    }
+
     StyledText {
         id: audio
 
         font.pixelSize: Theme.fontSizeLg
         color: root.hovered ? Theme.popupBg : Theme.text
+        width: audioMetrics.width
+        horizontalAlignment: Text.AlignHCenter
+        elide: Text.ElideNone
 
-        text: {
+        text:{
             if (!root.sink || !root.sink.audio)
                 return "󰕾  ?";
             if (root.sink.audio.muted)

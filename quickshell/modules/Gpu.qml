@@ -29,7 +29,7 @@ ModuleWrapper {
         id: gpu
         font.pixelSize: Theme.fontSizeLg
         width: gpuMetrics.width
-        horizontalAlignment: Text.AlignLeft
+        horizontalAlignment: Text.AlignHCenter
         elide: Text.ElideNone
         text:"󰢮 " + GpuUsage.gpuPercent.toFixed(0) + "%"
         color: root.hovered ? Theme.popupBg : Theme.text

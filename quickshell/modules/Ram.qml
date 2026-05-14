@@ -31,7 +31,7 @@ ModuleWrapper {
         font.pixelSize: Theme.fontSizeLg
         color: root.hovered ? Theme.popupBg : Theme.text
         width: ramMetrics.width
-        horizontalAlignment: Text.AlignLeft
+        horizontalAlignment: Text.AlignHCenter
         elide: Text.ElideNone
 
         text:"󰍛 " + RamUsage.ramPercent.toFixed(0) + "%"
