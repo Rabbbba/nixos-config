@@ -147,6 +147,7 @@ ShellRoot {
                             panelWindow: panelBar
                         }
                         Network {
+                            id: networkModule
                             panelWindow: panelBar
                         }
                         Audio {
@@ -215,6 +216,10 @@ ShellRoot {
                 id: panelPopout
                 color: "transparent"
                 WlrLayershell.layer: WlrLayer.Top
+                // OnDemand keyboard focus is required for the Wi-Fi password
+                // TextInput to receive key events on Wayland layer-shell —
+                // without it the input would render but never see Enter/keys.
+                WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
                 exclusionMode: ExclusionMode.Ignore
                 anchors {
                     top: true
@@ -279,6 +284,12 @@ ShellRoot {
                         y: btPopout.y
                         width: btPopout.visible ? btPopout.implicitWidth : 0
                         height: btPopout.visible ? btPopout.implicitHeight : 0
+                    }
+                    Region {
+                        x: networkPopout.x
+                        y: networkPopout.y
+                        width: networkPopout.visible ? networkPopout.implicitWidth : 0
+                        height: networkPopout.visible ? networkPopout.implicitHeight : 0
                     }
                 }
 
@@ -386,10 +397,11 @@ ShellRoot {
                     wrapper: btModule
                     name: "bluetooth"
                     alignment: "center"
-                    implicitWidth: 320
-                    implicitHeight: 320
+                    implicitWidth: 280
+                    implicitHeight: btContent.preferredHeight + 2 * btPopout.padding
 
                     BluetoothPopup {
+                        id: btContent
                         anchors.fill: parent
                         bluetoothOn: btPopout.wrapper.bluetoothOn
                         onPowerToggleRequested: {
@@ -397,6 +409,23 @@ ShellRoot {
                             Quickshell.execDetached(["rfkill", btModule.bluetoothOn ? "unblock" : "block", "bluetooth"]);
                             btModule.refreshState();
                         }
+                    }
+                }
+
+                PopoutItem {
+                    id: networkPopout
+                    panelWindow: panelPopout
+                    wrapper: networkModule
+                    name: "network"
+                    alignment: "center"
+                    implicitWidth: 280
+                    // Height tracks the popup's content so the box only grows
+                    // as APs appear / the password row expands.
+                    implicitHeight: wifiContent.preferredHeight + 2 * networkPopout.padding
+
+                    WifiPopup {
+                        id: wifiContent
+                        anchors.fill: parent
                     }
                 }
 

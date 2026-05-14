@@ -51,6 +51,13 @@ Item {
     readonly property bool popupVisible: Visibilities.current === "bluetooth"
 
     /**
+     * Natural height of the layout column — the hosting PopoutItem binds its
+     * `implicitHeight` to this so the box only grows as much as the actual
+     * content needs (toggle + paired list + scan results).
+     */
+    readonly property real preferredHeight: layoutColumn.implicitHeight
+
+    /**
      * Re-runs the connected/paired pollers. The connected pass triggers
      * the paired pass on completion so the merged list is consistent.
      */
@@ -208,7 +215,10 @@ Item {
 
     // ─── Layout ───────────────────────────────────────────────────────
     Column {
-        anchors.fill: parent
+        id: layoutColumn
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: parent.top
         spacing: 12
 
         SectionHeader {
