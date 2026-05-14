@@ -1,6 +1,7 @@
 pragma Singleton
 import QtQuick
 import Quickshell.Io
+import "."
 
 /**
  * @brief Singleton exposing GPU utilization, VRAM state, and temperatures.
@@ -121,12 +122,10 @@ QtObject {
         }
     }
 
-    property Timer _poller: Timer {
-        interval: 500
-        running: true
-        repeat: true
-        triggeredOnStart: true
-        onTriggered: {
+    /** @brief Connection to the global @ref Tick — fires every 500 ms. */
+    property Connections _tickConn: Connections {
+        target: Tick
+        function onTick() {
             busyFile.reload();
             vramUsedFile.reload();
             vramTotalFile.reload();

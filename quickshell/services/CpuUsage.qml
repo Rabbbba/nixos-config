@@ -1,6 +1,7 @@
 pragma Singleton
 import QtQuick
 import Quickshell.Io
+import "."
 
 /**
  * @brief Singleton exposing CPU usage, load average, and temperature.
@@ -148,12 +149,10 @@ QtObject {
         }
     }
 
-    property Timer _poller: Timer {
-        interval: 500
-        running: true
-        repeat: true
-        triggeredOnStart: true
-        onTriggered: {
+    /** @brief Connection to the global @ref Tick — fires every 500 ms. */
+    property Connections _tickConn: Connections {
+        target: Tick
+        function onTick() {
             cpuFile.reload();
             loadFile.reload();
             if (root._cpuHwmon)

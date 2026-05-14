@@ -18,10 +18,21 @@ ModuleWrapper {
 
     tooltip: "CPU " + Math.round(CpuUsage.cpuPercent) + "% · Tctl " + Math.round(CpuUsage.cpuTemp) + " °C"
 
+    // Worst-case slot width (icon + "100%") — keeps the module width stable.
+    TextMetrics {
+        id: cpuMetrics
+        font.family: Theme.fontFamily
+        font.pixelSize: Theme.fontSizeLg
+        text: cpu.text.replace(/[0-9]+%/, "100%")
+    }
+
     StyledText {
         id: cpu
         font.pixelSize: Theme.fontSizeLg
-        text: "󰘚 " + CpuUsage.cpuPercent.toFixed(0) + "%"
+        width: cpuMetrics.width
+        horizontalAlignment: Text.AlignLeft
+        elide: Text.ElideNone
+        text:"󰘚 " + CpuUsage.cpuPercent.toFixed(0) + "%"
         color: root.hovered ? Theme.popupBg : Theme.text
     }
 

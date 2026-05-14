@@ -1,6 +1,7 @@
 pragma Singleton
 import QtQuick
 import Quickshell.Io
+import "."
 
 /**
  * @brief Singleton exposing RAM and swap usage parsed from `/proc/meminfo`.
@@ -76,12 +77,10 @@ QtObject {
         }
     }
 
-    property Timer _poller: Timer {
-        interval: 500
-        running: true
-        repeat: true
-        triggeredOnStart: true
-        onTriggered: {
+    /** @brief Connection to the global @ref Tick — fires every 500 ms. */
+    property Connections _tickConn: Connections {
+        target: Tick
+        function onTick() {
             ramFile.reload();
             root.ramHistory = root._pushHistory(root.ramHistory, root.ramPercent);
         }

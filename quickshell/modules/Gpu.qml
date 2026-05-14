@@ -17,10 +17,21 @@ ModuleWrapper {
     bgIdle: Theme.moduleBg
     bgHover: Theme.accent
 
+    // Worst-case slot width (icon + "100%") — keeps the module width stable.
+    TextMetrics {
+        id: gpuMetrics
+        font.family: Theme.fontFamily
+        font.pixelSize: Theme.fontSizeLg
+        text: gpu.text.replace(/[0-9]+%/, "100%")
+    }
+
     StyledText {
         id: gpu
         font.pixelSize: Theme.fontSizeLg
-        text: "󰢮 " + GpuUsage.gpuPercent.toFixed(0) + "%"
+        width: gpuMetrics.width
+        horizontalAlignment: Text.AlignLeft
+        elide: Text.ElideNone
+        text:"󰢮 " + GpuUsage.gpuPercent.toFixed(0) + "%"
         color: root.hovered ? Theme.popupBg : Theme.text
     }
     onClicked: Visibilities.toggle("gpu")

@@ -17,13 +17,24 @@ ModuleWrapper {
     bgIdle: Theme.moduleBg
     bgHover: Theme.accent
 
+    // Worst-case slot width (icon + "100%") — keeps the module width stable.
+    TextMetrics {
+        id: ramMetrics
+        font.family: Theme.fontFamily
+        font.pixelSize: Theme.fontSizeLg
+        text: ram.text.replace(/[0-9]+%/, "100%")
+    }
+
     StyledText {
         id: ram
 
         font.pixelSize: Theme.fontSizeLg
         color: root.hovered ? Theme.popupBg : Theme.text
+        width: ramMetrics.width
+        horizontalAlignment: Text.AlignLeft
+        elide: Text.ElideNone
 
-        text: "󰍛 " + RamUsage.ramPercent.toFixed(0) + "%"
+        text:"󰍛 " + RamUsage.ramPercent.toFixed(0) + "%"
     }
 
     onClicked: Visibilities.toggle("ram")
