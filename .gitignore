@@ -34,15 +34,20 @@ quickshell/.qmlls.ini
 # en pré-seed des paths sensibles (bwrap a besoin que le target existe
 # pour `--ro-bind /dev/null target`). Inoffensifs, juste à exclure du
 # worktree pour ne pas polluer l'arbre.
-/.bash_profile
-/.bashrc
-/.env
-/.gitconfig
-/.gitmodules
-/.idea
-/.mcp.json
-/.profile
-/.ripgreprc
-/.vscode
-/.zprofile
-/.zshrc
+# Pas de `/` initial : les ghost files apparaissent dans le CWD de pi
+# (racine ou sous-dossier comme `quickshell/`).
+.bash_profile
+.bashrc
+.env
+.gitconfig
+.gitmodules
+.idea
+.mcp.json
+.profile
+.ripgreprc
+.vscode
+.zprofile
+.zshrc
+
+# Faux dossier `~` créé par un script qui a dû faire `mkdir ~` au lieu de `$HOME`.
+~/
