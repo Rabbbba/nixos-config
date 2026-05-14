@@ -72,7 +72,7 @@ QtObject {
      *  Auto-selects K/M/G based on magnitude; one decimal up to M, two in G.
      *  @param kbps The speed value in KiB/s.
      */
-    function formatSpeed(kbps: real) {
+    function formatSpeed(kbps: real): string {
         if (kbps < 1024)
             return kbps.toFixed(1) + "K";
         if (kbps < 1048576)
