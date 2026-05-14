@@ -62,30 +62,6 @@ ModuleWrapper {
     /** Signal strength of the active Wi-Fi connection in [0, 100], or 0. */
     readonly property int signalPct: root.activeWifi ? Math.round(root.activeWifi.signalStrength * 100) : 0
 
-    /**
-     * Display-only smoothed view of @c NetworkSpeed.downloadKbps. The raw
-     * service value updates in 2 s steps with large jumps; a NumberAnimation
-     * on this proxy interpolates between samples so the label transitions
-     * smoothly without losing the underlying history sparkline data.
-     */
-    property real downKbpsView: NetworkSpeed.downloadKbps
-
-    /** Display-only smoothed view of @c NetworkSpeed.uploadKbps — see @ref downKbpsView. */
-    property real upKbpsView: NetworkSpeed.uploadKbps
-
-    Behavior on downKbpsView {
-        NumberAnimation {
-            duration: 900
-            easing.type: Easing.OutCubic
-        }
-    }
-    Behavior on upKbpsView {
-        NumberAnimation {
-            duration: 900
-            easing.type: Easing.OutCubic
-        }
-    }
-
     tooltip: netState === "wifi" ? "Wi-Fi: " + ssid + " (" + signalPct + "%)" : netState === "ethernet" ? "Ethernet" : "Offline"
 
     onClicked: Visibilities.toggle("network")
@@ -102,7 +78,10 @@ ModuleWrapper {
     }
 
     Row {
-        spacing: 6
+        // 8 px (vs the project-wide 6) so the down/up arrow glyphs get a
+        // visible breathing gap before their value when the value uses the
+        // full slot width (e.g. "135Mb" jams against the arrow at 6).
+        spacing: 8
 
         StyledText {
             font.pixelSize: Theme.fontSizeLg
@@ -136,7 +115,7 @@ ModuleWrapper {
             verticalAlignment: Text.AlignVCenter
         }
         StyledText {
-            text: NetworkSpeed.formatSpeed(root.downKbpsView)
+            text: NetworkSpeed.formatSpeed(NetworkSpeed.downloadKbps)
             font.family: Theme.fontFamily
             font.pixelSize: Theme.fontSizeMd
             color: root.hovered ? Theme.popupBg : Theme.text
@@ -156,7 +135,7 @@ ModuleWrapper {
             verticalAlignment: Text.AlignVCenter
         }
         StyledText {
-            text: NetworkSpeed.formatSpeed(root.upKbpsView)
+            text: NetworkSpeed.formatSpeed(NetworkSpeed.uploadKbps)
             font.family: Theme.fontFamily
             font.pixelSize: Theme.fontSizeMd
             color: root.hovered ? Theme.popupBg : Theme.text
