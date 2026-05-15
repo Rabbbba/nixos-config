@@ -10,31 +10,27 @@
   # ── Programs (system-wide) ──────────────────────────────────────────────────
   programs.hyprland = {
     enable = true;
-    xwayland.enable = true; # Steam, jeux, apps X11
+    xwayland.enable = true;
   };
   programs.steam = {
     enable = true;
-    gamescopeSession.enable = true; # Big Picture en gamescope (FSR, HDR)
-    remotePlay.openFirewall = true; # Streaming Steam Remote Play
-    localNetworkGameTransfers.openFirewall = true; # Transferts jeux entre PC
+    gamescopeSession.enable = true;
+    remotePlay.openFirewall = true;
+    localNetworkGameTransfers.openFirewall = true;
   };
   programs.zsh.enable = true;
-  # programs.firefox.enable = true;  # remplacé par Zen Browser (cf home.nix + flake input zen-browser)
 
   programs.gamemode = {
     enable = true;
     enableRenice = true;
   };
 
-  # nh — wrapper rebuild plus propre (nh os switch, nh search, nh clean)
   programs.nh = {
     enable = true;
     flake = "/etc/nixos";
   };
 
-  # nix-ld — permet de runner les binaires Linux génériques (releases GitHub,
-  # binaires statiques téléchargés) directement, sans wrapper steam-run.
-  # Ajouté pour codebase-memory-mcp (knowledge graph indexer pour pi).
+  # runs generic linux binaries (github releases etc.) without a steam-run wrapper
   programs.nix-ld = {
     enable = true;
     libraries = with pkgs; [
@@ -48,19 +44,16 @@
     ];
   };
 
-  # Compression de la swap en RAM (utile sans vraie swap disque)
   zramSwap.enable = true;
 
-  # Le module zramSwap met swappiness à 100 par défaut. Trop agressif pour notre
-  # usage (30 GiB de RAM, jeux + inference LLM en RAM/VRAM) : le kernel pré-swap
-  # des pages "froides" qu'on retouche ensuite → major page faults = stutters.
-  # 10 = ne swap que sous vraie pression mémoire.
+  # zramSwap defaults swappiness to 100 — too aggressive with 30 GiB RAM +
+  # games/LLM: kernel pre-swaps pages we touch right after → stutters.
   boot.kernel.sysctl."vm.swappiness" = 10;
 
-  # Swayosd — udev pour les permissions backlight/input
+  # swayosd backlight/input udev rules
   services.udev.packages = [ pkgs.swayosd ];
 
-  # ── Utilisateur ─────────────────────────────────────────────────────────────
+  # ── User ───────────────────────────────────────────────────────────────────
   users.users.rayane = {
     isNormalUser = true;
     description = "Rayane";
@@ -71,11 +64,11 @@
     ];
   };
 
-  # ── Réseau ──────────────────────────────────────────────────────────────────
+  # ── Network ────────────────────────────────────────────────────────────────
   networking.hostName = "Rayane";
   networking.networkmanager.enable = true;
 
-  # ── Localisation ────────────────────────────────────────────────────────────
+  # ── Locale ─────────────────────────────────────────────────────────────────
   time.timeZone = "Europe/Paris";
 
   i18n.defaultLocale = "fr_FR.UTF-8";
@@ -91,8 +84,8 @@
     LC_TIME = "fr_FR.UTF-8";
   };
 
-  # ── Display & clavier ───────────────────────────────────────────────────────
-  services.xserver.enable = true; # Nécessaire pour XWayland (Steam, etc.)
+  # ── Display & keyboard ─────────────────────────────────────────────────────
+  services.xserver.enable = true;
   services.displayManager.gdm.enable = true;
   services.xserver.xkb = {
     layout = "fr";
@@ -100,11 +93,11 @@
   };
   console.keyMap = "fr";
 
-  # ── Impression ──────────────────────────────────────────────────────────────
+  # ── Printing ───────────────────────────────────────────────────────────────
   services.printing.enable = true;
 
-  # ── Sécurité ────────────────────────────────────────────────────────────────
-  # PAM pour hyprlock (sinon le mdp n'est pas reconnu)
+  # ── Security ───────────────────────────────────────────────────────────────
+  # hyprlock rejects the password without this PAM service
   security.pam.services.hyprlock = { };
 
   # ── Audio (PipeWire) ────────────────────────────────────────────────────────
@@ -117,22 +110,17 @@
     pulse.enable = true;
   };
 
-  # ── GPU AMD ─────────────────────────────────────────────────────────────────
+  # ── AMD GPU ────────────────────────────────────────────────────────────────
   hardware.graphics.enable = true;
-  hardware.graphics.enable32Bit = true; # 32-bit pour les jeux
+  hardware.graphics.enable32Bit = true; # 32-bit for games
   hardware.amdgpu.opencl.enable = true;
-  # overdrive.enable=true REMIS 2026-05-11 PM : ajoute amdgpu.ppfeaturemask=0xfffd7fff
-  # qui DÉSACTIVE PP_GFXOFF. Sans ça, le GPU fait des transitions GFXOFF/GFX entre
-  # chaque token decode (~10ms wake-up cost) → throughput plafonne à ~9 t/s sur
-  # workloads intermittents (LLM). Avec PP_GFXOFF désactivé + profile_peak forcé,
-  # le GPU reste vraiment stable au peak entre les tokens → ~25 t/s soutenu.
+  # overdrive sets amdgpu.ppfeaturemask=0xfffd7fff → disables PP_GFXOFF, which
+  # otherwise costs ~10ms wake-up per token on LLM workloads (9 → 25 t/s)
   hardware.amdgpu.overdrive.enable = true;
-  hardware.amdgpu.initrd.enable = true; # amdgpu chargé dès l'initrd (boot propre)
+  hardware.amdgpu.initrd.enable = true;
 
-  # Microcode CPU AMD (patches Zen 4 pour le 7800X3D — stabilité + perfs)
   hardware.cpu.amd.updateMicrocode = true;
 
-  # LACT — GUI monitoring/OC GPU AMD
   services.lact.enable = true;
 
   # ── Bluetooth ───────────────────────────────────────────────────────────────
@@ -141,7 +129,7 @@
     powerOnBoot = true;
     settings.General.Experimental = true; # battery level reporting
   };
-  services.blueman.enable = true; # GUI manager + system tray applet
+  services.blueman.enable = true;
 
   # ── Nix ─────────────────────────────────────────────────────────────────────
   nix.settings = {
@@ -152,7 +140,7 @@
     substituters = [
       "https://cache.nixos.org"
       "https://nix-community.cachix.org"
-      # Cache binaire pour kernel cachyos (évite compile 40 min)
+      # cachyos kernel binary cache — skips a ~40 min compile
       "https://attic.xuyh0120.win/lantian"
     ];
     trusted-public-keys = [
@@ -162,7 +150,6 @@
     ];
   };
 
-  # Garbage collection automatique chaque semaine, garde 7 derniers jours
   nix.gc = {
     automatic = true;
     dates = "weekly";
@@ -171,35 +158,30 @@
 
   nixpkgs.config.allowUnfree = true;
 
-  # ── Variables d'environnement système ──────────────────────────────────────
+  # ── System environment variables ───────────────────────────────────────────
   environment.sessionVariables = {
-    # Active le backend Wayland natif de Proton (au lieu de XWayland) pour tous les jeux Steam
     PROTON_ENABLE_WAYLAND = "1";
-    # Active le wrapper Wayland des Electron NixOS-wrappés (Vesktop, etc.) — sinon
-    # ils tournent en XWayland et le screen share via PipeWire renvoie un buffer vide.
+    # without this, NixOS-wrapped Electron (vesktop) screenshare returns an empty buffer
     NIXOS_OZONE_WL = "1";
-    # Hyprland (wlroots) en backend Vulkan natif — meilleur sur RDNA4 que l'OpenGL ES default
+    # rdna4: vulkan beats the default OpenGL ES for wlroots
     WLR_RENDERER = "vulkan";
-    # Optims RADV pour RDNA4 : sam = path optimisé Resizable BAR (déjà activé côté HW),
-    # nv_ms = Mesh Shader optimisations (jeux récents), gpl = Graphics Pipeline Library
-    # (réduit massivement les stutters de compilation shader, surtout UE5)
+    # sam = resizable BAR, nv_ms = mesh shaders, gpl = pipeline library (UE5 stutters)
     RADV_PERFTEST = "sam,nv_ms,gpl";
   };
 
-  # ── Packages système (les packages user vont dans home.nix) ────────────────
+  # ── System packages (user packages live in home.nix) ───────────────────────
   environment.systemPackages = with pkgs; [
     wget
-    tealdeer # tldr — pages d'aide concises
+    tealdeer
     wl-clipboard
-    bat # cat avec syntax highlighting
-    nix-output-monitor # nom — progression colorée des builds (utilisé par nh)
+    bat
+    nix-output-monitor # nom — used by nh
   ];
 
-  # Kernel CachyOS BORE — scheduler optimisé pour latence (gaming, desktop interactif).
-  # Source : xddxdd/nix-cachyos-kernel.
+  # CachyOS BORE — latency-tuned scheduler (xddxdd/nix-cachyos-kernel)
   boot.kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-bore;
 
-  # ── Disque jeux ─────────────────────────────────────────────────────────────
+  # ── Games disk ─────────────────────────────────────────────────────────────
   fileSystems."/mnt/jeux" = {
     device = "/dev/disk/by-uuid/eaf01630-0390-47bc-8052-c056e1e5aedb";
     fsType = "btrfs";

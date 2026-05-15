@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
-# Force l'OLED comme primary X — Steam place ses notif toasts sur le primary.
-# Utilise le model EDID (AW3423DWF) pour être stable cross-boot, contrairement
-# aux noms DP-X qui peuvent shifter selon l'ordre de détection des outputs.
+# Pin OLED as X primary so Steam toasts land there. EDID model is stable
+# across boots, DP-X is not.
 
 set -euo pipefail
 
@@ -10,6 +9,6 @@ oled=$(hyprctl monitors -j | jq -r '.[] | select(.model == "AW3423DWF") | .name'
 if [[ -n "$oled" ]]; then
     xrandr --output "$oled" --primary
 else
-    echo "OLED (AW3423DWF) introuvable — xrandr primary ignoré" >&2
+    echo "OLED (AW3423DWF) not found — xrandr primary skipped" >&2
     exit 1
 fi

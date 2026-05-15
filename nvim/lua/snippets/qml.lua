@@ -1,6 +1,5 @@
--- Snippets QML pour le projet Quickshell.
--- Auto-loaded par luasnip via from_lua.load() dans plugins/cmp.lua.
--- Triggers (filetype = qml): tape le mot puis <Tab> en mode insert.
+-- QML snippets — loaded by luasnip via plugins/cmp.lua.
+-- Trigger: type the keyword then <Tab> in insert mode.
 
 local ls = require("luasnip")
 local s = ls.snippet
@@ -9,7 +8,7 @@ local fmt = require("luasnip.extras.fmt").fmt
 local rep = require("luasnip.extras").rep
 
 return {
-	-- prop : property publique avec doc.   Tab → type → name → default
+	-- prop: public property + doc
 	s(
 		"prop",
 		fmt(
@@ -26,7 +25,7 @@ property {} {}: {}
 		)
 	),
 
-	-- propr : readonly property avec doc.
+	-- propr: readonly property + doc
 	s(
 		"propr",
 		fmt(
@@ -43,7 +42,7 @@ readonly property {} {}: {}
 		)
 	),
 
-	-- propa : property alias avec doc.
+	-- propa: alias property + doc
 	s(
 		"propa",
 		fmt(
@@ -59,7 +58,7 @@ property alias {}: {}
 		)
 	),
 
-	-- sig : signal avec un paramètre typé.
+	-- sig: signal with one typed param
 	s(
 		"sig",
 		fmt(
@@ -76,7 +75,7 @@ signal {}({}: {})
 		)
 	),
 
-	-- sig0 : signal sans paramètre.
+	-- sig0: parameterless signal
 	s(
 		"sig0",
 		fmt(
@@ -91,8 +90,7 @@ signal {}
 		)
 	),
 
-	-- func : function typée (style QML moderne) avec doc.
-	-- Le nom du paramètre est mirroré entre la doc et la signature.
+	-- func: typed function + doc, param name mirrored between doc and signature
 	s(
 		"func",
 		fmt(
@@ -118,7 +116,7 @@ function {name}({arg_sig}: {type}): {ret} {{
 		)
 	),
 
-	-- brief : juste un bloc Doxygen @brief (avant un type compound).
+	-- brief: standalone @brief block before a compound type
 	s(
 		"brief",
 		fmt(

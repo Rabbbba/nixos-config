@@ -5,17 +5,15 @@ on:
     branches: [master]
   pull_request:
     branches: [master]
-  # Permet de déclencher manuellement depuis l'onglet Actions (bouton "Run workflow"),
-  # utile pour redéployer Pages sans avoir à push un commit vide.
+  # manual redeploy without an empty commit
   workflow_dispatch:
 
-# Pages a besoin de ces permissions pour publier.
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# Évite des deploys concurrents (le dernier push gagne).
+# latest push wins
 concurrency:
   group: pages
   cancel-in-progress: false
@@ -24,9 +22,7 @@ jobs:
   build:
     name: Build (strict)
     runs-on: ubuntu-latest
-    # Force UTF-8: sans ça doxyqml plante sur les caractères non-ASCII
-    # (ex: `°C` dans les commentaires) car Python ouvre les fichiers selon
-    # locale.getpreferredencoding() qui peut résoudre en ASCII sur le runner.
+    # Runner locale may resolve to ASCII → doxyqml crashes on non-ASCII (e.g. °C).
     env:
       LANG: C.UTF-8
       LC_ALL: C.UTF-8
@@ -37,21 +33,19 @@ jobs:
       - name: Install doxygen + graphviz
         run: sudo apt-get update && sudo apt-get install -y doxygen graphviz
 
-      # Installe uv (même runtime que local) pour que doxyqml-wrapper.sh
-      # utilise la même version (latest) avec le même Python que Rayane.
+      # same uv as local → same doxyqml + Python
       - uses: astral-sh/setup-uv@v6
 
       - name: Make wrapper executable
         run: chmod +x quickshell/doxyqml-wrapper.sh
 
-      # WARN_AS_ERROR = FAIL_ON_WARNINGS dans le Doxyfile → exit ≠ 0
-      # si un membre QML public est non documenté.
+      # Doxyfile has WARN_AS_ERROR=FAIL_ON_WARNINGS → undocumented QML = fail
       - name: Build documentation
         working-directory: quickshell
         run: doxygen Doxyfile
 
       - name: Upload Pages artifact
-        # Ne déploie que sur push master, pas sur PR.
+        # deploy on push only, not PRs
         if: github.event_name == 'push'
         uses: actions/upload-pages-artifact@v3
         with:

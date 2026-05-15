@@ -1,10 +1,6 @@
 #!/usr/bin/env bash
-# Cycle through wallpapers in a library directory and apply the next/previous
-# one via wallpaper.sh (which sets it on DP-2 and regenerates the theme).
-#
-# Usage:
-#   wallpaper-cycle.sh next       # default
-#   wallpaper-cycle.sh prev
+# Cycle next/prev wallpaper in $WALLPAPER_LIB and apply via wallpaper.sh.
+# Usage: wallpaper-cycle.sh [next|prev]
 
 set -euo pipefail
 
@@ -14,7 +10,6 @@ DIRECTION="${1:-next}"
 
 mkdir -p "$(dirname "$STATE_FILE")"
 
-# Collect wallpapers, sorted alphabetically.
 mapfile -t WALLS < <(find "$LIB_DIR" -maxdepth 1 -type f \
     \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" \) | sort)
 
@@ -23,13 +18,11 @@ if [ "${#WALLS[@]}" -eq 0 ]; then
     exit 1
 fi
 
-# Read current index (default 0).
 CUR=0
 if [ -f "$STATE_FILE" ]; then
     CUR="$(cat "$STATE_FILE")"
 fi
 
-# Compute new index based on direction.
 COUNT="${#WALLS[@]}"
 case "$DIRECTION" in
     next) NEXT=$(( (CUR + 1) % COUNT )) ;;

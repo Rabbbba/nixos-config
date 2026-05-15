@@ -1,33 +1,27 @@
 {
-  description = "Configuration NixOS de Rayane";
+  description = "Rayane's NixOS configuration";
 
   inputs = {
-    # nixpkgs unstable — packages cutting-edge
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
 
-    # home-manager — gestion des dotfiles utilisateur en module NixOS
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # Quickshell — bleeding-edge depuis l'upstream officiel
     quickshell = {
       url = "git+https://git.outfoxxed.me/outfoxxed/quickshell";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # Kernel CachyOS via xddxdd — BORE scheduler pour transferts CPU↔GPU intensifs
-    # NOTE : ne pas override son input nixpkgs (mismatch patches/kernel version).
+    # do NOT override nixpkgs here — patch/version mismatch
     nix-cachyos-kernel.url = "github:xddxdd/nix-cachyos-kernel/release";
 
-    # Zen Browser — Firefox fork avec UI moderne (split tabs, workspaces, sidebar)
     zen-browser = {
       url = "github:0xc000022070/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # qml-language-server — LSP QML Go/tree-sitter (alternative à qmlls Qt)
     qml-language-server = {
       url = "github:cushycush/qml-language-server";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -83,41 +77,32 @@
         ];
       };
 
-      # Devshell : `nix develop` (ou auto-load via `direnv` + `.envrc`).
-      # Source de vérité pour les outils utilisés en local ET dans le CI
-      # (cf. .github/workflows/lint.yml qui utilise `nix develop --command`).
+      # `nix develop` (or auto via direnv). Shared with CI — see workflows/lint.yml.
       devShells.${system}.default = pkgs.mkShell {
         packages = with pkgs; [
-          # Documentation
           doxygen
           graphviz
-          uv # pour `uvx doxyqml` (cf. quickshell/doxyqml-wrapper.sh)
+          uv # for uvx doxyqml — see quickshell/doxyqml-wrapper.sh
 
-          # Linters Nix
-          statix # détecteur d'anti-patterns
-          deadnix # détecteur de code mort
-          nixfmt-rfc-style # formateur Nix (style RFC 166)
+          statix
+          deadnix
+          nixfmt-rfc-style
 
-          # Linters QML / shell / lua
-          qt6.qtdeclarative # fournit qmllint, qmlformat
+          qt6.qtdeclarative # qmllint, qmlformat
           shellcheck
-          stylua # formateur Lua (config dans stylua.toml)
+          stylua
 
-          # Plugin Quickshell C++ — headers Qt6 + wrapper Nix
-          # (gcc/cmake/pkg-config viennent du home.nix global)
-          qt6.qtbase # QObject, QTimer, Qt Core/Gui
-          qt6.qtdeclarative # Qt6::Qml — nécessaire pour QML_ELEMENT macro
-          qt6.qtshadertools # Dépendance transitive de Qt6Quick
-          qt6.wrapQtAppsHook # patche les rpath Qt automatiquement pour la dérivation
-          libGL # WrapOpenGL — dépendance transitive de Qt6Gui sur NixOS
+          # Quickshell C++ plugin (gcc/cmake/pkg-config live in home.nix)
+          qt6.qtbase
+          qt6.qtdeclarative # Qt6::Qml — required for QML_ELEMENT
+          qt6.qtshadertools
+          qt6.wrapQtAppsHook
+          libGL
         ];
 
         shellHook = ''
-          # Qt6 sur NixOS éclate ses composants en plusieurs paquets (qtbase,
-          # qtdeclarative, qtshadertools…). `find_package(Qt6 COMPONENTS …)`
-          # de CMake n'agrège pas tout seul ; on lui donne explicitement les
-          # racines via CMAKE_PREFIX_PATH pour qu'il résolve les Config.cmake
-          # de chaque composant.
+          # Qt6 is split across packages on NixOS; CMake's find_package doesn't
+          # aggregate them, so feed it each component root via CMAKE_PREFIX_PATH.
           export CMAKE_PREFIX_PATH="${pkgs.qt6.qtbase}:${pkgs.qt6.qtdeclarative}:${pkgs.qt6.qtshadertools}''${CMAKE_PREFIX_PATH:+:$CMAKE_PREFIX_PATH}"
 
           echo ""

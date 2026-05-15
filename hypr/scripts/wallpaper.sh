@@ -1,14 +1,11 @@
 #!/usr/bin/env bash
-# Sets per-output wallpapers via awww/swww and regenerates the
-# Quickshell theme via matugen using the OLED (primary) image.
+# Sets per-output wallpapers via awww and regenerates the Quickshell theme
+# from the OLED image. Outputs matched by EDID model — survives DP-X renames.
 #
 # Usage:
-#   wallpaper.sh                        # uses default OLED + portrait wallpapers
-#   wallpaper.sh <oled>                 # custom OLED, default portrait
-#   wallpaper.sh <oled> <portrait>      # custom both
-#
-# Détecte dynamiquement les noms DP-X via le model EDID — robuste cross-boot
-# même si Linux/Hyprland renomment les outputs.
+#   wallpaper.sh                       # defaults
+#   wallpaper.sh <oled>                # custom OLED only
+#   wallpaper.sh <oled> <portrait>     # both
 
 set -euo pipefail
 
@@ -22,16 +19,14 @@ for f in "$OLED_WALL" "$PORTRAIT_WALL"; do
   fi
 done
 
-# Attendre que le daemon awww soit prêt
+# wait for awww
 until hyprctl monitors -j >/dev/null 2>&1; do
   sleep 0.5
 done
 
-# Détection dynamique des outputs via leur model EDID
 OLED_DP=$(hyprctl monitors -j | jq -r '.[] | select(.model == "AW3423DWF") | .name' | head -1)
 PORTRAIT_DP=$(hyprctl monitors -j | jq -r '.[] | select(.model == "24G1WG4") | .name' | head -1)
 
-# Per-output wallpapers with smooth transitions.
 if [[ -n "$OLED_DP" ]]; then
   awww img --outputs "$OLED_DP" "$OLED_WALL" \
     --resize fit \
@@ -39,7 +34,7 @@ if [[ -n "$OLED_DP" ]]; then
     --transition-duration 1 \
     --transition-fps 60
 else
-  echo "OLED (AW3423DWF) introuvable — wallpaper ignoré" >&2
+  echo "OLED (AW3423DWF) not found — wallpaper skipped" >&2
 fi
 
 if [[ -n "$PORTRAIT_DP" ]]; then
@@ -49,15 +44,11 @@ if [[ -n "$PORTRAIT_DP" ]]; then
     --transition-duration 1 \
     --transition-fps 60
 else
-  echo "Portrait (24G1WG4) introuvable — wallpaper ignoré" >&2
+  echo "Portrait (24G1WG4) not found — wallpaper skipped" >&2
 fi
 
-# Regenerate the Quickshell theme based on the OLED (primary) wallpaper.
-# Quickshell's hot-reload picks up the rewritten Theme.qml automatically.
-#
-# matugen 4 forces an interactive colour picker on `image` mode and refuses
-# to run without a TTY. We wrap it in `script` (allocates a pseudo-TTY) and
-# feed it a single \r so it accepts the first/default option, which is
-# matugen's own recommended dominant colour for the wallpaper.
+# matugen 4 forces an interactive picker on `image` mode and refuses without a
+# TTY. Wrap in `script` for a pty and feed \r to accept the default colour.
+# Quickshell hot-reloads the rewritten Theme.qml.
 printf '\r' | script -q -c "matugen image '$OLED_WALL'" /dev/null >/tmp/matugen.log 2>&1 ||
   notify-send "matugen" "failed: see /tmp/matugen.log" || true

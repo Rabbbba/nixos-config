@@ -4,16 +4,15 @@ vim.lsp.config("clangd", {
 	capabilities = require("cmp_nvim_lsp").default_capabilities(),
 	cmd = {
 		"clangd",
-		"--background-index", -- indexation projet en arrière-plan (defs cross-file)
-		"--clang-tidy", -- intègre clang-tidy dans les diagnostics LSP
-		"--header-insertion=iwyu", -- propose les #include manquants (style include-what-you-use)
-		"--completion-style=detailed", -- complétion plus riche (overloads séparés, params nommés)
-		"--function-arg-placeholders", -- snippets <args> à la complétion
-		"--all-scopes-completion", -- complète aussi les symboles hors namespace courant
+		"--background-index",
+		"--clang-tidy",
+		"--header-insertion=iwyu",
+		"--completion-style=detailed",
+		"--function-arg-placeholders",
+		"--all-scopes-completion",
 	},
-	-- Cherche compile_commands.json à la racine projet ; sinon clangd
-	-- fonctionne sur fichier unique en best-effort. Pour les projets
-	-- multi-fichiers hors CMake, utiliser `bear -- ./tools/compile.sh -c f.cpp`.
+	-- no compile_commands.json → single-file mode. For non-CMake projects:
+	-- `bear -- ./tools/compile.sh -c f.cpp`
 	root_markers = { "compile_commands.json", "CMakeLists.txt", ".git" },
 })
 vim.lsp.enable("clangd")
@@ -36,17 +35,9 @@ vim.lsp.config("nixd", {
 })
 vim.lsp.enable("nixd")
 
--- qmldir EXCLU intentionnellement de root_markers: chaque sous-dossier
--- (modules/, popouts/...) contient son propre qmldir, ce qui ferait que le
--- LSP considère le sous-dossier comme racine et n'indexerait pas les autres
--- dossiers du projet.
---
--- Choix LSP QML : qmlls (Qt officiel) — moteur qmllint sous-jacent, catche les
--- [unqualified] (identifier non résolu, ex: `windows: [ window ]` au lieu de
--- `windows: [ panelPopout ]`) que qml-language-server (Go/tree-sitter) rate.
--- Options projet (no-cmake-calls) dans quickshell/.qmlls.ini.
--- `-E` lit QML_IMPORT_PATH (set dans home.nix) pour les modules Quickshell + Qt.
-
+-- qmldir is NOT in root_markers: every subfolder ships one, would split the
+-- project. qmlls > qml-language-server here for [unqualified] diagnostics.
+-- `-E` reads QML_IMPORT_PATH (home.nix). Project opts in quickshell/.qmlls.ini.
 vim.lsp.config("qmlls", {
 	cmd = { "qmlls", "-E" },
 	filetypes = { "qml" },
@@ -55,9 +46,7 @@ vim.lsp.config("qmlls", {
 })
 vim.lsp.enable("qmlls")
 
--- Alternative gardée en commentaire : qml-language-server (Go/tree-sitter).
--- Plus permissif (ne flag pas les unqualified) — à réactiver si qmlls devient
--- trop bruyant ou si ses faux positifs gênent.
+-- fallback if qmlls gets too noisy: qml-language-server (Go/tree-sitter)
 -- vim.lsp.config("qml-language-server", {
 -- 	cmd = { "qml-language-server" },
 -- 	filetypes = { "qml" },

@@ -13,8 +13,7 @@ return {
 		local cmp = require("cmp")
 		local luasnip = require("luasnip")
 
-		-- Charge les snippets custom (snippets/qml.lua → filetype `qml`,
-		-- snippets/<other>.lua → filetype `<other>`, etc.)
+		-- snippets/<ft>.lua → filetype <ft>
 		require("luasnip.loaders.from_lua").load({
 			paths = { vim.fn.stdpath("config") .. "/lua/snippets" },
 		})
@@ -31,7 +30,7 @@ return {
 				["<C-Space>"] = cmp.mapping.complete(),
 				["<C-e>"] = cmp.mapping.abort(),
 				["<CR>"] = cmp.mapping.confirm({ select = true }),
-				-- Tab : completion suivante OU expand snippet OU jump au prochain placeholder
+				-- Tab: next item / expand snippet / jump to next placeholder
 				["<Tab>"] = cmp.mapping(function(fallback)
 					if cmp.visible() then
 						cmp.select_next_item()
@@ -41,7 +40,7 @@ return {
 						fallback()
 					end
 				end, { "i", "s" }),
-				-- Shift-Tab : completion précédente OU jump au placeholder précédent
+				-- Shift-Tab: previous item / jump back
 				["<S-Tab>"] = cmp.mapping(function(fallback)
 					if cmp.visible() then
 						cmp.select_prev_item()

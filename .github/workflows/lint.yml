@@ -7,9 +7,7 @@ on:
     branches: [master]
   workflow_dispatch:
 
-# Tous les jobs utilisent `nix develop --command <tool>` pour ré-utiliser
-# exactement les mêmes versions d'outils que le devshell local — pas de
-# divergence local-vs-CI.
+# Jobs run via `nix develop --command` — same tool versions as the local devshell.
 
 jobs:
   nix:
@@ -26,8 +24,7 @@ jobs:
       - name: statix check
         run: nix develop --command statix check .
 
-      # hardware-configuration.nix exclu : auto-généré par nixos-generate-config,
-      # ne doit pas être édité à la main (perdu au prochain regen).
+      # hardware-configuration.nix is auto-generated — skip it
       - name: deadnix
         run: nix develop --command deadnix --fail --exclude hardware-configuration.nix .
 
@@ -38,11 +35,8 @@ jobs:
             nixfmt --check $files
           '
 
-  # Pas de job qmllint : Quickshell utilise des types custom (PanelWindow,
-  # Singleton, Variants...) que qmllint ne connaît pas sans importPaths
-  # spécifiques, et faire passer les warnings demanderait un fichier de
-  # config conséquent pour peu de valeur. Le strict-mode Doxygen + le
-  # pre-commit hook + le LSP en édition couvrent la qualité QML.
+  # No qmllint job: Quickshell uses custom types it doesn't know about and
+  # the silencing config isn't worth it. Doxygen strict + pre-commit + LSP cover it.
 
   shell:
     name: Shell (shellcheck)
@@ -77,7 +71,6 @@ jobs:
           extra_nix_config: |
             experimental-features = nix-command flakes
 
-      # Formatage Lua check via stylua. Config dans stylua.toml à la racine
-      # (tabs, indent 2, column_width 120 — conventions NvChad).
+      # stylua.toml at repo root (tabs, indent 2, width 120 — NvChad)
       - name: stylua --check nvim/
         run: nix develop --command stylua --check nvim/

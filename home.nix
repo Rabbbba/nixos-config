@@ -13,7 +13,7 @@
 
   programs.home-manager.enable = true;
 
-  # ── Dotfiles (symlinks vers /etc/nixos pour rester writables) ──────────────
+  # ── dotfiles ── symlinks so edits stay live without a rebuild
   xdg.configFile."nvim".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/nvim";
   xdg.configFile."quickshell".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/quickshell";
   xdg.configFile."foot".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/foot";
@@ -26,7 +26,6 @@
 
   home.sessionVariables.ELECTRON_OZONE_PLATFORM_HINT = "wayland";
 
-  # Scripts perso non-versionnés
   home.sessionPath = [ "$HOME/.local/bin" ];
 
   # ── Packages ────────────────────────────────────────────────────────────────
@@ -42,95 +41,91 @@
     # Terminal & shell
     foot
 
-    # Éditeur & outils dev
+    # Editor & dev tools
     neovim
-    nixd # LSP Nix
-    nixfmt # Formateur Nix
-    statix # Linter anti-patterns Nix
-    deadnix # Détecte bindings let inutilisés
+    nixd
+    nixfmt
+    statix
+    deadnix
     # ─── C/C++ toolchain ─────────────────────────────────────────────
-    # `clang-tools` fournit déjà clangd/clang-tidy/clang-format (LSP côté
-    # éditeur). Pour COMPILER, il faut une toolchain complète :
-    gcc # Compilateur principal (g++, gcc, libstdc++)
-    cmake # Build system standard C++ (out-of-source builds)
-    ninja # Backend make rapide, utilisé par cmake -G Ninja
-    pkg-config # Résout les paths/flags des libs système (Qt, libsensors, etc.)
-    gdb # Debugger principal
-    bear # Génère compile_commands.json depuis n'importe quel build → clangd
-    cppcheck # Linter statique additionnel (à côté de clang-tidy)
-    valgrind # Memcheck, helgrind, callgrind — pour quand tu touches au heap
-    clang-tools # LSP C/C++ (clangd, clang-tidy, clang-format)
-    bash-language-server # LSP Bash
-    vscode-langservers-extracted # LSP HTML/CSS/JSON
-    stylua # Formateur Lua
-    prettier # Formateur JS/MD/YAML
-    qt6.qtdeclarative # Fourni qmlformat (LSP qmlls aussi mais on utilise qml-language-server à la place)
-    inputs.qml-language-server.packages.${pkgs.system}.default # LSP QML Go/tree-sitter
-    taplo # Formateur TOML
-    shfmt # Formateur Shell
+    # clang-tools already gives us the LSP side; this row is for compiling.
+    gcc
+    cmake
+    ninja
+    pkg-config
+    gdb
+    bear # compile_commands.json from any build → clangd
+    cppcheck
+    valgrind
+    clang-tools
+    # ─── C/C++ learning ──────────────────────────────────────────────
+    zeal # offline cppreference/Qt/STL, sqlite-indexed
+    cling # C++ REPL
+    exercism
+    cppman # cppreference as man pages
+    bash-language-server
+    vscode-langservers-extracted
+    stylua
+    prettier
+    qt6.qtdeclarative # qmlformat
+    inputs.qml-language-server.packages.${pkgs.system}.default
+    taplo
+    shfmt
     nodejs
     ripgrep
-    doxygen # Génération doc (cf quickshell/Doxyfile)
-    graphviz # Diagrammes d'héritage pour Doxygen (DOT)
+    doxygen
+    graphviz # DOT for Doxygen inheritance diagrams
 
-    # Window manager & desktop
-    # hyprland — fourni par programs.hyprland system-wide (configuration.nix)
-    hyprlock # Lock screen
-    hypridle # Idle daemon
-    awww # Wallpaper daemon (replaces hyprpaper)
-    matugen # Material You palette generation from wallpaper
-    cava # Audio spectrum visualizer feeding the Tidal popup bars
-    walker # Lanceur d'apps
-    elephant # Backend data provider pour walker 2.x
-    dunst # Notifications
-    libnotify # notify-send pour tester dunst
-    swayosd # OSD volume/luminosité (compositor-agnostic)
+    # WM & desktop (hyprland itself is system-wide via programs.hyprland)
+    hyprlock
+    hypridle
+    awww # wallpaper daemon, replaces hyprpaper
+    matugen
+    cava
+    walker
+    elephant # walker 2.x data backend
+    dunst
+    libnotify
+    swayosd
 
-    #Quickshell (Projet) — bleeding-edge depuis flake input
     inputs.quickshell.packages.${pkgs.system}.default
 
-    # Capture & presse-papiers
+    # Capture & clipboard
     grim
     slurp
     wl-clipboard
-    wl-clip-persist # Garde le clipboard après fermeture
-    cliphist # Historique presse-papiers
+    wl-clip-persist # survives the source app closing
+    cliphist
 
     # Apps
-    # Vesktop : Discord client avec support Wayland (remplace discord upstream).
-    # ⚠️ NE PAS LANCER via walker — le launcher casse le pipeline Chromium
-    # video_capture (cgroup app.slice + fork detaché → "Bind context provider
-    # failed", picker portail ne s'ouvre pas, frame noire côté viewer).
-    # Utiliser Super+D (bind Hyprland → exec direct, scope systemd propre).
-    # Historique : on traînait des flags --disable-gpu-memory-buffer-video-frames
-    # / --disable-features=AcceleratedVideoEncoder / --enable-features=
-    # WebRTCPipeWireCapturer pour "fixer" la frame noire RDNA4 — en fait c'était
-    # walker depuis le début, les flags étaient inutiles. Vanilla suffit.
+    # Vesktop: never launch via walker — its app.slice cgroup + detached fork
+    # breaks Chromium's video_capture (portal picker never opens, black frame).
+    # Use Super+D (direct exec, clean systemd scope).
     pkgs.vesktop
-    inputs.zen-browser.packages.${pkgs.system}.default # Firefox fork avec UI moderne
+    inputs.zen-browser.packages.${pkgs.system}.default
     bitwarden-desktop
     mangohud
     obsidian
 
     # Gaming
-    protonup-qt # Gestion Proton-GE
-    protontricks # Tweaks/DLLs pour jeux Proton
-    heroic # GOG / Epic Games / Amazon Prime
-    goverlay # GUI config MangoHud
-    gamescope # Compositeur dédié jeux (FSR, HDR)
+    protonup-qt
+    protontricks
+    heroic
+    goverlay
+    gamescope
 
-    # IA
+    # AI
     claude-code
     pi-coding-agent
-    bubblewrap # Sandbox userland — requis par pi-sandbox pour isoler skills/cmds
+    bubblewrap # required by pi-sandbox
 
-    amdgpu_top # Monitoring GPU AMD
-    networkmanagerapplet # Tray network
+    amdgpu_top
+    networkmanagerapplet
     btop
-    bc # Calculatrice CLI
-    jq # JSON parsing — utilisé par les scripts Hyprland
-    socat # Socket cat — utilisé pour écouter events Hyprland
-    hyprpolkitagent # Agent polkit pour Hyprland (requis pour LACT, gparted, etc.)
+    bc
+    jq # used by hypr scripts
+    socat # listens to hyprland events
+    hyprpolkitagent # privilege prompts for LACT, gparted...
 
     # Fonts
     nerd-fonts.iosevka
@@ -149,12 +144,9 @@
       inputs.quickshell.packages.${pkgs.system}.default
     }/lib/qt-6/qml";
 
-    # Gaming — réduit les stutters de compilation shader (UE5 notamment).
-    # Par défaut Mesa cap le cache à 1 GiB ; un AAA récent évince ses propres
-    # entrées en cours de session, ce qui re-déclenche des compiles à chaud.
+    # 1 GiB default evicts mid-session on modern AAA → hot recompiles (UE5).
     MESA_SHADER_CACHE_MAX_SIZE = "10G";
-    # Index unique au lieu de millions de petits fichiers — réduit la pression
-    # inode + IO sur btrfs au démarrage des jeux avec gros cache shader.
+    # one index file beats millions of small ones on btrfs
     MESA_DISK_CACHE_SINGLE_FILE = "1";
   };
 
@@ -208,10 +200,8 @@
   programs.starship.enable = true;
 
   # ── Systemd user services ──────────────────────────────────────────────────
-  # Walker launcher + elephant backend, managed by systemd so they survive
-  # rebuilds and restart on failure. hyprland-session.target is started by
-  # Hyprland (see hypr/modules/autostart.conf) — it pulls in graphical-session.target
-  # via BindsTo, which our services depend on.
+  # walker + elephant under systemd for restart-on-failure. hyprland-session
+  # is started from autostart.conf and binds to graphical-session.target.
   systemd.user.targets.hyprland-session = {
     Unit = {
       Description = "Hyprland compositor session";

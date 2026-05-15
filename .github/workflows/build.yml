@@ -3,10 +3,9 @@ name: Build
 on:
   push:
     branches: [master]
-    # Trigger uniquement quand un fichier qui affecte la config NixOS change.
-    # Les fichiers symlinkés via xdg.configFile (nvim/, quickshell/, hypr/...)
-    # n'entrent pas dans l'évaluation Nix, donc inutile de re-builder.
-    # Le workflow Lint reste lui actif sur tous les pushs et couvre ces fichiers.
+    # Only trigger when a file that affects Nix evaluation changes.
+    # xdg.configFile symlinks (nvim/, quickshell/, hypr/...) are out of scope —
+    # lint workflow covers them.
     paths:
       - "flake.nix"
       - "flake.lock"
@@ -25,7 +24,7 @@ on:
       - ".github/workflows/build.yml"
   workflow_dispatch:
 
-# Une seule build à la fois (les builds Nix sont CPU/disk intensifs).
+# One build at a time
 concurrency:
   group: build
   cancel-in-progress: false
@@ -34,48 +33,36 @@ jobs:
   nixos:
     name: NixOS toplevel build
     runs-on: ubuntu-latest
-    # 300 min (5h) car le premier build doit compiler from-scratch
-    # nix-cachyos-kernel (~2h sur runner GitHub 4 vCPU) et zen-browser
-    # (~40 min). Une fois Cachix populé via `cachix watch-store`, les
-    # runs suivants prennent ~2-5 min car tout est servi depuis le cache.
+    # First build: ~2h cachyos kernel + ~40min zen-browser on a 4 vCPU runner.
+    # After Cachix is populated, later runs are 2-5 min.
     timeout-minutes: 300
     steps:
       - uses: actions/checkout@v4
 
       - uses: cachix/install-nix-action@v30
         with:
-          # cache.nixos.org est par défaut. hyprland.cachix.org évite de
-          # rebuilder Hyprland et ses libs à partir des sources.
-          # cachix-action ci-dessous ajoute automatiquement rabbbba-nixos.
+          # hyprland.cachix.org skips rebuilding hyprland from source.
+          # rabbbba-nixos is added by cachix-action below.
           extra_nix_config: |
             experimental-features = nix-command flakes
             substituters = https://cache.nixos.org https://hyprland.cachix.org
             trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc=
 
-      # Cachix push : configure auth + ajoute rabbbba-nixos aux substituters
-      # de la session. Le post-step de cette action push aussi tous les paths
-      # buildés à la fin (filet de sécurité), mais le `cachix watch-store`
-      # ci-dessous push EN CONTINU pendant le build — comme ça si on timeout,
-      # on garde tout ce qui a déjà été compilé.
+      # cachix-action's post-step pushes at the end; the `watch-store` below
+      # streams paths continuously so a timeout doesn't lose progress.
       - uses: cachix/cachix-action@v15
         with:
           name: rabbbba-nixos
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
 
-      # Build de la toplevel system derivation = équivalent de `nh os switch`
-      # mais sans installer. Si ça compile, n'importe quelle machine peut
-      # `nh os switch` ce commit. Filet de sécurité ultime contre les
-      # régressions (package supprimé upstream, option dépréciée, etc.).
-      #
-      # `cachix watch-store` tourne en background et push chaque store path
-      # nouvellement créé. Crucial pour les premiers builds longs : si on
-      # timeout, le travail déjà fait n'est pas perdu.
+      # Toplevel build = `nh os switch` without installing. Catches regressions
+      # (removed upstream pkg, deprecated option). watch-store streams every
+      # new store path so long first builds survive a timeout.
       - name: nix build .#nixosConfigurations.Rayane.config.system.build.toplevel
         run: |
-          # Push streaming: surveille /nix/store et push les nouveaux paths.
           cachix watch-store rabbbba-nixos &
           WATCH_PID=$!
-          # On nettoie watch-store même en cas d'échec (sinon le job reste pendu).
+          # job hangs otherwise
           trap "kill $WATCH_PID 2>/dev/null || true; wait $WATCH_PID 2>/dev/null || true" EXIT
           nix build \
             --no-link \

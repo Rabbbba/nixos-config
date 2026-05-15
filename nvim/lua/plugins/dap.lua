@@ -4,15 +4,13 @@ return {
 		dependencies = {
 			"rcarriga/nvim-dap-ui",
 			"nvim-neotest/nvim-nio",
-			"theHamsta/nvim-dap-virtual-text", -- variables inline pendant le step
+			"theHamsta/nvim-dap-virtual-text", -- inline variables while stepping
 		},
 		config = function()
 			local dap = require("dap")
 			local dapui = require("dapui")
 
-			-- Adapter gdb natif (gdb >= 14 fournit un server DAP intégré
-			-- via `gdb -i=dap`). Préféré à codelldb sur NixOS : gdb est déjà
-			-- dans home.nix et codelldb n'est pas un package nixpkgs standalone.
+			-- gdb >= 14 ships a DAP server; codelldb has no standalone nixpkgs.
 			dap.adapters.gdb = {
 				type = "executable",
 				command = "gdb",
@@ -60,7 +58,7 @@ return {
 				dapui.close()
 			end
 
-			-- ── Keymaps style VSCode ─────────────────────────────────────
+			-- ── VSCode-style keymaps ─────────────────────────────────────
 			local map = vim.keymap.set
 			map("n", "<F5>", function()
 				dap.continue()

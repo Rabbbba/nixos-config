@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
-# Adapte l'orientation du layout master selon l'orientation physique du moniteur
-# du workspace actif (détectée via le `transform` Hyprland — 1/3 = rotated/portrait).
-# Portrait → orientationtop  (master en haut, stack en bas)
-# Paysage  → orientationleft (master à gauche, stack à droite)
+# Master orientation follows the active workspace's monitor.
+# transform 1/3 (portrait) → orientationtop, else orientationleft.
 
 set -euo pipefail
 
@@ -19,10 +17,9 @@ apply_orientation() {
     fi
 }
 
-# Applique une première fois au démarrage
 apply_orientation
 
-# Écoute les events Hyprland — ré-applique au changement de workspace/moniteur
+# re-apply on workspace/monitor change
 socat -u "UNIX-CONNECT:$socket" - | while read -r line; do
     case "$line" in
         "focusedmon>>"*|"workspace>>"*|"workspacev2>>"*)
