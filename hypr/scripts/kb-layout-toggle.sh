@@ -6,6 +6,7 @@ set -eu
 
 CUR=$(hyprctl getoption input:kb_layout -j | grep -oE '"str": ?"[^"]*"' | head -1 | cut -d'"' -f4)
 
+# swap the two pairs below to use different layouts
 case "$CUR" in
     "fr,us") NEW="us,fr" ;;
     "us,fr") NEW="fr,us" ;;
