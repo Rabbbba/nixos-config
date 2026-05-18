@@ -7,7 +7,7 @@ import "../components"
  * @brief RAM popup body — memory usage, sparkline, buffers/cached, and swap.
  *
  * Reads from the @ref services::RamUsage singleton. Meant to be placed inside
- * a @ref components::Popout (sized by the call site).
+ * a @ref components::PopoutItem (sized by the call site).
  */
 Item {
     id: root

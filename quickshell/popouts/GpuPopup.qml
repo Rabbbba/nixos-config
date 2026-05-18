@@ -7,7 +7,7 @@ import "../components"
  * @brief GPU popup body — usage + sparkline, VRAM, and temperatures.
  *
  * Reads from the @ref services::GpuUsage singleton. Meant to be placed inside
- * a @ref components::Popout (sized by the call site).
+ * a @ref components::PopoutItem (sized by the call site).
  */
 Item {
     id: root

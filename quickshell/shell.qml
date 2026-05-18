@@ -83,18 +83,6 @@ ShellRoot {
                                 iconColor: Theme.text
                                 onClicked: Visibilities.toggle("power")
                             }
-
-                            ModulePopout {
-                                wrapper: nixBtn
-                                name: "power"
-                                alignment: "left"
-                                implicitWidth: 70
-                                implicitHeight: 200
-
-                                PowerPopup {
-                                    anchors.centerIn: parent
-                                }
-                            }
                         }
                         Tags {
                             monitor: scope.modelData.name
@@ -291,6 +279,12 @@ ShellRoot {
                         width: networkPopout.visible ? networkPopout.implicitWidth : 0
                         height: networkPopout.visible ? networkPopout.implicitHeight : 0
                     }
+                    Region {
+                        x: powerPopout.x
+                        y: powerPopout.y
+                        width: powerPopout.visible ? powerPopout.implicitWidth : 0
+                        height: powerPopout.visible ? powerPopout.implicitHeight : 0
+                    }
                 }
 
                 // Whitelist panelPopout so clicks inside the popout retain focus.
@@ -429,6 +423,19 @@ ShellRoot {
                     }
                 }
 
+                PopoutItem {
+                    id: powerPopout
+                    panelWindow: panelPopout
+                    wrapper: nixBtn
+                    name: "power"
+                    alignment: "left"
+                    implicitWidth: 70
+                    implicitHeight: 200
+
+                    PowerPopup {
+                        anchors.centerIn: parent
+                    }
+                }
             }
 
             // ───────────────────── ExclusionZones ──────────────────────

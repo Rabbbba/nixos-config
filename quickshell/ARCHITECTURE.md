@@ -30,9 +30,7 @@ services/          Global Singletons holding shared state.
 
 components/        Reusable visual / interactive primitives, no business logic.
                    StyledText, IconButton, PopoutItem, Tooltip, SectionHeader,
-                   KeyValueRow, ProgressBar, Sparkline.
-                   (Popout, ModulePopout — legacy PopupWindow chain, being phased
-                    out via the PopoutItem migration. See git history.)
+                   KeyValueRow, ProgressBar, Sparkline, ExclusionZone.
 ```
 
 ## How things connect

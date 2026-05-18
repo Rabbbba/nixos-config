@@ -17,7 +17,7 @@ Item {
     id: root
 
     /**
-     * Bound from the consuming @ref components::Popout — gates the
+     * Bound from the consuming @ref components::PopoutItem — gates the
      * position-poke @c Timer and the cava @c Process so they only run while
      * the popup is visible.
      */

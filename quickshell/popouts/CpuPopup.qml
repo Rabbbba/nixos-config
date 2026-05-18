@@ -7,7 +7,7 @@ import "../components"
  * @brief CPU popup body — global usage, sparkline, per-core bars, Tctl, load avg.
  *
  * Reads from the @ref services::CpuUsage singleton. Meant to be placed inside
- * a @ref components::Popout (sized by the call site).
+ * a @ref components::PopoutItem (sized by the call site).
  */
 Item {
     id: root
