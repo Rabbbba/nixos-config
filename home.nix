@@ -123,6 +123,7 @@
     networkmanagerapplet
     btop
     bc
+    unzip
     jq # used by hypr scripts
     socat # listens to hyprland events
     hyprpolkitagent # privilege prompts for LACT, gparted...
