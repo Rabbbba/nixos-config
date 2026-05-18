@@ -160,7 +160,8 @@
 
   # ── System environment variables ───────────────────────────────────────────
   environment.sessionVariables = {
-    PROTON_ENABLE_WAYLAND = "1";
+    # PROTON_ENABLE_WAYLAND is opt-in per-game via launch options — global breaks
+    # Steam overlay injection (X11-only hook can't reach Wayland-native clients).
     # without this, NixOS-wrapped Electron (vesktop) screenshare returns an empty buffer
     NIXOS_OZONE_WL = "1";
     # rdna4: vulkan beats the default OpenGL ES for wlroots
