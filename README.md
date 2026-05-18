@@ -43,7 +43,7 @@ What the bar does:
 | Window manager | [Hyprland](https://hyprland.org/) (Wayland) |
 | Bar | **Custom Quickshell module (this repo)** |
 | Quickshell | bleeding-edge, from the upstream [outfoxxed flake](https://git.outfoxxed.me/outfoxxed/quickshell) |
-| Terminal | Ghostty + zsh + starship |
+| Terminal | foot + zsh + starship |
 | Editor | Neovim (NvChad) |
 | Launcher | walker (replacing rofi) |
 | Notifications | dunst |
@@ -66,8 +66,7 @@ quickshell/                # ⭐ the custom QML bar
   └── services/            # Visibilities, Players, SystemUsage
 hypr/                      # Hyprland WM config
 nvim/                      # Neovim (NvChad)
-ghostty/                   # terminal
-waybar/                    # legacy Waybar config (no longer used)
+foot/                      # terminal
 ```
 
 ## Hardware
@@ -78,7 +77,7 @@ This config is shaped around my desktop:
 - **Monitors**: Dell 3440×1440 (DP-2, primary, where the bar lives) + AOC 1920×1080 portrait (DP-1)
 - **Games disk**: mounted at `/mnt/jeux`
 
-To run on different hardware, regenerate `hardware-configuration.nix` and adjust monitor names in `hypr/hyprland.conf` and the screen filter in `quickshell/shell.qml`.
+To run on different hardware, regenerate `hardware-configuration.nix` and adjust monitor descriptors in `hypr/modules/monitors.conf` (matched on EDID `desc:`) and the screen filter in `quickshell/shell.qml`.
 
 ## Replicate
 
@@ -91,11 +90,11 @@ sudo nixos-generate-config --show-hardware-config | sudo tee /etc/nixos/hardware
 
 # 3. Edit home.nix for your username, homeDirectory, and git identity
 
-# 4. Build
-sudo nixos-rebuild switch --flake /etc/nixos
+# 4. Build (nh is the nix-helper wrapper; `nixos-rebuild switch` also works)
+nh os switch
 
-# 5. (Optional) Enable the local pre-commit hook that runs Doxygen in strict
-#    mode before every QML-touching commit.
+# 5. (Optional) Enable the local pre-commit hook that runs Doxygen (QML),
+#    stylua (Lua), and nixfmt (Nix) in strict mode on the staged files.
 git config core.hooksPath .githooks
 
 # 6. (Optional) Drop into the dev shell to get all the linting / docs
@@ -107,12 +106,14 @@ nix develop
 ## Maintenance
 
 ```bash
-# Update flake inputs (nixpkgs, home-manager, quickshell)
-sudo nix flake update /etc/nixos
-sudo nixos-rebuild switch
+# Update flake inputs and rebuild in one shot
+nh os switch --update
+
+# Test a build without making it the default boot entry
+nh os test
 
 # Garbage collect old generations
-sudo nix-collect-garbage -d
+nh clean all
 
 # Rollback to previous generation
 sudo nixos-rebuild switch --rollback
