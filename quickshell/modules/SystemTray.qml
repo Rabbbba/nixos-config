@@ -58,10 +58,20 @@ Item {
                     anchors.fill: parent
                     acceptedButtons: Qt.LeftButton | Qt.RightButton
                     onClicked: e => {
-                        if (e.button === Qt.LeftButton)
-                            modelData.activate();
-                        else
-                            modelData.secondaryActivate();
+                        switch (e.button) {
+                        case Qt.LeftButton:
+                            cell.modelData.activate();
+                            break;
+                        case Qt.RightButton:
+                            {
+                                const p = cell.mapToItem(root.panelWindow.contentItem, e.x, e.y);
+                                if (cell.modelData.hasMenu)
+                                    cell.modelData.display(root.panelWindow, p.x, p.y);
+                                else
+                                    cell.modelData.secondaryActivate();
+                                break;
+                            }
+                        }
                     }
                     onEntered: if (cell.tooltipText !== "")
                         ttTimer.start()
