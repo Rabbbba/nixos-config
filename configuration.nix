@@ -50,6 +50,10 @@
   # games/LLM: kernel pre-swaps pages we touch right after → stutters.
   boot.kernel.sysctl."vm.swappiness" = 10;
 
+  # tidal-hifi binds its API on 47836, which sits inside the kernel's ephemeral
+  # port range — outbound sockets occasionally steal it, breaking bind().
+  boot.kernel.sysctl."net.ipv4.ip_local_reserved_ports" = "47836";
+
   # swayosd backlight/input udev rules
   services.udev.packages = [ pkgs.swayosd ];
 
