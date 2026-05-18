@@ -212,5 +212,12 @@
     fileSystems = [ "/mnt/jeux" ];
   };
 
+  # ── Misc services ──────────────────────────────────────────────────────────
+  # firmware updates via LVFS (BIOS, SSD, peripherals)
+  services.fwupd.enable = true;
+
+  # zero-config mesh VPN — `sudo tailscale up` once to register the node
+  services.tailscale.enable = true;
+
   system.stateVersion = "25.11";
 }
