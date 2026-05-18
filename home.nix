@@ -228,7 +228,7 @@
     enable = true;
     enableZshIntegration = true;
     settings = {
-      inline_height = 20;     # panel above prompt instead of fullscreen
+      inline_height = 20; # panel above prompt instead of fullscreen
       style = "compact";
       show_preview = true;
     };
