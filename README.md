@@ -51,6 +51,8 @@ What the bar does:
 | Theming | matugen — Material You palette generated from the wallpaper |
 | Font | Iosevka Nerd Font |
 | Cursor | Bibata-Modern-Amber |
+| Mesh VPN | [tailscale](https://tailscale.com/) |
+| Firmware updates | fwupd (LVFS) |
 
 ## Layout
 
