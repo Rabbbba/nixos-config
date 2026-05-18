@@ -181,6 +181,10 @@
   # CachyOS BORE — latency-tuned scheduler (xddxdd/nix-cachyos-kernel)
   boot.kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-bore;
 
+  # Cap USB HID mouse polling at 500 Hz — works around UE5 stutter bug on Proton
+  # (ValveSoftware/Proton#8391). Value = polling interval in ms (2 ms = 500 Hz).
+  boot.kernelParams = [ "usbhid.mousepoll=2" ];
+
   # ── Games disk ─────────────────────────────────────────────────────────────
   fileSystems."/mnt/jeux" = {
     device = "/dev/disk/by-uuid/eaf01630-0390-47bc-8052-c056e1e5aedb";
