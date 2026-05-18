@@ -7,6 +7,9 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
+  # /tmp on tmpfs — RAM-backed builds, faster nix/cmake intermediates
+  boot.tmp.useTmpfs = true;
+
   # ── Programs (system-wide) ──────────────────────────────────────────────────
   programs.hyprland = {
     enable = true;
@@ -160,6 +163,9 @@
     options = "--delete-older-than 7d";
   };
 
+  # hardlink identical store paths — silent disk savings over time
+  nix.optimise.automatic = true;
+
   nixpkgs.config.allowUnfree = true;
 
   # ── System environment variables ───────────────────────────────────────────
@@ -198,6 +204,12 @@
       "defaults"
       "nofail"
     ];
+  };
+
+  # weekly scrub catches silent btrfs corruption on the games partition
+  services.btrfs.autoScrub = {
+    enable = true;
+    fileSystems = [ "/mnt/jeux" ];
   };
 
   system.stateVersion = "25.11";
