@@ -127,6 +127,9 @@
     socat # listens to hyprland events
     hyprpolkitagent # privilege prompts for LACT, gparted...
 
+    # `, <bin>` runs any nixpkgs binary ephemerally (needs nix-index, below)
+    comma
+
     # Fonts
     nerd-fonts.iosevka
   ];
@@ -198,6 +201,38 @@
   };
 
   programs.starship.enable = true;
+
+  # smart cd — `z <fragment>` jumps by frecency
+  programs.zoxide = {
+    enable = true;
+    enableZshIntegration = true;
+  };
+
+  # fuzzy file/dir picker — Ctrl-T (files), Alt-C (dirs), pairs with zoxide
+  programs.fzf = {
+    enable = true;
+    enableZshIntegration = true;
+  };
+
+  # backs `comma` and `command-not-found` with a nixpkgs binary index
+  programs.nix-index = {
+    enable = true;
+    enableZshIntegration = true;
+  };
+
+  # TUI git — visual branches/stage/conflicts; complements neovim
+  programs.lazygit.enable = true;
+
+  # shell history backed by SQLite — Ctrl-R opens a fuzzy TUI with cwd/exit/duration
+  programs.atuin = {
+    enable = true;
+    enableZshIntegration = true;
+    settings = {
+      inline_height = 20;     # panel above prompt instead of fullscreen
+      style = "compact";
+      show_preview = true;
+    };
+  };
 
   # ── Systemd user services ──────────────────────────────────────────────────
   # walker + elephant under systemd for restart-on-failure. hyprland-session
