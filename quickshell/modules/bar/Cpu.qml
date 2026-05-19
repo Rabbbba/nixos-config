@@ -1,6 +1,6 @@
 import QtQuick
-import "../services"
-import "../components"
+import "../../services"
+import "../../components"
 
 /**
  * @brief Bar module displaying CPU usage as a percentage.

@@ -2,7 +2,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import Quickshell.Services.SystemTray
 import Quickshell.Widgets
-import "../components"
+import "../../components"
 
 /**
  * @brief StatusNotifier system tray — renders one icon per registered tray item.

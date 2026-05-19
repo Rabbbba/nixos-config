@@ -9,7 +9,7 @@ import Quickshell.Hyprland
 import Quickshell.Wayland
 import QtQuick.Effects
 import QtQuick
-import "modules"
+import "modules/bar"
 import "popouts"
 import "services"
 import "components"

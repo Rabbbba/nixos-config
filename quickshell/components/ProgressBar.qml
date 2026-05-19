@@ -1,5 +1,5 @@
 import QtQuick
-import "../modules"
+import "../services"
 
 /**
  * @brief Horizontal progress bar — value is clamped to [0, 1].

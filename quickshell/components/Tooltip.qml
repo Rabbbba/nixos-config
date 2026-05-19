@@ -1,11 +1,11 @@
 import QtQuick
 import Quickshell
-import "../modules"
+import "../services"
 
 /**
  * @brief Small tooltip popup anchored below a parent item.
  *
- * Used by @ref modules::ModuleWrapper and @ref modules::SystemTray on hover.
+ * Used by @ref modules::bar::ModuleWrapper and @ref modules::bar::SystemTray on hover.
  * Anchor is recomputed on every visibility change so the tooltip stays
  * centered horizontally on @ref parentItem and 4 px below it.
  */

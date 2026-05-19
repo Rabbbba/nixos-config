@@ -2,7 +2,6 @@ import QtQuick
 import QtQuick.Effects
 import Quickshell.Io
 import "../services"
-import "../modules"
 import "../components"
 
 /**

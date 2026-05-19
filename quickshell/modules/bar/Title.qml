@@ -1,6 +1,7 @@
 import QtQuick
 import Quickshell.Hyprland
-import "../components"
+import "../../components"
+import "../../services"
 
 /**
  * @brief Active window title — only renders for toplevels on this module's monitor.

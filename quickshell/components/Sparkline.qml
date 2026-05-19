@@ -1,6 +1,6 @@
 pragma ComponentBehavior: Bound
 import QtQuick
-import "../modules"
+import "../services"
 
 /**
  * @brief Bar-chart sparkline — one bar per value, normalized to @ref maxValue.

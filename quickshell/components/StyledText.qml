@@ -1,5 +1,5 @@
 import QtQuick
-import "../modules"
+import "../services"
 
 /**
  * @brief Themed @c Text — used everywhere instead of raw @c Text.

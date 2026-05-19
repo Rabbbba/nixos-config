@@ -1,6 +1,6 @@
 import QtQuick
-import "../services"
-import "../components"
+import "../../services"
+import "../../components"
 
 /**
  * @brief Bar module displaying RAM usage as a percentage.

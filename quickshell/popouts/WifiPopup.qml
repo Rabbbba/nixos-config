@@ -1,7 +1,6 @@
 pragma ComponentBehavior: Bound
 import QtQuick
 import Quickshell.Networking
-import "../modules"
 import "../components"
 import "../services"
 

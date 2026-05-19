@@ -1,7 +1,7 @@
 import QtQuick
 import Quickshell.Services.Pipewire
-import "../components"
-import "../services"
+import "../../components"
+import "../../services"
 
 /**
  * @brief Audio module: shows the default Pipewire sink's volume and mute state.

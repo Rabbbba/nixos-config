@@ -1,7 +1,6 @@
 import QtQuick
 import Quickshell
 import Quickshell.Io
-import "../modules"
 import "../components"
 import "../services"
 
@@ -24,7 +23,7 @@ Item {
     id: root
     anchors.fill: parent
 
-    /** Mirror of @ref modules::Bluetooth::bluetoothOn — drives the toggle label. */
+    /** Mirror of @ref modules::bar::Bluetooth::bluetoothOn — drives the toggle label. */
     property bool bluetoothOn: false
 
     /**

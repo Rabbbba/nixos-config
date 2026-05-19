@@ -1,6 +1,6 @@
 import QtQuick
-import "../services"
-import "../components"
+import "../../services"
+import "../../components"
 
 /**
  * @brief Bar module displaying GPU usage as a percentage.

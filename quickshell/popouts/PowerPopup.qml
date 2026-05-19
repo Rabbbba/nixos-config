@@ -1,6 +1,6 @@
 import QtQuick
 import Quickshell                  // for execDetached
-import "../modules"
+import "../services"
 import "../components"
 
 /**

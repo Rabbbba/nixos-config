@@ -1,6 +1,6 @@
 import QtQuick
 import Quickshell.Services.Pipewire
-import "../modules"
+import "../services"
 import "../components"
 
 /**

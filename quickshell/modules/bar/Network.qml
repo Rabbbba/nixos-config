@@ -1,7 +1,7 @@
 import QtQuick
 import Quickshell.Networking
-import "../components"
-import "../services"
+import "../../components"
+import "../../services"
 
 /**
  * @brief Bar module showing the active network connection (Ethernet / Wi-Fi / Offline).

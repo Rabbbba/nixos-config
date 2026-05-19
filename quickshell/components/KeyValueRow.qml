@@ -1,5 +1,5 @@
 import QtQuick
-import "../modules"
+import "../services"
 
 /**
  * @brief One-line row with a label on the left and a value on the right.

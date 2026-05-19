@@ -1,7 +1,8 @@
 import QtQuick
 import Quickshell
 import Quickshell.Hyprland
-import "../components"
+import "../../components"
+import "../../services"
 
 /**
  * @brief Hyprland workspace ("tag") indicators — one pill per workspace on this monitor.

@@ -1,7 +1,8 @@
 import QtQuick
 import Quickshell.Io
 import Quickshell.Hyprland
-import "../components"
+import "../../components"
+import "../../services"
 
 /**
  * @brief Bar module showing the current Hyprland layout name (Master / Dwindle / …).

@@ -1,6 +1,6 @@
 import QtQuick
-import "../components"
-import "../services"
+import "../../components"
+import "../../services"
 
 /**
  * @brief Center-bar clock — ticks every minute and toggles a calendar popout on click.

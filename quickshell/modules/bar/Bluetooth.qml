@@ -1,7 +1,7 @@
 import QtQuick
 import Quickshell.Io
-import "../components"
-import "../services"
+import "../../components"
+import "../../services"
 
 /**
  * @brief Bar module showing Bluetooth power state.

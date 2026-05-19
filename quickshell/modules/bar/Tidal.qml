@@ -1,6 +1,6 @@
 import QtQuick
-import "../services"
-import "../components"
+import "../../services"
+import "../../components"
 
 /**
  * @brief "Now playing" pill for Tidal — toggles the popout on click.

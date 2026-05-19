@@ -5,4 +5,4 @@
 
 [templates.quickshell-theme]
 input_path = "/etc/nixos/matugen/templates/Theme.qml"
-output_path = "/etc/nixos/quickshell/modules/Theme.qml"
+output_path = "/etc/nixos/quickshell/services/Theme.qml"

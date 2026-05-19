@@ -1,5 +1,5 @@
 import QtQuick
-import "../modules"
+import "../services"
 
 /**
  * @brief Round icon button with a centered NerdFont glyph and hover background.

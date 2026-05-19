@@ -1,6 +1,5 @@
 import QtQuick
 import "../services"
-import "../modules"
 import "../components"
 
 /**

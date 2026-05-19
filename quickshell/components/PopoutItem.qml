@@ -1,6 +1,5 @@
 import QtQuick
 import "../services"
-import "../modules"
 
 /**
  * @brief Popout anchored under a bar module — Item-based, no PopupWindow.

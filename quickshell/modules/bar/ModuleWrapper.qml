@@ -1,6 +1,6 @@
 import QtQuick
-import "../components"
-import "../services"
+import "../../components"
+import "../../services"
 
 /**
  * @brief Common bar-module shell: rounded background, hover swap, click/wheel.

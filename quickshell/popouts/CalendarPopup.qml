@@ -1,13 +1,13 @@
 pragma ComponentBehavior: Bound
 import QtQuick
-import "../modules"
+import "../services"
 import "../components"
 
 /**
  * @brief Static month view: header + weekday row + 7-column grid of day cells.
  *
  * Today's cell is highlighted in the theme accent. Lives inside the
- * @ref modules::Clock module's popout. Refreshes once a minute (so a session
+ * @ref modules::bar::Clock module's popout. Refreshes once a minute (so a session
  * spanning midnight rolls over without restart).
  */
 Item {

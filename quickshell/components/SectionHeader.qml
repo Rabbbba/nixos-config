@@ -1,5 +1,5 @@
 import QtQuick
-import "../modules"
+import "../services"
 
 /**
  * @brief Bold heading used at the top of popout sections.
