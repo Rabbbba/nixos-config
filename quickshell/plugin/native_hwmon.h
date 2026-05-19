@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QObject>
+#include <QTimer>
 #include <QtQml/qqmlregistration.h>
 
 class NativeHwmon : public QObject {
@@ -18,4 +19,7 @@ signals:
 
 private:
   double m_temperature{};
+  QTimer m_timer{};
+
+  void poll();
 };
