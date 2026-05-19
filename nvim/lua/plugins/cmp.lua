@@ -64,6 +64,9 @@ return {
 				{ name = "buffer" },
 				{ name = "path" },
 			}),
+			performance = {
+				max_view_entries = 20,
+			},
 			window = {
 				completion = cmp.config.window.bordered(),
 				documentation = cmp.config.window.bordered(),
