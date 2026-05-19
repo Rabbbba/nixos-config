@@ -50,7 +50,7 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
             text: Qt.locale().toString(root.now, "MMMM yyyy")
             font.bold: true
-            font.pixelSize: Theme.fontSizeMd
+            font.pixelSize: Theme.font.sizeMd
         }
 
         Grid {
@@ -69,7 +69,7 @@ Item {
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                     text: Qt.locale().standaloneDayName((index + 1) % 7, Locale.NarrowFormat).toUpperCase()
-                    color: Theme.textMuted
+                    color: Theme.color.textMuted
                 }
             }
 
@@ -93,7 +93,7 @@ Item {
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                     text: index + 1
-                    color: (index + 1) === root.today ? Theme.accent : Theme.text
+                    color: (index + 1) === root.today ? Theme.color.accent : Theme.color.text
                     font.bold: (index + 1) === root.today
                 }
             }

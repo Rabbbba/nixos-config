@@ -13,27 +13,27 @@ import "../../components"
 ModuleWrapper {
     id: root
 
-    bgIdle: Theme.moduleBg
-    bgHover: Theme.accent
+    bgIdle: Theme.color.moduleBg
+    bgHover: Theme.color.accent
 
     tooltip: "CPU " + Math.round(CpuUsage.cpuPercent) + "% · Tctl " + Math.round(CpuUsage.cpuTemp) + " °C"
 
     // Worst-case slot width (icon + "100%") — keeps the module width stable.
     TextMetrics {
         id: cpuMetrics
-        font.family: Theme.fontFamily
-        font.pixelSize: Theme.fontSizeLg
+        font.family: Theme.font.family
+        font.pixelSize: Theme.font.sizeLg
         text: cpu.text.replace(/[0-9]+%/, "100%")
     }
 
     StyledText {
         id: cpu
-        font.pixelSize: Theme.fontSizeLg
+        font.pixelSize: Theme.font.sizeLg
         width: cpuMetrics.width
         horizontalAlignment: Text.AlignHCenter
         elide: Text.ElideNone
         text:"󰘚 " + CpuUsage.cpuPercent.toFixed(0) + "%"
-        color: root.hovered ? Theme.popupBg : Theme.text
+        color: root.hovered ? Theme.color.popupBg : Theme.color.text
     }
 
     onClicked: Visibilities.toggle("cpu")

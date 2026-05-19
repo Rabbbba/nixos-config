@@ -237,11 +237,11 @@ Item {
                 anchors.fill: parent
                 anchors.margins: -4
                 radius: 6
-                color: Theme.moduleBg
+                color: Theme.color.moduleBg
                 opacity: toggleHover.hovered ? 0.6 : 0
                 Behavior on opacity {
                     NumberAnimation {
-                        duration: Theme.animFast
+                        duration: Theme.anim.fast
                     }
                 }
             }
@@ -250,7 +250,7 @@ Item {
                 anchors.left: parent.left
                 anchors.verticalCenter: parent.verticalCenter
                 text: root.bluetoothOn ? "󰂯  Bluetooth" : "󰂲  Bluetooth"
-                color: Theme.text
+                color: Theme.color.text
             }
 
             // iOS-style toggle: rounded track + sliding thumb. Driven entirely
@@ -263,13 +263,13 @@ Item {
                 width: 40
                 height: 22
                 radius: height / 2
-                color: root.bluetoothOn ? Theme.accent : Theme.moduleBg
-                border.color: Theme.border
+                color: root.bluetoothOn ? Theme.color.accent : Theme.color.moduleBg
+                border.color: Theme.color.border
                 border.width: 1
 
                 Behavior on color {
                     ColorAnimation {
-                        duration: Theme.animFast
+                        duration: Theme.anim.fast
                     }
                 }
 
@@ -279,17 +279,17 @@ Item {
                     radius: height / 2
                     anchors.verticalCenter: parent.verticalCenter
                     x: root.bluetoothOn ? parent.width - width - 3 : 3
-                    color: root.bluetoothOn ? Theme.popupBg : Theme.text
+                    color: root.bluetoothOn ? Theme.color.popupBg : Theme.color.text
 
                     Behavior on x {
                         NumberAnimation {
-                            duration: Theme.animFast
+                            duration: Theme.anim.fast
                             easing.type: Easing.OutCubic
                         }
                     }
                     Behavior on color {
                         ColorAnimation {
-                            duration: Theme.animFast
+                            duration: Theme.anim.fast
                         }
                     }
                 }
@@ -326,11 +326,11 @@ Item {
                     anchors.fill: parent
                     anchors.margins: -4
                     radius: 6
-                    color: Theme.moduleBg
+                    color: Theme.color.moduleBg
                     opacity: pairedHover.hovered ? 0.6 : 0
                     Behavior on opacity {
                         NumberAnimation {
-                            duration: Theme.animFast
+                            duration: Theme.anim.fast
                         }
                     }
                 }
@@ -339,7 +339,7 @@ Item {
                     anchors.left: parent.left
                     anchors.verticalCenter: parent.verticalCenter
                     text: (pairedRow.modelData.connected ? "● " : "○ ") + pairedRow.modelData.name
-                    color: pairedRow.modelData.connected ? Theme.accent : Theme.text
+                    color: pairedRow.modelData.connected ? Theme.color.accent : Theme.color.text
                     elide: Text.ElideRight
                     width: parent.width - 16
                 }
@@ -359,8 +359,8 @@ Item {
         StyledText {
             visible: root.bluetoothOn && root.devices.length === 0
             text: "No paired devices"
-            color: Theme.textMuted
-            font.pixelSize: Theme.fontSizeSm
+            color: Theme.color.textMuted
+            font.pixelSize: Theme.font.sizeSm
         }
 
         // ── Available devices section ────────────────────────────────
@@ -387,11 +387,11 @@ Item {
                     anchors.fill: parent
                     anchors.margins: -4
                     radius: 6
-                    color: Theme.moduleBg
+                    color: Theme.color.moduleBg
                     opacity: availHover.hovered ? 0.6 : 0
                     Behavior on opacity {
                         NumberAnimation {
-                            duration: Theme.animFast
+                            duration: Theme.anim.fast
                         }
                     }
                 }
@@ -400,7 +400,7 @@ Item {
                     anchors.left: parent.left
                     anchors.verticalCenter: parent.verticalCenter
                     text: "+ " + availRow.modelData.name
-                    color: Theme.textMuted
+                    color: Theme.color.textMuted
                     elide: Text.ElideRight
                     width: parent.width - 16
                 }
@@ -421,8 +421,8 @@ Item {
         StyledText {
             visible: root.bluetoothOn && root.available.length === 0
             text: scanProc.running ? "Scanning…" : ""
-            color: Theme.textMuted
-            font.pixelSize: Theme.fontSizeSm
+            color: Theme.color.textMuted
+            font.pixelSize: Theme.font.sizeSm
         }
     }
 }

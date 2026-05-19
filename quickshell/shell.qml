@@ -54,7 +54,7 @@ ShellRoot {
 
                 Rectangle {
                     anchors.fill: parent
-                    color: Theme.windowBg
+                    color: Theme.color.windowBg
 
                     // Catch-all for clicks on empty bar space — closes the open popout.
                     // Placed as first child of the opaque Rectangle so it sits below
@@ -81,7 +81,7 @@ ShellRoot {
                                 anchors.centerIn: parent
                                 icon: ""
                                 iconSize: 22
-                                iconColor: Theme.text
+                                iconColor: Theme.color.text
                                 onClicked: Visibilities.toggle("power")
                             }
                         }
@@ -169,7 +169,7 @@ ShellRoot {
                 Rectangle {
                     id: borderFill
                     anchors.fill: parent
-                    color: Theme.windowBg
+                    color: Theme.color.windowBg
                     layer.enabled: true
                     layer.effect: MultiEffect {
                         maskEnabled: true

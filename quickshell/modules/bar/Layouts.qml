@@ -23,7 +23,7 @@ ModuleWrapper {
         id: lyt
         property string code: "Master"
 
-        font.pixelSize: Theme.fontSizeLg
+        font.pixelSize: Theme.font.sizeLg
         font.bold: true
         text: code
 

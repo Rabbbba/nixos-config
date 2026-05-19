@@ -14,25 +14,25 @@ ModuleWrapper {
     id: root
     tooltip: "GPU " + GpuUsage.gpuPercent.toFixed(0) + "% · Edge " + Math.round(GpuUsage.gpuTempEdge) + " °C"
 
-    bgIdle: Theme.moduleBg
-    bgHover: Theme.accent
+    bgIdle: Theme.color.moduleBg
+    bgHover: Theme.color.accent
 
     // Worst-case slot width (icon + "100%") — keeps the module width stable.
     TextMetrics {
         id: gpuMetrics
-        font.family: Theme.fontFamily
-        font.pixelSize: Theme.fontSizeLg
+        font.family: Theme.font.family
+        font.pixelSize: Theme.font.sizeLg
         text: gpu.text.replace(/[0-9]+%/, "100%")
     }
 
     StyledText {
         id: gpu
-        font.pixelSize: Theme.fontSizeLg
+        font.pixelSize: Theme.font.sizeLg
         width: gpuMetrics.width
         horizontalAlignment: Text.AlignHCenter
         elide: Text.ElideNone
         text:"󰢮 " + GpuUsage.gpuPercent.toFixed(0) + "%"
-        color: root.hovered ? Theme.popupBg : Theme.text
+        color: root.hovered ? Theme.color.popupBg : Theme.color.text
     }
     onClicked: Visibilities.toggle("gpu")
 }

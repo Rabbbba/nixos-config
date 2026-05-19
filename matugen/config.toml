@@ -1,8 +1,10 @@
 # Matugen configuration
-# Generates Theme.qml from current wallpaper using Material You 3 palette
+# Generates ColorTokens.qml (color tokens only) from current wallpaper using Material You 3.
+# Non-color tokens (font, anim, …) live statically in quickshell/services/Theme.qml.
+# Singleton renamed from Palette to ColorTokens to avoid a name clash with QtQuick/Palette.
 
 [config]
 
-[templates.quickshell-theme]
-input_path = "/etc/nixos/matugen/templates/Theme.qml"
-output_path = "/etc/nixos/quickshell/services/Theme.qml"
+[templates.quickshell-colors]
+input_path = "/etc/nixos/matugen/templates/ColorTokens.qml"
+output_path = "/etc/nixos/quickshell/services/ColorTokens.qml"

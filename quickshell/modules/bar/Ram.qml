@@ -14,22 +14,22 @@ ModuleWrapper {
     id: root
     tooltip: "RAM " + Math.round(RamUsage.ramPercent) + "% (" + (RamUsage.ramUsedKb / 1048576).toFixed(1) + " / " + (RamUsage.ramTotalKb / 1048576).toFixed(1) + " GiB)"
 
-    bgIdle: Theme.moduleBg
-    bgHover: Theme.accent
+    bgIdle: Theme.color.moduleBg
+    bgHover: Theme.color.accent
 
     // Worst-case slot width (icon + "100%") — keeps the module width stable.
     TextMetrics {
         id: ramMetrics
-        font.family: Theme.fontFamily
-        font.pixelSize: Theme.fontSizeLg
+        font.family: Theme.font.family
+        font.pixelSize: Theme.font.sizeLg
         text: ram.text.replace(/[0-9]+%/, "100%")
     }
 
     StyledText {
         id: ram
 
-        font.pixelSize: Theme.fontSizeLg
-        color: root.hovered ? Theme.popupBg : Theme.text
+        font.pixelSize: Theme.font.sizeLg
+        color: root.hovered ? Theme.color.popupBg : Theme.color.text
         width: ramMetrics.width
         horizontalAlignment: Text.AlignHCenter
         elide: Text.ElideNone

@@ -41,8 +41,8 @@ Row {
             StyledText {
                 anchors.centerIn: parent
                 text: tag.modelData.id
-                color: (tag.active || tag.occupied || tag.urgent) ? Theme.windowBg : Theme.text
-                font.pixelSize: Theme.fontSizeMd
+                color: (tag.active || tag.occupied || tag.urgent) ? Theme.color.windowBg : Theme.color.text
+                font.pixelSize: Theme.font.sizeMd
             }
 
             MouseArea {
@@ -62,27 +62,27 @@ Row {
 
             Behavior on color {
                 ColorAnimation {
-                    duration: Theme.animFast
+                    duration: Theme.anim.fast
                 }
             }
 
             Behavior on width {
                 NumberAnimation {
-                    duration: Theme.animFast
+                    duration: Theme.anim.fast
                     easing.type: Easing.InOutQuad
                 }
             }
 
             color: {
                 if (tag.urgent)
-                    return Theme.alert;
+                    return Theme.color.alert;
                 if (tag.active)
-                    return Theme.accent;
+                    return Theme.color.accent;
                 if (tag.occupied)
-                    return Theme.textMuted;
+                    return Theme.color.textMuted;
                 if (ma.containsMouse)
-                    return Theme.moduleBg;
-                return Theme.popupBg;
+                    return Theme.color.moduleBg;
+                return Theme.color.popupBg;
             }
         }
     }

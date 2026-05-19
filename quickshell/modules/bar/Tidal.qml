@@ -10,13 +10,13 @@ import "../../components"
  */
 ModuleWrapper {
     id: root
-    bgIdle: Theme.accent
-    bgHover: Theme.moduleBg
+    bgIdle: Theme.color.accent
+    bgHover: Theme.color.moduleBg
 
     StyledText {
         text: Players.tidal ? "󰝚  " + Players.tidal.trackArtist + " - " + Players.tidal.trackTitle : ""
-        color: root.hovered ? Theme.text : Theme.popupBg
-        font.pixelSize: Theme.fontSizeMd
+        color: root.hovered ? Theme.color.text : Theme.color.popupBg
+        font.pixelSize: Theme.font.sizeMd
         font.bold: true
         width: Math.min(implicitWidth, 300)
     }

@@ -16,7 +16,7 @@ ModuleWrapper {
     property string monitor: ""
 
     StyledText {
-        font.pixelSize: Theme.fontSizeMd
+        font.pixelSize: Theme.font.sizeMd
         width: Math.min(implicitWidth, 400)
         horizontalAlignment: Text.AlignLeft
 

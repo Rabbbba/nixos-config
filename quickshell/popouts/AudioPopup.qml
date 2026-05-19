@@ -55,7 +55,7 @@ Item {
                     anchors.fill: parent
                     anchors.margins: -4
                     radius: 6
-                    color: Theme.moduleBg
+                    color: Theme.color.moduleBg
                     opacity: rowHover.hovered ? 0.6 : 0
                     Behavior on opacity {
                         NumberAnimation {
@@ -78,7 +78,7 @@ Item {
                     anchors.left: parent.left
                     anchors.top: parent.top
                     text: (row.isDefault ? "● " : "○ ") + (row.modelData.description || row.modelData.nickname || row.modelData.name)
-                    color: row.isDefault ? Theme.accent : Theme.text
+                    color: row.isDefault ? Theme.color.accent : Theme.color.text
                 }
 
                 Rectangle {
@@ -88,7 +88,7 @@ Item {
                     anchors.bottom: parent.bottom
                     height: 6
                     radius: 3
-                    color: Theme.moduleBg
+                    color: Theme.color.moduleBg
 
                     Rectangle {
                         anchors.left: parent.left
@@ -96,7 +96,7 @@ Item {
                         anchors.bottom: parent.bottom
                         width: parent.width * (row.modelData.audio ? row.modelData.audio.volume : 0)
                         radius: 3
-                        color: row.isDefault ? Theme.accent : Theme.textMuted
+                        color: row.isDefault ? Theme.color.accent : Theme.color.textMuted
                     }
 
                     MouseArea {

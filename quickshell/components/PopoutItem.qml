@@ -65,17 +65,17 @@ Item {
     Rectangle {
         id: panel
         anchors.fill: parent
-        color: Theme.popupBg
+        color: Theme.color.popupBg
         radius: 10
-        border.color: Theme.border
+        border.color: Theme.color.border
         border.width: 1
 
         opacity: root.visible ? 1 : 0
         scale: root.visible ? 1 : 0.96
         transformOrigin: Item.Center
 
-        Behavior on opacity { NumberAnimation { duration: Theme.animFast; easing.type: Easing.OutCubic } }
-        Behavior on scale  { NumberAnimation { duration: Theme.animFast; easing.type: Easing.OutCubic } }
+        Behavior on opacity { NumberAnimation { duration: Theme.anim.fast; easing.type: Easing.OutCubic } }
+        Behavior on scale  { NumberAnimation { duration: Theme.anim.fast; easing.type: Easing.OutCubic } }
 
         Item {
             id: container

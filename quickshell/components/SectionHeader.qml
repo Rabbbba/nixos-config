@@ -9,5 +9,5 @@ import "../services"
  */
 StyledText {
     font.bold: true
-    color: Theme.text
+    color: Theme.color.text
 }

@@ -38,7 +38,7 @@ Item {
         Sparkline {
             width: parent.width
             values: CpuUsage.cpuHistory
-            color: Theme.accent
+            color: Theme.color.accent
         }
         Row {
             width: parent.width
@@ -53,7 +53,7 @@ Item {
 
                     width: (parent.width - (CpuUsage.cpuCoresPercent.length - 1) * 2) / CpuUsage.cpuCoresPercent.length
                     height: 60
-                    color: Theme.moduleBg
+                    color: Theme.color.moduleBg
                     radius: 2
 
                     Rectangle {
@@ -63,7 +63,7 @@ Item {
                             right: parent.right
                         }
                         height: parent.height * (bar.modelData / 100)
-                        color: Theme.accent
+                        color: Theme.color.accent
                         radius: 2
 
                         Behavior on height {
@@ -81,24 +81,24 @@ Item {
 
             StyledText {
                 text: "Tctl: " + Math.round(CpuUsage.cpuTemp) + " °C"
-                color: Theme.textMuted
+                color: Theme.color.textMuted
                 font.bold: true
             }
             StyledText {
                 text: "Load:"
-                color: Theme.textMuted
+                color: Theme.color.textMuted
             }
             StyledText {
                 text: "1m:" + root.fmt(CpuUsage.loadAverage.l1)
-                color: Theme.textMuted
+                color: Theme.color.textMuted
             }
             StyledText {
                 text: "5m:" + root.fmt(CpuUsage.loadAverage.l5)
-                color: Theme.textMuted
+                color: Theme.color.textMuted
             }
             StyledText {
                 text: "15m:" + root.fmt(CpuUsage.loadAverage.l15)
-                color: Theme.textMuted
+                color: Theme.color.textMuted
             }
         }
     }

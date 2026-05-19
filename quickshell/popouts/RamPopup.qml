@@ -47,13 +47,13 @@ Item {
             Sparkline {
                 width: parent.width
                 values: RamUsage.ramHistory
-                color: Theme.accent
+                color: Theme.color.accent
             }
 
             StyledText {
                 text: "Buffers + Cached: " + root.kbToGib(RamUsage.ramBuffersKb + RamUsage.ramCachedKb) + " GiB"
-                color: Theme.textMuted
-                font.pixelSize: Theme.fontSizeMd - 2
+                color: Theme.color.textMuted
+                font.pixelSize: Theme.font.sizeMd - 2
             }
         }
 

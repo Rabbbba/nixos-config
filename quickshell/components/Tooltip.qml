@@ -29,14 +29,14 @@ PopupWindow {
     Rectangle {
         anchors.fill: parent
         radius: 6
-        color: Theme.moduleBg
+        color: Theme.color.moduleBg
         border.width: 1
-        border.color: Theme.border
+        border.color: Theme.color.border
 
         opacity: tooltip.visible ? 1 : 0
         Behavior on opacity {
             NumberAnimation {
-                duration: Theme.animFast
+                duration: Theme.anim.fast
                 easing.type: Easing.OutCubic
             }
         }
@@ -45,8 +45,8 @@ PopupWindow {
             id: label
             anchors.centerIn: parent
             text: tooltip.text
-            color: Theme.text
-            font.pixelSize: Theme.fontSizeSm
+            color: Theme.color.text
+            font.pixelSize: Theme.font.sizeSm
         }
     }
 

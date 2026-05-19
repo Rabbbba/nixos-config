@@ -15,8 +15,8 @@ import "../../services"
 ModuleWrapper {
     id: root
 
-    bgIdle: Theme.moduleBg
-    bgHover: Theme.accent
+    bgIdle: Theme.color.moduleBg
+    bgHover: Theme.color.accent
 
     /** First WifiDevice found in @c Networking.devices, or null. */
     readonly property var wifiDevice: {
@@ -72,8 +72,8 @@ ModuleWrapper {
     // the same character count, so the slot stays valid up to 10 Gbps.
     TextMetrics {
         id: speedMetrics
-        font.family: Theme.fontFamily
-        font.pixelSize: Theme.fontSizeMd
+        font.family: Theme.font.family
+        font.pixelSize: Theme.font.sizeMd
         text: "999Mb"
     }
 
@@ -84,8 +84,8 @@ ModuleWrapper {
         spacing: 8
 
         StyledText {
-            font.pixelSize: Theme.fontSizeLg
-            color: root.hovered ? Theme.popupBg : Theme.text
+            font.pixelSize: Theme.font.sizeLg
+            color: root.hovered ? Theme.color.popupBg : Theme.color.text
 
             text: {
                 if (root.netState === "ethernet")
@@ -108,17 +108,17 @@ ModuleWrapper {
 
         StyledText {
             text: ""
-            font.family: Theme.fontFamily
-            font.pixelSize: Theme.fontSizeMd
-            color: root.hovered ? Theme.popupBg : Theme.text
+            font.family: Theme.font.family
+            font.pixelSize: Theme.font.sizeMd
+            color: root.hovered ? Theme.color.popupBg : Theme.color.text
             height: parent.height
             verticalAlignment: Text.AlignVCenter
         }
         StyledText {
             text: NetworkSpeed.formatSpeed(NetworkSpeed.downloadKbps)
-            font.family: Theme.fontFamily
-            font.pixelSize: Theme.fontSizeMd
-            color: root.hovered ? Theme.popupBg : Theme.text
+            font.family: Theme.font.family
+            font.pixelSize: Theme.font.sizeMd
+            color: root.hovered ? Theme.color.popupBg : Theme.color.text
             width: speedMetrics.width
             horizontalAlignment: Text.AlignRight
             elide: Text.ElideNone
@@ -128,17 +128,17 @@ ModuleWrapper {
 
         StyledText {
             text: ""
-            font.family: Theme.fontFamily
-            font.pixelSize: Theme.fontSizeMd
-            color: root.hovered ? Theme.popupBg : Theme.text
+            font.family: Theme.font.family
+            font.pixelSize: Theme.font.sizeMd
+            color: root.hovered ? Theme.color.popupBg : Theme.color.text
             height: parent.height
             verticalAlignment: Text.AlignVCenter
         }
         StyledText {
             text: NetworkSpeed.formatSpeed(NetworkSpeed.uploadKbps)
-            font.family: Theme.fontFamily
-            font.pixelSize: Theme.fontSizeMd
-            color: root.hovered ? Theme.popupBg : Theme.text
+            font.family: Theme.font.family
+            font.pixelSize: Theme.font.sizeMd
+            color: root.hovered ? Theme.color.popupBg : Theme.color.text
             width: speedMetrics.width
             horizontalAlignment: Text.AlignRight
             elide: Text.ElideNone

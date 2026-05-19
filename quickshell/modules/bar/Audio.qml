@@ -12,8 +12,8 @@ import "../../services"
 ModuleWrapper {
     id: root
 
-    bgIdle: Theme.moduleBg
-    bgHover: Theme.accent
+    bgIdle: Theme.color.moduleBg
+    bgHover: Theme.color.accent
 
     /** Currently default Pipewire audio sink. */
     property PwNode sink: Pipewire.defaultAudioSink
@@ -30,16 +30,16 @@ ModuleWrapper {
     // Worst-case slot width (icon + "100%") — keeps the module width stable.
     TextMetrics {
         id: audioMetrics
-        font.family: Theme.fontFamily
-        font.pixelSize: Theme.fontSizeLg
+        font.family: Theme.font.family
+        font.pixelSize: Theme.font.sizeLg
         text: audio.text.split(" ")[0] + " 100%"
     }
 
     StyledText {
         id: audio
 
-        font.pixelSize: Theme.fontSizeLg
-        color: root.hovered ? Theme.popupBg : Theme.text
+        font.pixelSize: Theme.font.sizeLg
+        color: root.hovered ? Theme.color.popupBg : Theme.color.text
         width: audioMetrics.width
         horizontalAlignment: Text.AlignHCenter
         elide: Text.ElideNone

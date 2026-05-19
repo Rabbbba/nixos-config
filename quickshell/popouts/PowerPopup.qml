@@ -18,7 +18,7 @@ Column {
         id: btnPower
         icon: armed ? "✓" : "󰐥"
         iconSize: 40
-        iconColor: armed ? Theme.alert : Theme.accent
+        iconColor: armed ? Theme.color.alert : Theme.color.accent
         property bool armed: false
         property Timer _t: Timer {
             triggeredOnStart: false
@@ -39,7 +39,7 @@ Column {
         id: btnReboot
         icon: armed ? "✓" : "󰜉"
         iconSize: 40
-        iconColor: armed ? Theme.alert : Theme.accent
+        iconColor: armed ? Theme.color.alert : Theme.color.accent
         property bool armed: false
         property Timer _t: Timer {
             triggeredOnStart: false
@@ -60,7 +60,7 @@ Column {
         id: btnLock
         icon: armed ? "✓" : "󰌾"
         iconSize: 40
-        iconColor: armed ? Theme.alert : Theme.accent
+        iconColor: armed ? Theme.color.alert : Theme.color.accent
         property bool armed: false
         property Timer _t: Timer {
             triggeredOnStart: false
@@ -81,7 +81,7 @@ Column {
         id: btnLogout
         icon: armed ? "✓" : "󰗽"
         iconSize: 40
-        iconColor: armed ? Theme.alert : Theme.accent
+        iconColor: armed ? Theme.color.alert : Theme.color.accent
         property bool armed: false
         property Timer _t: Timer {
             triggeredOnStart: false

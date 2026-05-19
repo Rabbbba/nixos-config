@@ -47,7 +47,7 @@ Item {
             Sparkline {
                 width: parent.width
                 values: GpuUsage.gpuHistory
-                color: Theme.accent
+                color: Theme.color.accent
             }
         }
 

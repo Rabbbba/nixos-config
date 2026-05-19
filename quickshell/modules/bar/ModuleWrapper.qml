@@ -30,9 +30,9 @@ Item {
     // Default property: child items are reparented into the inner content slot.
     default property alias _content: inner.data
     /** Background color when hovered. */
-    property color bgHover: Theme.popupBg
+    property color bgHover: Theme.color.popupBg
     /** Background color when idle. */
-    property color bgIdle: Theme.moduleBg
+    property color bgIdle: Theme.color.moduleBg
     /** True while the mouse is over the module (alias for the inner MouseArea). */
     property alias hovered: ma.containsMouse
 
@@ -45,7 +45,7 @@ Item {
         color: ma.containsMouse ? root.bgHover : root.bgIdle
         Behavior on color {
             ColorAnimation {
-                duration: Theme.animFast
+                duration: Theme.anim.fast
             }
         }
     }

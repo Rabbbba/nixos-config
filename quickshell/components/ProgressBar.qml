@@ -7,7 +7,7 @@ import "../services"
  * Examples:
  * @code
  * ProgressBar { value: 0.42 }
- * ProgressBar { value: 0.8; fillColor: Theme.alert }
+ * ProgressBar { value: 0.8; fillColor: Theme.color.alert }
  * @endcode
  */
 Rectangle {
@@ -16,11 +16,11 @@ Rectangle {
     /** Progress value in [0, 1]. Out-of-range values are clamped. */
     property real value: 0
     /** Fill color of the progress bar. Defaults to the theme accent. */
-    property color fillColor: Theme.accent
+    property color fillColor: Theme.color.accent
 
     implicitHeight: 8
     radius: height / 2
-    color: Theme.moduleBg
+    color: Theme.color.moduleBg
 
     Rectangle {
         anchors.left: parent.left

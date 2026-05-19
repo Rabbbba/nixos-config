@@ -14,8 +14,8 @@ import "../../services"
 ModuleWrapper {
     id: root
 
-    bgIdle: Theme.moduleBg
-    bgHover: Theme.accent
+    bgIdle: Theme.color.moduleBg
+    bgHover: Theme.color.accent
 
     tooltip: "Bluetooth: " + (bluetoothOn ? "On" : "Off")
 
@@ -58,8 +58,8 @@ ModuleWrapper {
 
     StyledText {
         text: root.bluetoothOn ? "󰂯" : "󰂲"
-        font.pixelSize: Theme.fontSizeLg
-        color: root.hovered ? Theme.popupBg : Theme.text
+        font.pixelSize: Theme.font.sizeLg
+        color: root.hovered ? Theme.color.popupBg : Theme.color.text
     }
 
     onClicked: Visibilities.toggle("bluetooth")

@@ -16,7 +16,7 @@ Item {
     /** Maximum reference value used for normalization. */
     property real maxValue: 100
     /** Color applied to each bar. Defaults to the theme accent. */
-    property color color: Theme.accent
+    property color color: Theme.color.accent
     /** Horizontal spacing between bars in pixels. */
     property int barSpacing: 2
 

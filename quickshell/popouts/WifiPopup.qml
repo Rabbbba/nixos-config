@@ -128,11 +128,11 @@ Item {
                 anchors.fill: parent
                 anchors.margins: -4
                 radius: 6
-                color: Theme.moduleBg
+                color: Theme.color.moduleBg
                 opacity: toggleHover.hovered ? 0.6 : 0
                 Behavior on opacity {
                     NumberAnimation {
-                        duration: Theme.animFast
+                        duration: Theme.anim.fast
                     }
                 }
             }
@@ -141,7 +141,7 @@ Item {
                 anchors.left: parent.left
                 anchors.verticalCenter: parent.verticalCenter
                 text: Networking.wifiEnabled ? "󰤨  Wi-Fi" : "󰤯  Wi-Fi"
-                color: Theme.text
+                color: Theme.color.text
             }
 
             Rectangle {
@@ -151,13 +151,13 @@ Item {
                 width: 40
                 height: 22
                 radius: height / 2
-                color: Networking.wifiEnabled ? Theme.accent : Theme.moduleBg
-                border.color: Theme.border
+                color: Networking.wifiEnabled ? Theme.color.accent : Theme.color.moduleBg
+                border.color: Theme.color.border
                 border.width: 1
 
                 Behavior on color {
                     ColorAnimation {
-                        duration: Theme.animFast
+                        duration: Theme.anim.fast
                     }
                 }
 
@@ -167,17 +167,17 @@ Item {
                     radius: height / 2
                     anchors.verticalCenter: parent.verticalCenter
                     x: Networking.wifiEnabled ? parent.width - width - 3 : 3
-                    color: Networking.wifiEnabled ? Theme.popupBg : Theme.text
+                    color: Networking.wifiEnabled ? Theme.color.popupBg : Theme.color.text
 
                     Behavior on x {
                         NumberAnimation {
-                            duration: Theme.animFast
+                            duration: Theme.anim.fast
                             easing.type: Easing.OutCubic
                         }
                     }
                     Behavior on color {
                         ColorAnimation {
-                            duration: Theme.animFast
+                            duration: Theme.anim.fast
                         }
                     }
                 }
@@ -209,11 +209,11 @@ Item {
                 anchors.fill: parent
                 anchors.margins: -4
                 radius: 6
-                color: Theme.moduleBg
+                color: Theme.color.moduleBg
                 opacity: connectedHover.hovered ? 0.6 : 0
                 Behavior on opacity {
                     NumberAnimation {
-                        duration: Theme.animFast
+                        duration: Theme.anim.fast
                     }
                 }
             }
@@ -227,7 +227,7 @@ Item {
                     const pct = Math.round(root.activeNetwork.signalStrength * 100);
                     return root.wifiIcon(pct) + "  " + root.activeNetwork.name;
                 }
-                color: Theme.accent
+                color: Theme.color.accent
                 elide: Text.ElideRight
                 width: parent.width - 28
             }
@@ -237,8 +237,8 @@ Item {
                 anchors.verticalCenter: parent.verticalCenter
                 visible: root.activeNetwork !== null && root.activeNetwork.security !== WifiSecurityType.Open
                 text: "󰍁"
-                color: Theme.textMuted
-                font.pixelSize: Theme.fontSizeSm
+                color: Theme.color.textMuted
+                font.pixelSize: Theme.font.sizeSm
             }
 
             MouseArea {
@@ -276,7 +276,7 @@ Item {
 
                 Behavior on height {
                     NumberAnimation {
-                        duration: Theme.animFast
+                        duration: Theme.anim.fast
                     }
                 }
 
@@ -323,11 +323,11 @@ Item {
                         anchors.fill: parent
                         anchors.margins: -4
                         radius: 6
-                        color: Theme.moduleBg
+                        color: Theme.color.moduleBg
                         opacity: apHover.hovered ? 0.6 : 0
                         Behavior on opacity {
                             NumberAnimation {
-                                duration: Theme.animFast
+                                duration: Theme.anim.fast
                             }
                         }
                     }
@@ -336,7 +336,7 @@ Item {
                         anchors.left: parent.left
                         anchors.verticalCenter: parent.verticalCenter
                         text: root.wifiIcon(apRow.pct) + "  " + apRow.modelData.name
-                        color: apRow.modelData.stateChanging ? Theme.accent : Theme.text
+                        color: apRow.modelData.stateChanging ? Theme.color.accent : Theme.color.text
                         elide: Text.ElideRight
                         width: parent.width - 28
                     }
@@ -346,8 +346,8 @@ Item {
                         anchors.verticalCenter: parent.verticalCenter
                         visible: apRow.secured
                         text: "󰍁"
-                        color: Theme.textMuted
-                        font.pixelSize: Theme.fontSizeSm
+                        color: Theme.color.textMuted
+                        font.pixelSize: Theme.font.sizeSm
                     }
 
                     MouseArea {
@@ -388,8 +388,8 @@ Item {
                         width: parent.width - 90
                         height: 30
                         radius: 4
-                        color: Theme.moduleBg
-                        border.color: pwField.activeFocus ? Theme.accent : Theme.border
+                        color: Theme.color.moduleBg
+                        border.color: pwField.activeFocus ? Theme.color.accent : Theme.color.border
                         border.width: 1
 
                         TextInput {
@@ -399,9 +399,9 @@ Item {
                             anchors.rightMargin: 8
                             verticalAlignment: TextInput.AlignVCenter
                             echoMode: TextInput.Password
-                            color: Theme.text
-                            font.family: Theme.fontFamily
-                            font.pixelSize: Theme.fontSizeSm
+                            color: Theme.color.text
+                            font.family: Theme.font.family
+                            font.pixelSize: Theme.font.sizeSm
                             selectByMouse: true
                             clip: true
                             activeFocusOnTab: true
@@ -424,16 +424,16 @@ Item {
                         width: 56
                         height: 30
                         radius: 4
-                        color: connectMa.containsMouse ? Theme.accent : Theme.moduleBg
-                        border.color: Theme.border
+                        color: connectMa.containsMouse ? Theme.color.accent : Theme.color.moduleBg
+                        border.color: Theme.color.border
                         border.width: 1
                         opacity: apRow.passwordText.length > 0 ? 1.0 : 0.5
 
                         StyledText {
                             anchors.centerIn: parent
                             text: "Connect"
-                            color: connectMa.containsMouse ? Theme.popupBg : Theme.text
-                            font.pixelSize: Theme.fontSizeSm
+                            color: connectMa.containsMouse ? Theme.color.popupBg : Theme.color.text
+                            font.pixelSize: Theme.font.sizeSm
                         }
 
                         MouseArea {
@@ -452,15 +452,15 @@ Item {
                         width: 28
                         height: 30
                         radius: 4
-                        color: cancelMa.containsMouse ? Theme.alert : Theme.moduleBg
-                        border.color: Theme.border
+                        color: cancelMa.containsMouse ? Theme.color.alert : Theme.color.moduleBg
+                        border.color: Theme.color.border
                         border.width: 1
 
                         StyledText {
                             anchors.centerIn: parent
                             text: "×"
-                            color: cancelMa.containsMouse ? Theme.popupBg : Theme.text
-                            font.pixelSize: Theme.fontSizeMd
+                            color: cancelMa.containsMouse ? Theme.color.popupBg : Theme.color.text
+                            font.pixelSize: Theme.font.sizeMd
                         }
 
                         MouseArea {
@@ -480,8 +480,8 @@ Item {
                     anchors.left: parent.left
                     visible: apRow.expanded && apRow.lastError.length > 0
                     text: apRow.lastError
-                    color: Theme.alert
-                    font.pixelSize: Theme.fontSizeSm
+                    color: Theme.color.alert
+                    font.pixelSize: Theme.font.sizeSm
                 }
 
                 function tryConnect() {
@@ -497,16 +497,16 @@ Item {
         StyledText {
             visible: Networking.wifiEnabled && root.availableNetworks.length === 0
             text: root.wifiDevice && root.wifiDevice.scannerEnabled ? "Scanning…" : "No networks"
-            color: Theme.textMuted
-            font.pixelSize: Theme.fontSizeSm
+            color: Theme.color.textMuted
+            font.pixelSize: Theme.font.sizeSm
         }
 
         // Placeholder when the radio is off
         StyledText {
             visible: !Networking.wifiEnabled
             text: "Wi-Fi disabled"
-            color: Theme.textMuted
-            font.pixelSize: Theme.fontSizeSm
+            color: Theme.color.textMuted
+            font.pixelSize: Theme.font.sizeSm
         }
     }
 }

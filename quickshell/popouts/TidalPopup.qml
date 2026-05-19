@@ -111,19 +111,19 @@ Item {
                 StyledText {
                     width: parent.width
                     font.bold: true
-                    font.pixelSize: Theme.fontSizeLg + 6
+                    font.pixelSize: Theme.font.sizeLg + 6
                     text: Players.tidal ? Players.tidal.trackTitle : "—"
                 }
                 StyledText {
                     width: parent.width
-                    color: Theme.text
-                    font.pixelSize: Theme.fontSizeMd + 2
+                    color: Theme.color.text
+                    font.pixelSize: Theme.font.sizeMd + 2
                     text: Players.tidal ? Players.tidal.trackArtist : ""
                 }
                 StyledText {
                     width: parent.width
-                    color: Theme.textMuted
-                    font.pixelSize: Theme.fontSizeMd
+                    color: Theme.color.textMuted
+                    font.pixelSize: Theme.font.sizeMd
                     text: Players.tidal && Players.tidal.trackAlbum ? Players.tidal.trackAlbum : ""
                 }
             }
@@ -134,7 +134,7 @@ Item {
 
                 IconButton {
                     icon: "󰒝"
-                    iconColor: Players.tidal && Players.tidal.shuffle ? Theme.accent : Theme.textMuted
+                    iconColor: Players.tidal && Players.tidal.shuffle ? Theme.color.accent : Theme.color.textMuted
                     onClicked: if (Players.tidal)
                         Players.tidal.shuffle = !Players.tidal.shuffle
                 }
@@ -148,7 +148,7 @@ Item {
                 IconButton {
                     icon: Players.tidal && Players.tidal.isPlaying ? "󰏤" : "󰐊"
                     iconSize: 40
-                    iconColor: Theme.accent
+                    iconColor: Theme.color.accent
                     diameter: 48
                     onClicked: if (Players.tidal)
                         Players.tidal.togglePlaying()
@@ -172,7 +172,7 @@ Item {
                             return "󰑖";
                         return "󰑗";
                     }
-                    iconColor: Players.tidal && Players.tidal.loopState !== 0 ? Theme.accent : Theme.textMuted
+                    iconColor: Players.tidal && Players.tidal.loopState !== 0 ? Theme.color.accent : Theme.color.textMuted
                     onClicked: if (Players.tidal)
                         Players.tidal.loopState = (Players.tidal.loopState + 1) % 3
                 }
@@ -186,7 +186,7 @@ Item {
                     id: volIcon
                     anchors.verticalCenter: parent.verticalCenter
                     text: Players.tidal && Players.tidal.volume === 0 ? "󰝟" : "󰕾"
-                    color: Theme.textMuted
+                    color: Theme.color.textMuted
                     property real previousVolume: 1.0
 
                     MouseArea {
@@ -209,7 +209,7 @@ Item {
                     anchors.verticalCenter: parent.verticalCenter
                     width: parent.width - 28
                     height: 4
-                    color: Theme.moduleBg
+                    color: Theme.color.moduleBg
                     radius: 5
 
                     MouseArea {
@@ -236,7 +236,7 @@ Item {
                         anchors.left: parent.left
                         width: parent.width * (Players.tidal ? Players.tidal.volume : 0)
                         height: parent.height
-                        color: Theme.accent
+                        color: Theme.color.accent
                         radius: 2
                     }
                 }
@@ -252,12 +252,12 @@ Item {
 
                     StyledText {
                         anchors.left: parent.left
-                        color: Theme.textMuted
+                        color: Theme.color.textMuted
                         text: root.fmt(Players.tidal ? Players.tidal.position : 0)
                     }
                     StyledText {
                         anchors.right: parent.right
-                        color: Theme.textMuted
+                        color: Theme.color.textMuted
                         text: root.fmt(Players.tidal ? Players.tidal.length : 0)
                     }
                 }
@@ -278,7 +278,7 @@ Item {
                             x: index * (width + 2)
                             anchors.bottom: parent.bottom
                             height: Math.max(4, (progressBars.values[index] / 100) * progressBars.height)
-                            color: (index + 0.5) / root.barCount < progressBars.progress ? Theme.accent : Theme.border
+                            color: (index + 0.5) / root.barCount < progressBars.progress ? Theme.color.accent : Theme.color.border
                             radius: 1
                         }
                     }

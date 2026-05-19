@@ -17,7 +17,7 @@ Item {
     /** Right-side text (typically the metric value). */
     property alias value: rightLabel.text
     /** Color applied to the right-side value. Defaults to muted. */
-    property color valueColor: Theme.textMuted
+    property color valueColor: Theme.color.textMuted
 
     implicitHeight: 18
 

@@ -14,15 +14,15 @@ ModuleWrapper {
     /** Current date/time displayed by the clock (refreshed every 60 s). */
     property date now: new Date()
 
-    bgIdle: Theme.accent
-    bgHover: Theme.moduleBg
+    bgIdle: Theme.color.accent
+    bgHover: Theme.color.moduleBg
 
     tooltip: Qt.locale().toString(now, "dddd d MMMM yyyy")
 
     StyledText {
 
-        color: root.hovered ? Theme.text : Theme.popupBg
-        font.pixelSize: Theme.fontSizeLg
+        color: root.hovered ? Theme.color.text : Theme.color.popupBg
+        font.pixelSize: Theme.font.sizeLg
         font.bold: true
         text: Qt.formatDateTime(root.now, "HH:mm dd/MM")
         // 60 s is enough — the displayed precision is the minute.

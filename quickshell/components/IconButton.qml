@@ -17,8 +17,8 @@ Rectangle {
     property string icon: ""
     /** Glyph size in pixels. */
     property int iconSize: 18
-    /** Glyph color. Defaults to Theme.text. */
-    property color iconColor: Theme.text
+    /** Glyph color. Defaults to Theme.color.text. */
+    property color iconColor: Theme.color.text
     /** Diameter of the circular button in pixels. */
     property int diameter: 40
 
@@ -28,11 +28,11 @@ Rectangle {
     width: diameter
     height: diameter
     radius: diameter / 2
-    color: ma.containsMouse ? Theme.moduleBg : "transparent"
+    color: ma.containsMouse ? Theme.color.moduleBg : "transparent"
 
     Behavior on color {
         ColorAnimation {
-            duration: Theme.animFast
+            duration: Theme.anim.fast
         }
     }
 

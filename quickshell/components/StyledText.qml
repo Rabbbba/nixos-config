@@ -9,7 +9,7 @@ import "../services"
  * across the whole shell.
  */
 Text {
-    color: Theme.text
-    font.family: Theme.fontFamily
+    color: Theme.color.text
+    font.family: Theme.font.family
     elide: Text.ElideRight
 }
