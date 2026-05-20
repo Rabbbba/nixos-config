@@ -4,11 +4,13 @@
 #include <filesystem>
 #include <fstream>
 #include <qlogging.h>
+#include <qtmetamacros.h>
+#include <string>
 
 NativeHwmon::NativeHwmon(QObject *parent) : QObject(parent) {
   mTimer.setInterval(2000);
   connect(&mTimer, &QTimer::timeout, this, &NativeHwmon::poll);
-  mSensorPath = discoverSensor();
+  mHwmonDir = discoverSensor();
   poll();
   mTimer.start();
 }
@@ -17,7 +19,10 @@ double NativeHwmon::temperature() const { return mTemperature; }
 
 void NativeHwmon::poll() {
   double newValue{};
-  std::ifstream file{mSensorPath};
+  if (mHwmonDir.empty())
+    return;
+  std::ifstream file{mHwmonDir + "/temp" + std::to_string(mTempIndex) +
+                     "_input"};
   if (file >> newValue) {
     double celsius{newValue / 1000.0};
     if (celsius != mTemperature) {
@@ -37,7 +42,7 @@ std::string NativeHwmon::discoverSensor() const {
       continue;
     if (name != mSensorName.toStdString())
       continue;
-    return (element.path() / "temp1_input").string();
+    return (element.path()).string();
   }
   qWarning() << "NativeHwmon: no hwmon matched sensor name" << mSensorName;
   return {};
@@ -49,7 +54,17 @@ void NativeHwmon::setSensorName(const QString &name) {
   if (name == mSensorName)
     return;
   mSensorName = name;
-  mSensorPath = discoverSensor();
+  mHwmonDir = discoverSensor();
   emit sensorNameChanged();
+  poll();
+}
+
+int NativeHwmon::tempIndex() const { return mTempIndex; }
+
+void NativeHwmon::setTempIndex(int index) {
+  if (index == mTempIndex)
+    return;
+  mTempIndex = index;
+  emit tempIndexChanged();
   poll();
 }
