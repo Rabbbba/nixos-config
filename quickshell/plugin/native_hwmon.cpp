@@ -1,7 +1,9 @@
 #include "native_hwmon.h"
+#include <QDebug>
 #include <QTimer>
 #include <filesystem>
 #include <fstream>
+#include <qlogging.h>
 
 NativeHwmon::NativeHwmon(QObject *parent) : QObject(parent) {
   mTimer.setInterval(2000);
@@ -37,6 +39,7 @@ std::string NativeHwmon::discoverSensor() const {
       continue;
     return (element.path() / "temp1_input").string();
   }
+  qWarning() << "NativeHwmon: no hwmon matched sensor name" << mSensorName;
   return {};
 }
 
