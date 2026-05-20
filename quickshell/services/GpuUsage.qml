@@ -1,23 +1,43 @@
 pragma Singleton
 import QtQuick
 import Quickshell.Io
+import NativeSensors
 import "."
 
 /**
  * @brief Singleton exposing GPU utilization, VRAM state, and temperatures.
  *
  * Polls `/sys/class/drm/cardN/device/{gpu_busy_percent, mem_info_vram_used,
- * mem_info_vram_total}` every 500 ms.
+ * mem_info_vram_total}` every 500 ms for utilization and VRAM.
  *
  * On AM5 boxes the iGPU lives on card0 (~512 M VRAM) and the dGPU on card1.
  * We hardcode card1 — dynamic detection (largest VRAM) is possible but
  * overkill for a single-machine config.
  *
- * The hwmon directory is resolved at startup since only one `hwmon*` lives
- * under `cardPath/hwmon/` for the dGPU.
+ * Temperatures (edge/junction/mem) are delegated to the native `NativeHwmon`
+ * plugin, each scoped to `cardPath/hwmon` so it resolves the dGPU chip rather
+ * than the iGPU (both report as "amdgpu") and reads temp1/temp2/temp3_input.
  */
 QtObject {
     id: root
+
+    property NativeHwmon _edge: NativeHwmon {
+        tempIndex: 1
+        sensorName: "amdgpu"
+        hwmonRoot: root.cardPath + "/hwmon"
+    }
+
+    property NativeHwmon _junction: NativeHwmon {
+        tempIndex: 2
+        sensorName: "amdgpu"
+        hwmonRoot: root.cardPath + "/hwmon"
+    }
+
+    property NativeHwmon _mem: NativeHwmon {
+        tempIndex: 3
+        sensorName: "amdgpu"
+        hwmonRoot: root.cardPath + "/hwmon"
+    }
 
     /** sysfs path to the GPU device (card0 = iGPU, card1 = dGPU on AM5). */
     readonly property string cardPath: "/sys/class/drm/card1/device"
@@ -32,12 +52,11 @@ QtObject {
     property real vramPercent: 0
 
     /** Edge (die border) temperature in degC. */
-    property real gpuTempEdge: 0
+    readonly property real gpuTempEdge: _edge.temperature
     /** Junction (hottest spot) temperature in degC. */
-    property real gpuTempJunction: 0
+    readonly property real gpuTempJunction: _junction.temperature
     /** VRAM memory temperature in degC. */
-    property real gpuTempMem: 0
-    property string _gpuHwmon: ""
+    readonly property real gpuTempMem: _mem.temperature
 
     readonly property int _historyLength: 60
     /**
@@ -79,49 +98,6 @@ QtObject {
         onLoaded: root.vramTotal = parseInt(vramTotalFile.text().trim())
     }
 
-    // One-shot resolver: cardPath/hwmon/ contains a single hwmonN dir for
-    // the dGPU. stdout is the resolved path; we then bind the temp FileViews.
-    property Process _resolveGpuHwmon: Process {
-        command: ["sh", "-c", "ls -d " + root.cardPath + "/hwmon/hwmon* 2>/dev/null | head -1"]
-        running: true
-        stdout: SplitParser {
-            onRead: data => {
-                if (data)
-                    root._gpuHwmon = data.trim();
-            }
-        }
-    }
-
-    property FileView _tempEdgeFile: FileView {
-        id: tempEdgeFile
-        path: root._gpuHwmon ? root._gpuHwmon + "/temp1_input" : ""
-        blockLoading: true
-        onLoaded: {
-            if (root._gpuHwmon)
-                root.gpuTempEdge = parseInt(tempEdgeFile.text().trim()) / 1000;
-        }
-    }
-
-    property FileView _tempJunctionFile: FileView {
-        id: tempJunctionFile
-        path: root._gpuHwmon ? root._gpuHwmon + "/temp2_input" : ""
-        blockLoading: true
-        onLoaded: {
-            if (root._gpuHwmon)
-                root.gpuTempJunction = parseInt(tempJunctionFile.text().trim()) / 1000;
-        }
-    }
-
-    property FileView _tempMemFile: FileView {
-        id: tempMemFile
-        path: root._gpuHwmon ? root._gpuHwmon + "/temp3_input" : ""
-        blockLoading: true
-        onLoaded: {
-            if (root._gpuHwmon)
-                root.gpuTempMem = parseInt(tempMemFile.text().trim()) / 1000;
-        }
-    }
-
     /** @brief Connection to the global @ref Tick — fires every 500 ms. */
     property Connections _tickConn: Connections {
         target: Tick
@@ -129,11 +105,6 @@ QtObject {
             busyFile.reload();
             vramUsedFile.reload();
             vramTotalFile.reload();
-            if (root._gpuHwmon) {
-                tempEdgeFile.reload();
-                tempJunctionFile.reload();
-                tempMemFile.reload();
-            }
             root.gpuHistory = root._pushHistory(root.gpuHistory, root.gpuPercent);
         }
     }
