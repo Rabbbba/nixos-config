@@ -2,6 +2,7 @@
   config,
   pkgs,
   inputs,
+  nativeSensors,
   ...
 }:
 
@@ -146,7 +147,7 @@
     XCURSOR_SIZE = "24";
     QML_IMPORT_PATH = "${pkgs.qt6.qtdeclarative}/lib/qt-6/qml:${
       inputs.quickshell.packages.${pkgs.system}.default
-    }/lib/qt-6/qml";
+    }/lib/qt-6/qml:${nativeSensors}/lib/qt-6/qml";
 
     # 1 GiB default evicts mid-session on modern AAA → hot recompiles (UE5).
     MESA_SHADER_CACHE_MAX_SIZE = "10G";

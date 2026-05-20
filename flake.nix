@@ -41,8 +41,54 @@
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
+
+      # Native C++ QML plugin (NativeSensors) built from quickshell/plugin/.
+      # Installs to $out/lib/qt-6/qml/NativeSensors, fed to QML_IMPORT_PATH in home.nix.
+      nativeSensors = pkgs.stdenv.mkDerivation {
+        pname = "quickshell-native-sensors";
+        version = "1.0";
+
+        # Sources only — exclude the local dev build/ dir from the store copy.
+        src = pkgs.lib.fileset.toSource {
+          root = ./quickshell/plugin;
+          fileset = pkgs.lib.fileset.unions [
+            ./quickshell/plugin/CMakeLists.txt
+            ./quickshell/plugin/native_hwmon.cpp
+            ./quickshell/plugin/native_hwmon.h
+          ];
+        };
+
+        nativeBuildInputs = with pkgs; [
+          cmake
+          qt6.wrapQtAppsHook # Qt6 CMake integration so find_package(Qt6) resolves
+          autoPatchelfHook # rewrite the plugin RPATH to find Qt + the backing lib
+        ];
+
+        buildInputs = with pkgs; [
+          qt6.qtbase
+          qt6.qtdeclarative
+        ];
+
+        # CMake bakes the build-tree dir into the RPATH by default; Nix forbids
+        # that /build reference. Skip it — autoPatchelfHook sets the real RPATH.
+        cmakeFlags = [ "-DCMAKE_SKIP_BUILD_RPATH=ON" ];
+
+        # qt_add_qml_module emits no install() rules, so install by hand. The
+        # plugin .so links the backing lib, so both sit in the module dir
+        # ($ORIGIN) and autoPatchelfHook fixes the RPATH.
+        installPhase = ''
+          runHook preInstall
+          dir=$out/lib/qt-6/qml/NativeSensors
+          mkdir -p $dir
+          cp -r NativeSensors/* $dir/
+          cp libquickshell-native-sensors.so $dir/
+          runHook postInstall
+        '';
+      };
     in
     {
+      packages.${system}.native-sensors = nativeSensors;
+
       nixosConfigurations.Rayane = nixpkgs.lib.nixosSystem {
         specialArgs = {
           inputs = {
@@ -63,6 +109,7 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.extraSpecialArgs = {
+              inherit nativeSensors;
               inputs = {
                 inherit
                   home-manager
