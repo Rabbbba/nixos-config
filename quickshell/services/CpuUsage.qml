@@ -1,22 +1,27 @@
 pragma Singleton
 import QtQuick
 import Quickshell.Io
+import NativeSensors
 import "."
 
 /**
  * @brief Singleton exposing CPU usage, load average, and temperature.
  *
- * Polls `/proc/stat`, `/proc/loadavg`, and the `k10temp` hwmon every
- * 500 ms. CPU % is computed from the delta of jiffies (idle vs total)
- * between two ticks — the standard way to read `/proc/stat`. Load average
- * lives here because it's fundamentally a CPU pressure metric.
+ * Polls `/proc/stat` and `/proc/loadavg` every 500 ms. CPU % is computed
+ * from the delta of jiffies (idle vs total) between two ticks — the
+ * standard way to read `/proc/stat`. Load average lives here because it's
+ * fundamentally a CPU pressure metric.
  *
- * The hwmon path is resolved at startup (hwmon numbering is not stable
- * across reboots) by scanning each `name` file under `/sys/class/hwmon`
- * for "k10temp".
+ * Temperature is delegated to the native `NativeHwmon` plugin, which
+ * resolves the `k10temp` hwmon and polls it in C++; `cpuTemp` simply
+ * tracks its `temperature`.
  */
 QtObject {
     id: root
+
+    property NativeHwmon _cpu: NativeHwmon {
+        sensorName: "k10temp"
+    }
 
     /** Global CPU usage as a percentage (0–100). */
     property real cpuPercent: 0
@@ -32,8 +37,7 @@ QtObject {
         })
 
     /** CPU temperature (Tctl) in degC. */
-    property real cpuTemp: 0
-    property string _cpuHwmon: ""
+    readonly property real cpuTemp: _cpu.temperature
 
     readonly property int _historyLength: 60
     /**
@@ -126,37 +130,12 @@ QtObject {
         }
     }
 
-    // One-shot resolver: walks /sys/class/hwmon to find the k10temp chip.
-    // stdout = the resolved hwmonN directory; we then bind cpuTempFile.path.
-    property Process _resolveCpuHwmon: Process {
-        command: ["sh", "-c", "for f in /sys/class/hwmon/*/name; do [ \"$(cat \"$f\")\" = \"k10temp\" ] && dirname \"$f\" && break; done"]
-        running: true
-        stdout: SplitParser {
-            onRead: data => {
-                if (data)
-                    root._cpuHwmon = data.trim();
-            }
-        }
-    }
-
-    property FileView _cpuTempFile: FileView {
-        id: cpuTempFile
-        path: root._cpuHwmon ? root._cpuHwmon + "/temp1_input" : ""
-        blockLoading: true
-        onLoaded: {
-            if (root._cpuHwmon)
-                root.cpuTemp = parseInt(cpuTempFile.text().trim()) / 1000;
-        }
-    }
-
     /** @brief Connection to the global @ref Tick — fires every 500 ms. */
     property Connections _tickConn: Connections {
         target: Tick
         function onTick() {
             cpuFile.reload();
             loadFile.reload();
-            if (root._cpuHwmon)
-                cpuTempFile.reload();
             root.cpuHistory = root._pushHistory(root.cpuHistory, root.cpuPercent);
         }
     }
