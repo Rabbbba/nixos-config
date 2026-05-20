@@ -6,6 +6,16 @@
   ...
 }:
 
+let
+  # Quickshell needs the native NativeSensors plugin on its QML import path.
+  # Its store path is dynamic, so it must be interpolated here (never hardcoded
+  # in a static config). Shared by sessionVariables (dev / manual runs) and the
+  # quickshell systemd service (the autostarted bar, which doesn't inherit the
+  # login shell's environment).
+  qmlImportPath = "${pkgs.qt6.qtdeclarative}/lib/qt-6/qml:${
+    inputs.quickshell.packages.${pkgs.system}.default
+  }/lib/qt-6/qml:${nativeSensors}/lib/qt-6/qml";
+in
 {
   # ── Identity ────────────────────────────────────────────────────────────────
   home.username = "rayane";
@@ -145,9 +155,7 @@
   home.sessionVariables = {
     XCURSOR_THEME = "Bibata-Modern-Amber";
     XCURSOR_SIZE = "24";
-    QML_IMPORT_PATH = "${pkgs.qt6.qtdeclarative}/lib/qt-6/qml:${
-      inputs.quickshell.packages.${pkgs.system}.default
-    }/lib/qt-6/qml:${nativeSensors}/lib/qt-6/qml";
+    QML_IMPORT_PATH = qmlImportPath;
 
     # 1 GiB default evicts mid-session on modern AAA → hot recompiles (UE5).
     MESA_SHADER_CACHE_MAX_SIZE = "10G";
@@ -275,6 +283,26 @@
     };
     Service = {
       ExecStart = "${pkgs.walker}/bin/walker --gapplication-service";
+      Restart = "on-failure";
+      RestartSec = 2;
+    };
+    Install.WantedBy = [ "graphical-session.target" ];
+  };
+
+  # The bar runs as a service (not a Hyprland exec-once) so it gets a controlled
+  # environment: Hyprland's env lacks QML_IMPORT_PATH, so an exec-once couldn't
+  # find the NativeSensors plugin and the bar failed to start at boot.
+  systemd.user.services.quickshell = {
+    Unit = {
+      Description = "Quickshell — custom Wayland bar / shell";
+      PartOf = [ "graphical-session.target" ];
+      After = [ "graphical-session.target" ];
+    };
+    Service = {
+      Environment = "QML_IMPORT_PATH=${qmlImportPath}";
+      ExecStart = "${
+        inputs.quickshell.packages.${pkgs.system}.default
+      }/bin/quickshell -p /etc/nixos/quickshell/shell.qml";
       Restart = "on-failure";
       RestartSec = 2;
     };
