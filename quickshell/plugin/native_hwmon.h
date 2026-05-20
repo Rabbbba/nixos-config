@@ -3,6 +3,7 @@
 #include <QObject>
 #include <QTimer>
 #include <QtQml/qqmlregistration.h>
+#include <string>
 
 class NativeHwmon : public QObject {
   Q_OBJECT
@@ -18,8 +19,10 @@ signals:
   void temperatureChanged();
 
 private:
-  double m_temperature{};
-  QTimer m_timer{};
+  double mTemperature{};
+  QTimer mTimer{};
+  std::string mSensorPath{};
+  std::string discoverSensor() const;
 
   void poll();
 };
