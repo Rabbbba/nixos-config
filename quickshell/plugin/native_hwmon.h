@@ -4,7 +4,6 @@
 #include <QString>
 #include <QTimer>
 #include <QtQml/qqmlregistration.h>
-#include <qtmetamacros.h>
 #include <string>
 
 class NativeHwmon : public QObject {
@@ -16,27 +15,41 @@ class NativeHwmon : public QObject {
                  sensorNameChanged)
   Q_PROPERTY(
       int tempIndex READ tempIndex WRITE setTempIndex NOTIFY tempIndexChanged)
+  Q_PROPERTY(QString hwmonRoot READ hwmonRoot WRITE setHwmonRoot NOTIFY
+                 hwmonRootChanged)
 
 public:
   explicit NativeHwmon(QObject *parent = nullptr);
+
+  // Getters
   double temperature() const;
   QString sensorName() const;
-  void setSensorName(const QString &name);
   int tempIndex() const;
+  QString hwmonRoot() const;
+
+  // Setters
+  void setSensorName(const QString &name);
   void setTempIndex(int index);
+  void setHwmonRoot(const QString &root);
 
 signals:
   void temperatureChanged();
   void sensorNameChanged();
   void tempIndexChanged();
+  void hwmonRootChanged();
 
 private:
-  double mTemperature{};
-  QTimer mTimer{};
-  QString mSensorName{"k10temp"};
-  std::string mHwmonDir{};
-  std::string discoverSensor() const;
-  int mTempIndex{1};
-
+  // Methods
   void poll();
+  std::string discoverSensor() const;
+
+  // Configuration (writable via properties)
+  QString mSensorName{"k10temp"};
+  int mTempIndex{1};
+  QString mHwmonRoot{"/sys/class/hwmon"};
+
+  // Derived state
+  double mTemperature{};
+  std::string mHwmonDir{}; // resolved chip dir, from discoverSensor()
+  QTimer mTimer{};
 };
