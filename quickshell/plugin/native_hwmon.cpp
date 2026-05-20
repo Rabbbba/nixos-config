@@ -31,11 +31,22 @@ std::string NativeHwmon::discoverSensor() const {
     std::filesystem::path path = element.path() / "name";
     std::ifstream file{path};
     std::string name;
-    if (file >> name) {
-      if (name == "k10temp") {
-        return (element.path() / "temp1_input").string();
-      }
-    }
+    if (!(file >> name))
+      continue;
+    if (name != mSensorName.toStdString())
+      continue;
+    return (element.path() / "temp1_input").string();
   }
   return {};
+}
+
+QString NativeHwmon::sensorName() const { return mSensorName; }
+
+void NativeHwmon::setSensorName(const QString &name) {
+  if (name == mSensorName)
+    return;
+  mSensorName = name;
+  mSensorPath = discoverSensor();
+  emit sensorNameChanged();
+  poll();
 }

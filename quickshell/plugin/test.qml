@@ -14,4 +14,13 @@ Item {                                            // ← Item au lieu de QtObjec
             console.log("Temperature changed =", hwmon.temperature);
         }
     }
+
+    Timer {
+        interval: 3000
+        running: true
+        repeat: false
+        onTriggered: {
+            hwmon.sensorName = "nvme";
+        }
+    }
 }
