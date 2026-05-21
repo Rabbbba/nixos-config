@@ -26,4 +26,6 @@ qt_add_qml_module(quickshell-native-sensors
   SOURCES
       native_hwmon.cpp
       native_hwmon.h
+      native_network.cpp
+      native_network.h
 )

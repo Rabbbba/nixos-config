@@ -1,0 +1,78 @@
+#include "native_network.h"
+#include <QObject>
+#include <QTimer>
+#include <cstdint>
+#include <fstream>
+#include <qtmetamacros.h>
+#include <sstream>
+#include <string>
+
+NativeNetwork::NativeNetwork(QObject *parent) : QObject(parent) {
+  mTimer.setInterval(2000);
+  connect(&mTimer, &QTimer::timeout, this, &NativeNetwork::poll);
+  poll();
+  mTimer.start();
+}
+
+// -- Getters ---------------------------------
+
+double NativeNetwork::downloadKbps() const { return mDownloadKbps; }
+double NativeNetwork::uploadKbps() const { return mUploadKbps; }
+
+// -- Interval -------------------------------
+
+std::string NativeNetwork::discoverNetwork() const {
+  std::ifstream file("/proc/net/route");
+  std::string line;
+  std::getline(file, line);
+  while (std::getline(file, line)) {
+    std::string iface;
+    std::string destination;
+    std::istringstream iss(line);
+    iss >> iface >> destination;
+    if (destination == "00000000")
+      return iface;
+  }
+
+  return {};
+}
+
+void NativeNetwork::poll() {
+  std::string iface = discoverNetwork();
+  if (iface.empty())
+    return;
+  uint64_t rx{};
+  std::ifstream rxFile("/sys/class/net/" + iface + "/statistics/rx_bytes");
+  rxFile >> rx;
+  uint64_t tx{};
+  std::ifstream txFile("/sys/class/net/" + iface + "/statistics/tx_bytes");
+  txFile >> tx;
+
+  if (!mPrimed) {
+    mPrevRx = rx;
+    mPrevTx = tx;
+    mPrimed = true;
+    return;
+  }
+  if (rx < mPrevRx || tx < mPrevTx) {
+    mPrevRx = rx;
+    mPrevTx = tx;
+    return;
+  }
+  uint64_t deltaRx{rx - mPrevRx};
+  double download{static_cast<double>(deltaRx) / mTimer.interval() * 1000.0 /
+                  1024.0};
+  if (download != mDownloadKbps) {
+    mDownloadKbps = download;
+    emit downloadKbpsChanged();
+  }
+  uint64_t deltaTx{tx - mPrevTx};
+  double upload{static_cast<double>(deltaTx) / mTimer.interval() * 1000.0 /
+                1024.0};
+  if (upload != mUploadKbps) {
+    mUploadKbps = upload;
+    emit uploadKbpsChanged();
+  }
+  mPrevRx = rx;
+  mPrevTx = tx;
+}

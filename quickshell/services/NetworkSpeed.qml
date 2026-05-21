@@ -1,26 +1,24 @@
 pragma Singleton
 import QtQuick
-import Quickshell.Io
+import NativeSensors
 
 /**
- * @brief Singleton that monitors active network interface throughput.
+ * @brief Singleton exposing active-interface network throughput.
  *
- * Reads cumulative byte counters from `/sys/class/net/<iface>/statistics/`
- * every 2 s, computes delta-based upload/download speed in KiB/s, and
- * maintains a rolling 60-sample history for graph rendering.
- *
- * The active interface is determined from the default route table
- * (`ip route show default`), not from operstate — so it correctly picks
- * the routable interface even when several interfaces are up at once.
+ * Download/upload speeds (KiB/s) come from the native NativeNetwork plugin,
+ * which resolves the routable interface via /proc/net/route and reads the
+ * sysfs byte counters in C++. This singleton only binds those values and
+ * keeps a rolling 60-sample history per direction for the sparklines.
  */
 QtObject {
     id: root
 
+    property NativeNetwork _net: NativeNetwork {}
     /** @brief Current download speed in kiB/s (1024-based) */
-    property real downloadKbps: 0
+    readonly property real downloadKbps: _net.downloadKbps
 
     /** @brief Current upload speed in kiB/s (1024 based) */
-    property real uploadKbps: 0
+    readonly property real uploadKbps: _net.uploadKbps
 
     /** @brief Rolling history of the last 60 downloadKbps samples (graph rendering). */
     property var downloadHistory: []
@@ -28,24 +26,14 @@ QtObject {
     /** @brief Rolling history of the last 60 uploadKbps samples (graph rendering). */
     property var uploadHistory: []
 
-    /** @brief Cumulative rx_bytes counter from the previous poll tick. Used to compute delta for download speed. */
-    property real _prevRx: 0
-
-    /** @brief Cumulative tx_bytes counter from the previous poll tick. Used to compute delta for upload speed. */
-    property real _prevTx: 0
-
-    /** @brief Number of ticks elapsed since service started. Skips first tick when counters are zero. */
-    property int _tickCount: 0
-
     readonly property int _pollInterval: 2000
 
     /** @brief Maximum number of samples kept in the rolling sparkline history window. */
     readonly property int _historyLength: 60
 
-    /** @brief Append a value to a rolling array, dropping oldest if over limit.
-     *  @param arr The source array (must be a var).
-     *  @param value The numeric value to append.
-     *  @return A new array with the value added and oldest dropped if necessary.
+    /** @brief Append a value to a rolling array, dropping the oldest past the cap.
+     *  @param arr Source array (a var).
+     *  @param value Value to append.
      */
     function _pushHistory(arr, value) {
         const next = arr.slice();
@@ -56,36 +44,15 @@ QtObject {
         return next;
     }
 
-    /** @brief Clamp a speed value to non-negative.
-     *  Skips the tick silently when delta is negative (interface change).
-     *  @param speed The speed value in KiB/s.
-     *  @return The clamped value, or -1 if the tick should be skipped.
-     */
-    function _clamp(speed) {
-        if (speed < 0)
-            return -1;
-        else
-            return speed;
-    }
-
-    /** @brief Format a speed value in KiB/s as Mbps / Gbps, matching the
-     *  marketing convention used by Steam, Speedtest, and ISP plans.
-     *
-     *  The underlying sysfs counter is bytes; we convert to bits per second
-     *  in base 1000 (NOT base 1024) because that is what the network world
-     *  uses — keeps the bar number aligned with what Steam shows in its
-     *  download UI and with the speed your ISP sold you. Lowercase `b` in
-     *  the suffix disambiguates bits from bytes.
-     *
-     *  Below 1000 Mbps we display an integer "Mb"; above, we switch to
-     *  "Gb" with one decimal so a gigabit fiber under load reads "1.2Gb"
-     *  rather than rounding to "1Gb".
-     *  @param kbps The speed value in KiB/s (1024-based bytes per second).
+    /** @brief Format a KiB/s speed as "Mb"/"Gb" (decimal bits, base 1000) — the
+     *  convention ISPs and Steam use, so the bar matches what they advertise.
+     *  Integer "Mb" below 1000 Mbps, else "Gb" with one decimal. Lowercase `b`
+     *  marks bits, not bytes.
+     *  @param kbps Speed in KiB/s (1024-based bytes per second).
      */
     function formatSpeed(kbps: real): string {
-        // Transients during interface toggles (Wi-Fi off/on, default route
-        // change) can yield NaN through parseInt('') in the stats reader;
-        // guard the formatter so the bar never renders "NaNGb".
+        // Guard against transient NaN/negative during interface toggles
+        // so the bar never renders "NaNGb".
         if (!Number.isFinite(kbps) || kbps < 0)
             return "0Mb";
         // KiB/s → bytes/s → bits/s → Mbps (decimal, base 1000).
@@ -96,67 +63,13 @@ QtObject {
         return (mbps / 1000).toFixed(1) + "Gb";
     }
 
-    /** @brief Pending rx_bytes value received from the first line of Process output (64-bit safe). */
-    property real _pendingRx: 0
-
-    /** @brief Pending tx_bytes value received from the second line of Process output (64-bit safe). */
-    property real _pendingTx: 0
-
-    /** @brief Line counter within a single tick (0 = waiting for rx, 1 = waiting for tx). Resets to 0 after both lines received. */
-    property int _lineCount: 0
-
-    property Process _netStatsReader: Process {
+    property Timer _historyTimer: Timer {
         running: true
-        command: ["sh", "-c", "iface=$(ip route show default 2>/dev/null | awk '{print $5}'); [ -n \"$iface\" ] && cat /sys/class/net/$iface/statistics/rx_bytes /sys/class/net/$iface/statistics/tx_bytes"]
-        stdout: SplitParser {
-            splitMarker: "\n"
-            onRead: data => {
-                const value = parseInt(data.trim());
-
-                if (root._lineCount === 0) {
-                    root._pendingRx = value;
-                    root._lineCount = 1;
-                    return;
-                }
-
-                if (root._lineCount === 1) {
-                    root._pendingTx = value;
-                    root._lineCount = 0;
-
-                    root._tickCount++;
-                    if (root._tickCount === 1)
-                        return;
-
-                    const deltaRx = root._pendingRx - root._prevRx;
-                    const deltaTx = root._pendingTx - root._prevTx;
-                    const downloadSpeed = (deltaRx / root._pollInterval * 1000) / 1024;
-                    const uploadSpeed = (deltaTx / root._pollInterval * 1000) / 1024;
-
-                    const clampedDown = root._clamp(downloadSpeed);
-                    const clampedUp = root._clamp(uploadSpeed);
-
-                    if (clampedDown >= 0 && clampedUp >= 0) {
-                        root.downloadKbps = clampedDown;
-                        root.uploadKbps = clampedUp;
-                        root.downloadHistory = root._pushHistory(root.downloadHistory, clampedDown);
-                        root.uploadHistory = root._pushHistory(root.uploadHistory, clampedUp);
-                    }
-
-                    root._prevRx = root._pendingRx;
-                    root._prevTx = root._pendingTx;
-                }
-            }
+        interval: root._pollInterval
+        repeat: true
+        onTriggered: {
+            root.downloadHistory = root._pushHistory(root.downloadHistory, root._net.downloadKbps);
+            root.uploadHistory = root._pushHistory(root.uploadHistory, root._net.uploadKbps);
         }
-    }
-
-    property Timer _pollTimer: Timer {
-      running: true
-      interval: root._pollInterval
-      repeat: true
-      triggeredOnStart: true
-      onTriggered: {
-        _netStatsReader.running = false;
-        _netStatsReader.running = true;
-      }
     }
 }
