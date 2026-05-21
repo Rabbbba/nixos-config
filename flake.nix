@@ -48,14 +48,10 @@
         pname = "quickshell-native-sensors";
         version = "1.0";
 
-        # Sources only — exclude the local dev build/ dir from the store copy.
+        # Whole plugin dir; git already excludes build/, .cache/, compile_commands.json.
         src = pkgs.lib.fileset.toSource {
           root = ./quickshell/plugin;
-          fileset = pkgs.lib.fileset.unions [
-            ./quickshell/plugin/CMakeLists.txt
-            ./quickshell/plugin/native_hwmon.cpp
-            ./quickshell/plugin/native_hwmon.h
-          ];
+          fileset = ./quickshell/plugin;
         };
 
         nativeBuildInputs = with pkgs; [
