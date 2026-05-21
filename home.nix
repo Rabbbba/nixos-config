@@ -13,7 +13,7 @@ let
   # quickshell systemd service (the autostarted bar, which doesn't inherit the
   # login shell's environment).
   qmlImportPath = "${pkgs.qt6.qtdeclarative}/lib/qt-6/qml:${
-    inputs.quickshell.packages.${pkgs.system}.default
+    inputs.quickshell.packages.${pkgs.stdenv.hostPlatform.system}.default
   }/lib/qt-6/qml:${nativeSensors}/lib/qt-6/qml";
 in
 {
@@ -79,7 +79,7 @@ in
     stylua
     prettier
     qt6.qtdeclarative # qmlformat
-    inputs.qml-language-server.packages.${pkgs.system}.default
+    inputs.qml-language-server.packages.${pkgs.stdenv.hostPlatform.system}.default
     taplo
     shfmt
     nodejs
@@ -99,7 +99,7 @@ in
     libnotify
     swayosd
 
-    inputs.quickshell.packages.${pkgs.system}.default
+    inputs.quickshell.packages.${pkgs.stdenv.hostPlatform.system}.default
 
     # Capture & clipboard
     grim
@@ -113,7 +113,7 @@ in
     # breaks Chromium's video_capture (portal picker never opens, black frame).
     # Use Super+D (direct exec, clean systemd scope).
     pkgs.vesktop
-    inputs.zen-browser.packages.${pkgs.system}.default
+    inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
     bitwarden-desktop
     mangohud
     obsidian
@@ -301,7 +301,7 @@ in
     Service = {
       Environment = "QML_IMPORT_PATH=${qmlImportPath}";
       ExecStart = "${
-        inputs.quickshell.packages.${pkgs.system}.default
+        inputs.quickshell.packages.${pkgs.stdenv.hostPlatform.system}.default
       }/bin/quickshell -p /etc/nixos/quickshell/shell.qml";
       Restart = "on-failure";
       RestartSec = 2;
