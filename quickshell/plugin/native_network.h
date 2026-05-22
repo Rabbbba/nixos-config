@@ -6,7 +6,10 @@
 #include <cstdint>
 #include <string>
 
-class NativeNetwork : public QObject {
+#include "native_sensor.h"
+
+class NativeNetwork : public NativeSensor {
+
   Q_OBJECT
   QML_ELEMENT
 
@@ -26,18 +29,18 @@ signals:
 
 private:
   // Methods
-  void poll();                         // read counters, compute speed, emit
+  void poll() override;                // read counters, compute speed, emit
   std::string discoverNetwork() const; // active iface from the default route
 
-  // Cumulative rx/tx byte counters from the previous tick, for delta computation.
+  // Cumulative rx/tx byte counters from the previous tick, for delta
+  // computation.
   uint64_t mPrevRx{};
   uint64_t mPrevTx{};
-  // False until the first poll seeds mPrev*; guards against a bogus first delta.
+  // False until the first poll seeds mPrev*; guards against a bogus first
+  // delta.
   bool mPrimed{};
 
   // Derived speeds in KiB/s, exposed via the read-only properties.
   double mDownloadKbps{};
   double mUploadKbps{};
-
-  QTimer mTimer{}; // poll heartbeat
 };

@@ -1,12 +1,13 @@
 #pragma once
 
+#include "native_sensor.h"
 #include <QObject>
 #include <QString>
 #include <QTimer>
 #include <QtQml/qqmlregistration.h>
 #include <string>
 
-class NativeHwmon : public QObject {
+class NativeHwmon : public NativeSensor {
   Q_OBJECT
   QML_ELEMENT
 
@@ -40,7 +41,7 @@ signals:
 
 private:
   // Methods
-  void poll();
+  void poll() override;
   std::string discoverSensor() const;
 
   // Configuration (writable via properties)
@@ -51,5 +52,4 @@ private:
   // Derived state
   double mTemperature{};
   std::string mHwmonDir{}; // resolved chip dir, from discoverSensor()
-  QTimer mTimer{};
 };

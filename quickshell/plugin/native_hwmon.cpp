@@ -6,9 +6,8 @@
 #include <fstream>
 #include <string>
 
-NativeHwmon::NativeHwmon(QObject *parent) : QObject(parent) {
+NativeHwmon::NativeHwmon(QObject *parent) : NativeSensor(parent) {
   mTimer.setInterval(2000);
-  connect(&mTimer, &QTimer::timeout, this, &NativeHwmon::poll);
   mHwmonDir = discoverSensor();
   poll();
   mTimer.start();

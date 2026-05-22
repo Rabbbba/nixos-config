@@ -1,4 +1,5 @@
 #include "native_network.h"
+#include "native_sensor.h"
 
 #include <QTimer>
 #include <cstdint>
@@ -6,9 +7,8 @@
 #include <sstream>
 #include <string>
 
-NativeNetwork::NativeNetwork(QObject *parent) : QObject(parent) {
+NativeNetwork::NativeNetwork(QObject *parent) : NativeSensor(parent) {
   mTimer.setInterval(2000);
-  connect(&mTimer, &QTimer::timeout, this, &NativeNetwork::poll);
   poll();
   mTimer.start();
 }
