@@ -30,4 +30,6 @@ qt_add_qml_module(quickshell-native-sensors
       native_network.h
       native_sensor.cpp
       native_sensor.h
+      native_ram.h
+      native_ram.cpp
 )
