@@ -69,8 +69,18 @@ void NativeHwmon::poll() {
 }
 
 std::string NativeHwmon::discoverSensor() const {
-  for (const auto &element :
-       std::filesystem::directory_iterator{mHwmonRoot.toStdString()}) {
+  // Non-throwing iterator construction: directory_iterator{path} throws
+  // filesystem_error if the path is missing or unreadable (cold-boot before
+  // udev, container without /sys/class/hwmon). The error_code overload sets
+  // ec instead, so the constructor never escapes the function.
+  std::error_code ec;
+  std::filesystem::directory_iterator it{mHwmonRoot.toStdString(), ec};
+  if (ec) {
+    qWarning() << "NativeHwmon: cannot open hwmon root" << mHwmonRoot << ":"
+               << QString::fromStdString(ec.message());
+    return {};
+  }
+  for (const auto &element : it) {
     std::filesystem::path path = element.path() / "name";
     std::ifstream file{path};
     std::string name;
