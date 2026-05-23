@@ -84,6 +84,7 @@ in
     shfmt
     nodejs
     ripgrep
+    gh
     doxygen
     graphviz # DOT for Doxygen inheritance diagrams
 
