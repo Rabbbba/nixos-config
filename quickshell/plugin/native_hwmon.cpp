@@ -30,7 +30,6 @@ void NativeHwmon::setSensorName(const QString &name) {
     return;
   mSensorName = name;
   mHwmonDir = discoverSensor(); // chip changed → rescan
-  emit sensorNameChanged();
   poll();
 }
 
@@ -38,7 +37,6 @@ void NativeHwmon::setTempIndex(int index) {
   if (index == mTempIndex)
     return;
   mTempIndex = index;
-  emit tempIndexChanged();
   poll(); // same chip, only the file changes → no rescan
 }
 
@@ -47,7 +45,6 @@ void NativeHwmon::setHwmonRoot(const QString &root) {
     return;
   mHwmonRoot = root;
   mHwmonDir = discoverSensor(); // search root changed → rescan
-  emit hwmonRootChanged();
   poll();
 }
 

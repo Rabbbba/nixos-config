@@ -11,13 +11,11 @@ class NativeHwmon : public NativeSensor {
   Q_OBJECT
   QML_ELEMENT
 
+  // Config properties are write-only in practice — no NOTIFY needed.
   Q_PROPERTY(double temperature READ temperature NOTIFY temperatureChanged)
-  Q_PROPERTY(QString sensorName READ sensorName WRITE setSensorName NOTIFY
-                 sensorNameChanged)
-  Q_PROPERTY(
-      int tempIndex READ tempIndex WRITE setTempIndex NOTIFY tempIndexChanged)
-  Q_PROPERTY(QString hwmonRoot READ hwmonRoot WRITE setHwmonRoot NOTIFY
-                 hwmonRootChanged)
+  Q_PROPERTY(QString sensorName READ sensorName WRITE setSensorName)
+  Q_PROPERTY(int tempIndex READ tempIndex WRITE setTempIndex)
+  Q_PROPERTY(QString hwmonRoot READ hwmonRoot WRITE setHwmonRoot)
 
 public:
   explicit NativeHwmon(QObject *parent = nullptr);
@@ -35,9 +33,6 @@ public:
 
 signals:
   void temperatureChanged();
-  void sensorNameChanged();
-  void tempIndexChanged();
-  void hwmonRootChanged();
 
 private:
   // Methods
