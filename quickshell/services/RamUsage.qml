@@ -1,6 +1,7 @@
 pragma Singleton
 import QtQuick
 import NativeSensors
+import "History.js" as History
 
 /**
  * @brief Singleton exposing RAM and swap usage parsed from `/proc/meminfo`.
@@ -35,18 +36,10 @@ QtObject {
      */
     property var ramHistory: []
 
-    function _pushHistory(arr, value) {
-        const next = arr.slice();
-        next.push(value);
-        if (next.length > root._historyLength)
-            next.shift();
-        return next;
-    }
-
     property Connections _ramConn: Connections {
         target: root._ram
         function onRamChanged() {
-            root.ramHistory = root._pushHistory(root.ramHistory, root.ramPercent);
+            root.ramHistory = History.push(root.ramHistory, root.ramPercent, root._historyLength);
         }
     }
 }

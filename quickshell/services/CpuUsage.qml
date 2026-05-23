@@ -3,6 +3,7 @@ import QtQuick
 import Quickshell.Io
 import NativeSensors
 import "."
+import "History.js" as History
 
 /**
  * @brief Singleton exposing CPU usage, load average, and temperature.
@@ -45,14 +46,6 @@ QtObject {
      * 500 ms tick). Read directly by the Sparkline component.
      */
     property var cpuHistory: []
-
-    function _pushHistory(arr, value) {
-        const next = arr.slice();
-        next.push(value);
-        if (next.length > root._historyLength)
-            next.shift();
-        return next;
-    }
 
     // Previous /proc/stat snapshot, used to compute deltas.
     property var _prev: ({
@@ -136,7 +129,7 @@ QtObject {
         function onTick() {
             cpuFile.reload();
             loadFile.reload();
-            root.cpuHistory = root._pushHistory(root.cpuHistory, root.cpuPercent);
+            root.cpuHistory = History.push(root.cpuHistory, root.cpuPercent, root._historyLength);
         }
     }
 }

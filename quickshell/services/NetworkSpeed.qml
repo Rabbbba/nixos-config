@@ -1,6 +1,7 @@
 pragma Singleton
 import QtQuick
 import NativeSensors
+import "History.js" as History
 
 /**
  * @brief Singleton exposing active-interface network throughput.
@@ -31,19 +32,6 @@ QtObject {
     /** @brief Maximum number of samples kept in the rolling sparkline history window. */
     readonly property int _historyLength: 60
 
-    /** @brief Append a value to a rolling array, dropping the oldest past the cap.
-     *  @param arr Source array (a var).
-     *  @param value Value to append.
-     */
-    function _pushHistory(arr, value) {
-        const next = arr.slice();
-        next.push(value);
-        if (next.length > _historyLength) {
-            next.shift();
-        }
-        return next;
-    }
-
     /** @brief Format a KiB/s speed as "Mb"/"Gb" (decimal bits, base 1000) — the
      *  convention ISPs and Steam use, so the bar matches what they advertise.
      *  Integer "Mb" below 1000 Mbps, else "Gb" with one decimal. Lowercase `b`
@@ -68,8 +56,8 @@ QtObject {
         interval: root._pollInterval
         repeat: true
         onTriggered: {
-            root.downloadHistory = root._pushHistory(root.downloadHistory, root._net.downloadKbps);
-            root.uploadHistory = root._pushHistory(root.uploadHistory, root._net.uploadKbps);
+            root.downloadHistory = History.push(root.downloadHistory, root._net.downloadKbps, root._historyLength);
+            root.uploadHistory = History.push(root.uploadHistory, root._net.uploadKbps, root._historyLength);
         }
     }
 }

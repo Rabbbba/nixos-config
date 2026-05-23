@@ -3,6 +3,7 @@ import QtQuick
 import Quickshell.Io
 import NativeSensors
 import "."
+import "History.js" as History
 
 /**
  * @brief Singleton exposing GPU utilization, VRAM state, and temperatures.
@@ -65,14 +66,6 @@ QtObject {
      */
     property var gpuHistory: []
 
-    function _pushHistory(arr, value) {
-        const next = arr.slice();
-        next.push(value);
-        if (next.length > root._historyLength)
-            next.shift();
-        return next;
-    }
-
     property FileView _busyFile: FileView {
         id: busyFile
         path: root.cardPath + "/gpu_busy_percent"
@@ -105,7 +98,7 @@ QtObject {
             busyFile.reload();
             vramUsedFile.reload();
             vramTotalFile.reload();
-            root.gpuHistory = root._pushHistory(root.gpuHistory, root.gpuPercent);
+            root.gpuHistory = History.push(root.gpuHistory, root.gpuPercent, root._historyLength);
         }
     }
 }
