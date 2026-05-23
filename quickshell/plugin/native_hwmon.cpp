@@ -69,10 +69,7 @@ void NativeHwmon::poll() {
 }
 
 std::string NativeHwmon::discoverSensor() const {
-  // Non-throwing iterator construction: directory_iterator{path} throws
-  // filesystem_error if the path is missing or unreadable (cold-boot before
-  // udev, container without /sys/class/hwmon). The error_code overload sets
-  // ec instead, so the constructor never escapes the function.
+  // error_code overload: avoids throw if hwmon root is missing/unreadable.
   std::error_code ec;
   std::filesystem::directory_iterator it{mHwmonRoot.toStdString(), ec};
   if (ec) {
