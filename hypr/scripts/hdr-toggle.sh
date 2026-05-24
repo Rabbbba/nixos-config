@@ -20,12 +20,16 @@ refresh() {
 
 preset=$(hyprctl monitors -j | jq -r '.[] | select(.model=="AW3423DWF") | .colorManagementPreset')
 
+# Send the notification *before* refresh(): dpms off/on cycles the primary
+# monitor for ~1s, and a notify-send fired right after often lands while the
+# compositor is mid-reset and gets dropped. Pre-firing + a longer timeout lets
+# the toast survive the cycle and be visible once the OLED comes back.
 if [ "$preset" = "hdredid" ]; then
+  notify-send -t 5000 -a Display -i display-brightness-symbolic "HDR off" "Desktop back to SDR"
   hyprctl keyword monitor "$MON, $BASE"
   refresh
-  notify-send -t 2000 -a Display "HDR off" "Desktop back to SDR"
 else
+  notify-send -t 5000 -a Display -i display-brightness-symbolic "HDR on" "OLED in HDR mode"
   hyprctl keyword monitor "$MON, $HDR"
   refresh
-  notify-send -t 2000 -a Display "HDR on" "OLED in HDR mode"
 fi
