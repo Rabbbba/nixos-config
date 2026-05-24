@@ -301,6 +301,15 @@ in
     };
     Service = {
       Environment = "QML_IMPORT_PATH=${qmlImportPath}";
+      # Wait for NetworkManager on the system bus — Quickshell's network
+      # backend only probes once at startup and silently disables itself
+      # if the D-Bus name isn't owned yet, leaving the Wi-Fi popup empty.
+      ExecStartPre = "${pkgs.writeShellScript "wait-nm" ''
+        for i in $(seq 1 50); do
+          ${pkgs.systemd}/bin/busctl --system status org.freedesktop.NetworkManager >/dev/null 2>&1 && exit 0
+          sleep 0.2
+        done
+      ''}";
       ExecStart = "${
         inputs.quickshell.packages.${pkgs.stdenv.hostPlatform.system}.default
       }/bin/quickshell -p /etc/nixos/quickshell/shell.qml";
