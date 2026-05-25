@@ -342,13 +342,15 @@ in
   };
 
   # Sets the initial wallpaper once awww-daemon is up. wallpaper.sh also
-  # regenerates the Quickshell matugen theme from the OLED image.
+  # regenerates the Quickshell matugen theme from the OLED image. Tied to
+  # awww-daemon (not graphical-session.target) to avoid an ordering cycle:
+  # awww-daemon already runs after graphical-session, so re-linking
+  # wallpaper to that target would close the loop.
   systemd.user.services.wallpaper = {
     Unit = {
       Description = "Apply per-output wallpapers and regenerate theme";
       Requires = [ "awww-daemon.service" ];
       After = [ "awww-daemon.service" ];
-      PartOf = [ "graphical-session.target" ];
     };
     Service = {
       Type = "oneshot";
@@ -362,7 +364,7 @@ in
       ExecStart = "/etc/nixos/hypr/scripts/wallpaper.sh";
       RemainAfterExit = true;
     };
-    Install.WantedBy = [ "graphical-session.target" ];
+    Install.WantedBy = [ "awww-daemon.service" ];
   };
 
   systemd.user.services.hypridle = {
@@ -454,7 +456,17 @@ in
     Unit = {
       Description = "easyeffects — PipeWire audio effects (background service)";
       PartOf = [ "graphical-session.target" ];
-      After = [ "graphical-session.target" ];
+      # Needs PipeWire and WirePlumber up — the gapplication-service exits
+      # immediately ("QLocalSocket: device not open") if they aren't ready.
+      Requires = [
+        "pipewire.service"
+        "wireplumber.service"
+      ];
+      After = [
+        "graphical-session.target"
+        "pipewire.service"
+        "wireplumber.service"
+      ];
     };
     Service = {
       ExecStart = "${pkgs.easyeffects}/bin/easyeffects --gapplication-service";
@@ -464,7 +476,23 @@ in
     Install.WantedBy = [ "graphical-session.target" ];
   };
 
-  # hyprpolkitagent ships its own user service; only need to autostart it.
-  systemd.user.services.hyprpolkitagent.Install.WantedBy = [ "graphical-session.target" ];
+  # Redefines the unit shipped by pkgs.hyprpolkitagent — home-manager builds
+  # a fresh .service per entry, so an Install-only override would produce an
+  # incomplete file. Kept in sync with share/systemd/user/hyprpolkitagent.service.
+  systemd.user.services.hyprpolkitagent = {
+    Unit = {
+      Description = "Hyprland Polkit Authentication Agent";
+      PartOf = [ "graphical-session.target" ];
+      After = [ "graphical-session.target" ];
+      ConditionEnvironment = "WAYLAND_DISPLAY";
+    };
+    Service = {
+      ExecStart = "${pkgs.hyprpolkitagent}/libexec/hyprpolkitagent";
+      Slice = "session.slice";
+      TimeoutStopSec = "5sec";
+      Restart = "on-failure";
+    };
+    Install.WantedBy = [ "graphical-session.target" ];
+  };
 
 }
