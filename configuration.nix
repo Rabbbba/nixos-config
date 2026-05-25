@@ -14,7 +14,9 @@
   programs.hyprland = {
     enable = true;
     xwayland.enable = true;
+    withUWSM = true;
   };
+  programs.uwsm.enable = true;
   programs.steam = {
     enable = true;
     gamescopeSession.enable = true;
@@ -93,7 +95,15 @@
 
   # ── Display & keyboard ─────────────────────────────────────────────────────
   services.xserver.enable = true;
-  services.displayManager.gdm.enable = true;
+  services.greetd = {
+    enable = true;
+    settings = {
+      default_session = {
+        command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --remember --remember-user-session --asterisks --cmd 'uwsm start hyprland.desktop'";
+        user = "greeter";
+      };
+    };
+  };
   services.xserver.xkb = {
     layout = "fr";
     variant = "";
