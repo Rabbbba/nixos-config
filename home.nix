@@ -309,4 +309,162 @@ in
     Install.WantedBy = [ "graphical-session.target" ];
   };
 
+  # ── Daemons migrated from Hyprland exec-once ───────────────────────────────
+  # All bound to graphical-session.target so UWSM starts/stops them with the
+  # session and systemd restarts them on failure.
+
+  systemd.user.services.foot-server = {
+    Unit = {
+      Description = "foot — shared terminal server (one process for all clients)";
+      PartOf = [ "graphical-session.target" ];
+      After = [ "graphical-session.target" ];
+    };
+    Service = {
+      ExecStart = "${pkgs.foot}/bin/foot --server";
+      Restart = "on-failure";
+      RestartSec = 2;
+    };
+    Install.WantedBy = [ "graphical-session.target" ];
+  };
+
+  systemd.user.services.awww-daemon = {
+    Unit = {
+      Description = "awww — Wayland wallpaper daemon";
+      PartOf = [ "graphical-session.target" ];
+      After = [ "graphical-session.target" ];
+    };
+    Service = {
+      ExecStart = "${pkgs.awww}/bin/awww-daemon";
+      Restart = "on-failure";
+      RestartSec = 2;
+    };
+    Install.WantedBy = [ "graphical-session.target" ];
+  };
+
+  # Sets the initial wallpaper once awww-daemon is up. wallpaper.sh also
+  # regenerates the Quickshell matugen theme from the OLED image.
+  systemd.user.services.wallpaper = {
+    Unit = {
+      Description = "Apply per-output wallpapers and regenerate theme";
+      Requires = [ "awww-daemon.service" ];
+      After = [ "awww-daemon.service" ];
+      PartOf = [ "graphical-session.target" ];
+    };
+    Service = {
+      Type = "oneshot";
+      # awww-daemon doesn't expose a readiness signal, so poll the socket.
+      ExecStartPre = "${pkgs.writeShellScript "wait-awww" ''
+        for i in $(seq 1 50); do
+          ${pkgs.awww}/bin/awww query >/dev/null 2>&1 && exit 0
+          sleep 0.1
+        done
+      ''}";
+      ExecStart = "/etc/nixos/hypr/scripts/wallpaper.sh";
+      RemainAfterExit = true;
+    };
+    Install.WantedBy = [ "graphical-session.target" ];
+  };
+
+  systemd.user.services.hypridle = {
+    Unit = {
+      Description = "hypridle — idle management daemon";
+      PartOf = [ "graphical-session.target" ];
+      After = [ "graphical-session.target" ];
+    };
+    Service = {
+      ExecStart = "${pkgs.hypridle}/bin/hypridle";
+      Restart = "on-failure";
+      RestartSec = 2;
+    };
+    Install.WantedBy = [ "graphical-session.target" ];
+  };
+
+  systemd.user.services.dunst = {
+    Unit = {
+      Description = "dunst — notification daemon";
+      PartOf = [ "graphical-session.target" ];
+      After = [ "graphical-session.target" ];
+    };
+    Service = {
+      ExecStart = "${pkgs.dunst}/bin/dunst";
+      Restart = "on-failure";
+      RestartSec = 2;
+    };
+    Install.WantedBy = [ "graphical-session.target" ];
+  };
+
+  systemd.user.services.swayosd-server = {
+    Unit = {
+      Description = "swayosd — on-screen volume/brightness display server";
+      PartOf = [ "graphical-session.target" ];
+      After = [ "graphical-session.target" ];
+    };
+    Service = {
+      ExecStart = "${pkgs.swayosd}/bin/swayosd-server";
+      Restart = "on-failure";
+      RestartSec = 2;
+    };
+    Install.WantedBy = [ "graphical-session.target" ];
+  };
+
+  systemd.user.services.nm-applet = {
+    Unit = {
+      Description = "NetworkManager applet (tray)";
+      PartOf = [ "graphical-session.target" ];
+      After = [ "graphical-session.target" ];
+    };
+    Service = {
+      ExecStart = "${pkgs.networkmanagerapplet}/bin/nm-applet --indicator";
+      Restart = "on-failure";
+      RestartSec = 2;
+    };
+    Install.WantedBy = [ "graphical-session.target" ];
+  };
+
+  systemd.user.services.wl-clip-persist = {
+    Unit = {
+      Description = "wl-clip-persist — keep clipboard contents after source app closes";
+      PartOf = [ "graphical-session.target" ];
+      After = [ "graphical-session.target" ];
+    };
+    Service = {
+      ExecStart = "${pkgs.wl-clip-persist}/bin/wl-clip-persist --clipboard regular --reconnect-tries 0";
+      Restart = "on-failure";
+      RestartSec = 2;
+    };
+    Install.WantedBy = [ "graphical-session.target" ];
+  };
+
+  # wl-paste --watch invokes cliphist on every clipboard change — no shell pipe.
+  systemd.user.services.cliphist-store = {
+    Unit = {
+      Description = "cliphist — record clipboard text history via wl-paste --watch";
+      PartOf = [ "graphical-session.target" ];
+      After = [ "graphical-session.target" ];
+    };
+    Service = {
+      ExecStart = "${pkgs.wl-clipboard}/bin/wl-paste --type text --watch ${pkgs.cliphist}/bin/cliphist store";
+      Restart = "on-failure";
+      RestartSec = 2;
+    };
+    Install.WantedBy = [ "graphical-session.target" ];
+  };
+
+  systemd.user.services.easyeffects = {
+    Unit = {
+      Description = "easyeffects — PipeWire audio effects (background service)";
+      PartOf = [ "graphical-session.target" ];
+      After = [ "graphical-session.target" ];
+    };
+    Service = {
+      ExecStart = "${pkgs.easyeffects}/bin/easyeffects --gapplication-service";
+      Restart = "on-failure";
+      RestartSec = 2;
+    };
+    Install.WantedBy = [ "graphical-session.target" ];
+  };
+
+  # hyprpolkitagent ships its own user service; only need to autostart it.
+  systemd.user.services.hyprpolkitagent.Install.WantedBy = [ "graphical-session.target" ];
+
 }
