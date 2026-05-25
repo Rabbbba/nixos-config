@@ -246,18 +246,8 @@ in
   };
 
   # ── Systemd user services ──────────────────────────────────────────────────
-  # walker + elephant under systemd for restart-on-failure. hyprland-session
-  # is started from autostart.conf and binds to graphical-session.target.
-  systemd.user.targets.hyprland-session = {
-    Unit = {
-      Description = "Hyprland compositor session";
-      Documentation = [ "man:systemd.special(7)" ];
-      BindsTo = [ "graphical-session.target" ];
-      Wants = [ "graphical-session-pre.target" ];
-      After = [ "graphical-session-pre.target" ];
-    };
-  };
-
+  # walker + elephant + quickshell bound to graphical-session.target, which
+  # UWSM starts automatically when Hyprland enters its systemd scope.
   systemd.user.services.elephant = {
     Unit = {
       Description = "Elephant — data provider for walker";
