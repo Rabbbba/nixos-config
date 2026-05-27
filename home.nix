@@ -118,6 +118,7 @@ in
     bitwarden-desktop
     mangohud
     obsidian
+    superfile
 
     # Gaming
     protonup-qt
