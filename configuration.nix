@@ -25,6 +25,16 @@
   };
   programs.zsh.enable = true;
 
+  programs.thunar = {
+    enable = true;
+    plugins = with pkgs.xfce; [
+      thunar-archive-plugin
+      thunar-volman
+    ];
+  };
+  services.gvfs.enable = true; # trash, MTP, network mounts
+  services.tumbler.enable = true; # thumbnail daemon
+
   programs.gamemode = {
     enable = true;
     enableRenice = true;

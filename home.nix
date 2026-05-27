@@ -136,6 +136,8 @@ in
     btop
     bc
     unzip
+    unrar # rar backend used by file-roller via PATH
+    file-roller # GUI archive frontend, integrates with thunar-archive-plugin
     jq # used by hypr scripts
     socat # listens to hyprland events
     hyprpolkitagent # privilege prompts for LACT, gparted...
