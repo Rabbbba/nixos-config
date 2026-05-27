@@ -145,6 +145,7 @@ in
 
     # `, <bin>` runs any nixpkgs binary ephemerally (needs nix-index, below)
     comma
+    hydralauncher
 
     # Fonts
     nerd-fonts.iosevka
