@@ -72,7 +72,6 @@ in
     # ─── C/C++ learning ──────────────────────────────────────────────
     zeal # offline cppreference/Qt/STL, sqlite-indexed
     cling # C++ REPL
-    exercism
     cppman # cppreference as man pages
     bash-language-server
     vscode-langservers-extracted
