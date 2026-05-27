@@ -59,8 +59,13 @@
   # port range — outbound sockets occasionally steal it, breaking bind().
   boot.kernel.sysctl."net.ipv4.ip_local_reserved_ports" = "47836";
 
-  # swayosd backlight/input udev rules
-  services.udev.packages = [ pkgs.swayosd ];
+  # udev rules: swayosd (backlight/input), rivalcfg (SteelSeries mice HID),
+  # headsetcontrol (SteelSeries headsets HID)
+  services.udev.packages = [
+    pkgs.swayosd
+    pkgs.rivalcfg
+    pkgs.headsetcontrol
+  ];
 
   # ── User ───────────────────────────────────────────────────────────────────
   users.users.rayane = {
@@ -70,6 +75,7 @@
     extraGroups = [
       "networkmanager"
       "wheel"
+      "input" # rivalcfg HID access (SteelSeries mice udev rule uses GROUP="input")
     ];
   };
 
@@ -197,6 +203,8 @@
     wl-clipboard
     bat
     nix-output-monitor # nom — used by nh
+    rivalcfg # SteelSeries mice (Aerox 5 Wireless): sleep timer, DPI, RGB
+    headsetcontrol # SteelSeries headsets (Arctis Nova Pro Wireless): battery, sidetone, inactive-time
   ];
 
   # CachyOS BORE — latency-tuned scheduler (xddxdd/nix-cachyos-kernel)
