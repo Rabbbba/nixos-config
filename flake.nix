@@ -17,11 +17,6 @@
     # do NOT override nixpkgs here — patch/version mismatch
     nix-cachyos-kernel.url = "github:xddxdd/nix-cachyos-kernel/release";
 
-    zen-browser = {
-      url = "github:0xc000022070/zen-browser-flake";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     qml-language-server = {
       url = "github:cushycush/qml-language-server";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -34,7 +29,6 @@
       home-manager,
       quickshell,
       nix-cachyos-kernel,
-      zen-browser,
       qml-language-server,
       ...
     }:
@@ -91,7 +85,6 @@
             inherit
               home-manager
               quickshell
-              zen-browser
               qml-language-server
               ;
           };
@@ -110,7 +103,6 @@
                 inherit
                   home-manager
                   quickshell
-                  zen-browser
                   qml-language-server
                   ;
               };

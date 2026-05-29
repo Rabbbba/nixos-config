@@ -113,7 +113,8 @@ in
     # breaks Chromium's video_capture (portal picker never opens, black frame).
     # Use Super+D (direct exec, clean systemd scope).
     pkgs.vesktop
-    inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
+    librewolf
+    mullvad-browser # anti-fingerprint, keep vanilla
     bitwarden-desktop
     mangohud
     obsidian
