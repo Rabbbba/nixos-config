@@ -93,6 +93,29 @@
   networking.hostName = "Rayane";
   networking.networkmanager.enable = true;
 
+  # Encrypted DNS via a local dnscrypt-proxy speaking DoH to Mullvad (adblock
+  # variant: blocks ads + trackers). resolv.conf is pinned to 127.0.0.1 and
+  # NetworkManager is kept out of DNS (dns=none). systemd-resolved is left off on
+  # purpose: NM pushes the ISP's DHCP DNS to resolved over D-Bus regardless of
+  # dns=none, leaking plaintext queries per-link — a local forwarder sidesteps it.
+  services.dnscrypt-proxy = {
+    enable = true;
+    settings = {
+      listen_addresses = [
+        "127.0.0.1:53"
+        "[::1]:53"
+      ];
+      server_names = [ "mullvad-adblock" ];
+      # Stamp embeds the resolver IP, so no bootstrap DNS is needed to reach it.
+      static.mullvad-adblock.stamp = "sdns://AgMAAAAAAAAACzE5NC4yNDIuMi4zABdhZGJsb2NrLmRucy5tdWxsdmFkLm5ldAovZG5zLXF1ZXJ5";
+    };
+  };
+  networking.networkmanager.dns = "none";
+  networking.nameservers = [
+    "127.0.0.1"
+    "::1"
+  ];
+
   # ── Locale ─────────────────────────────────────────────────────────────────
   time.timeZone = "Europe/Paris";
 
