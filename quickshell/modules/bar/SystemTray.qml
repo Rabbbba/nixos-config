@@ -22,6 +22,30 @@ Item {
     /** Horizontal spacing between tray icons in pixels. */
     readonly property int itemSpacing: 8
 
+    /** Items whose id or title matches any pattern here are hidden from the tray.
+     *  Use this to suppress items already shown by dedicated bar modules (e.g. Network, Bluetooth).
+     */
+    property list<string> excludedPatterns: ["blueman"       // Blueman Bluetooth manager
+        , "bluetooth"     // Any other Bluetooth tray item
+        , "network"       // NetworkManager applet
+        , "nm-"           // nm-applet variants
+        , "wired"          // Wired connection indicator
+    ]
+
+    /**
+    * Checks whether a tray item should be hidden based on @p excludedPatterns.
+    * @param item The SystemTrayItem to check.
+    */
+    function isExcluded(item: SystemTrayItem) {
+        const id = (item.id || "").toLowerCase();
+        const title = (item.title || "").toLowerCase();
+        for (const pattern of root.excludedPatterns) {
+            if (id.includes(pattern.toLowerCase()) || title.includes(pattern.toLowerCase()))
+                return true;
+        }
+        return false;
+    }
+
     visible: SystemTray.items.values.length > 0
     implicitHeight: 30
     implicitWidth: row.implicitWidth
@@ -38,6 +62,7 @@ Item {
 
                 required property SystemTrayItem modelData
 
+                visible: !root.isExcluded(modelData)
                 width: root.iconSize
                 height: root.iconSize
 
