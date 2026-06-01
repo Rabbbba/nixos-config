@@ -21,6 +21,8 @@
       url = "github:cushycush/qml-language-server";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
   };
 
   outputs =
@@ -30,6 +32,7 @@
       quickshell,
       nix-cachyos-kernel,
       qml-language-server,
+      pre-commit-hooks,
       ...
     }:
     let
@@ -38,6 +41,39 @@
 
       # Native C++ QML plugin (NativeSensors) built from quickshell/plugin/.
       # Installs to $out/lib/qt-6/qml/NativeSensors, fed to QML_IMPORT_PATH in home.nix.
+      # Pre-commit hooks — auto-installed by devShell shellHook.
+      # Also runnable standalone: nix flake check
+      pre-commit-check = pre-commit-hooks.lib.${system}.run {
+        src = ./.;
+        hooks = {
+          statix.enable = true;
+          deadnix = {
+            enable = true;
+            excludes = [ "hardware-configuration\.nix" ];
+          };
+          nixfmt.enable = true;
+          shellcheck.enable = true;
+          stylua.enable = true;
+
+          # Custom: Doxygen on staged QML (mirrors CI docs.yml)
+          doxygen-qml = {
+            enable = true;
+            name = "doxygen-qml";
+            description = "Run Doxygen when QML files are staged";
+            entry = "${pkgs.writeShellScript "doxygen-qml-hook" ''
+              set -e
+              cd quickshell && doxygen Doxyfile
+            ''}";
+            files = "quickshell/.*\\.qml$";
+            pass_filenames = false;
+            language = "system";
+          };
+        };
+        tools = {
+          inherit (pkgs) doxygen graphviz;
+        };
+      };
+
       nativeSensors = pkgs.stdenv.mkDerivation {
         pname = "quickshell-native-sensors";
         version = "1.0";
@@ -78,6 +114,10 @@
     in
     {
       packages.${system}.native-sensors = nativeSensors;
+
+      checks.${system} = {
+        inherit pre-commit-check;
+      };
 
       nixosConfigurations.Rayane = nixpkgs.lib.nixosSystem {
         specialArgs = {
@@ -121,7 +161,7 @@
 
           statix
           deadnix
-          nixfmt-rfc-style
+          nixfmt
 
           qt6.qtdeclarative # qmllint, qmlformat
           shellcheck
@@ -135,7 +175,7 @@
           libGL
         ];
 
-        shellHook = ''
+        shellHook = pre-commit-check.shellHook + ''
           # Qt6 is split across packages on NixOS; CMake's find_package doesn't
           # aggregate them, so feed it each component root via CMAKE_PREFIX_PATH.
           export CMAKE_PREFIX_PATH="${pkgs.qt6.qtbase}:${pkgs.qt6.qtdeclarative}:${pkgs.qt6.qtshadertools}''${CMAKE_PREFIX_PATH:+:$CMAKE_PREFIX_PATH}"
@@ -143,14 +183,9 @@
           echo ""
           echo "  nixos-config devshell ready."
           echo ""
-          echo "  Common commands:"
-          echo "    cd quickshell && doxygen Doxyfile     build docs locally"
-          echo "    statix check .                        nix anti-pattern lint"
-          echo "    deadnix .                             find unused nix code"
-          echo "    nixfmt --check **/*.nix               check nix formatting"
-          echo "    qmllint quickshell/**/*.qml           qml lint"
-          echo "    shellcheck hypr/scripts/*.sh          shell lint"
-          echo "    stylua --check nvim/                  lua format check"
+          echo "  Pre-commit hooks: auto-installed (statix, deadnix, nixfmt, shellcheck, stylua, doxygen-qml)"
+          echo "    pre-commit run --all-files            run all hooks on the whole repo"
+          echo "    pre-commit run <hook-id>              run a single hook"
           echo ""
           echo "  C++ / Qt6 plugin :"
           echo "    cmake -B build -S .                   configure"
