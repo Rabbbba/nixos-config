@@ -32,6 +32,8 @@ jobs:
     timeout-minutes: 300
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       # GitHub's ubuntu-latest ships ~14 GB free; Nix builds can consume all of
       # it. Strip large unused toolchains/package managers to avoid "No space
@@ -70,4 +72,5 @@ jobs:
           nix build \
             --no-link \
             --print-build-logs \
+            --accept-flake-config \
             .#nixosConfigurations.Rayane.config.system.build.toplevel
