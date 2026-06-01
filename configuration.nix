@@ -86,8 +86,13 @@
       "networkmanager"
       "wheel"
       "input" # rivalcfg HID access (SteelSeries mice udev rule uses GROUP="input")
+      "docker"
     ];
   };
+
+
+  # Docker
+  virtualisation.docker.enable = true;
 
   # ── Network ────────────────────────────────────────────────────────────────
   networking.hostName = "Rayane";
