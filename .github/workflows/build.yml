@@ -3,9 +3,6 @@ name: Build
 on:
   push:
     branches: [master]
-    # Only trigger when a file that affects Nix evaluation changes.
-    # xdg.configFile symlinks (nvim/, quickshell/, hypr/...) are out of scope —
-    # lint workflow covers them.
     paths:
       - "flake.nix"
       - "flake.lock"
@@ -24,7 +21,6 @@ on:
       - ".github/workflows/build.yml"
   workflow_dispatch:
 
-# One build at a time
 concurrency:
   group: build
   cancel-in-progress: false
@@ -33,36 +29,43 @@ jobs:
   nixos:
     name: NixOS toplevel build
     runs-on: ubuntu-latest
-    # First build: ~2h cachyos kernel + ~40min zen-browser on a 4 vCPU runner.
-    # After Cachix is populated, later runs are 2-5 min.
     timeout-minutes: 300
     steps:
       - uses: actions/checkout@v4
 
+      # GitHub's ubuntu-latest ships ~14 GB free; Nix builds can consume all of
+      # it. Strip large unused toolchains/package managers to avoid "No space
+      # left on device" during heavy builds.
+      - name: Free disk space
+        run: |
+          sudo rm -rf \
+            /usr/share/dotnet \
+            /usr/local/lib/android \
+            /opt/ghc \
+            /opt/hostedtoolcache \
+            /usr/local/.ghcup \
+            /usr/local/share/powershell \
+            /usr/local/share/chromium \
+            /usr/local/lib/node_modules \
+            || true
+          df -h /
+
       - uses: cachix/install-nix-action@v30
         with:
-          # hyprland.cachix.org skips rebuilding hyprland from source.
-          # rabbbba-nixos is added by cachix-action below.
           extra_nix_config: |
             experimental-features = nix-command flakes
             substituters = https://cache.nixos.org https://hyprland.cachix.org
             trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc=
 
-      # cachix-action's post-step pushes at the end; the `watch-store` below
-      # streams paths continuously so a timeout doesn't lose progress.
       - uses: cachix/cachix-action@v15
         with:
           name: rabbbba-nixos
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
 
-      # Toplevel build = `nh os switch` without installing. Catches regressions
-      # (removed upstream pkg, deprecated option). watch-store streams every
-      # new store path so long first builds survive a timeout.
       - name: nix build .#nixosConfigurations.Rayane.config.system.build.toplevel
         run: |
           cachix watch-store rabbbba-nixos &
           WATCH_PID=$!
-          # job hangs otherwise
           trap "kill $WATCH_PID 2>/dev/null || true; wait $WATCH_PID 2>/dev/null || true" EXIT
           nix build \
             --no-link \
