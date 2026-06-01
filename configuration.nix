@@ -242,6 +242,7 @@
     nix-output-monitor # nom — used by nh
     rivalcfg # SteelSeries mice (Aerox 5 Wireless): sleep timer, DPI, RGB
     headsetcontrol # SteelSeries headsets (Arctis Nova Pro Wireless): battery, sidetone, inactive-time
+    tmux
   ];
 
   # CachyOS BORE — latency-tuned scheduler (xddxdd/nix-cachyos-kernel)
