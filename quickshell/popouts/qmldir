@@ -9,3 +9,4 @@ AudioPopup 1.0 AudioPopup.qml
 GpuPopup 1.0 GpuPopup.qml
 BluetoothPopup 1.0 BluetoothPopup.qml
 WifiPopup 1.0 WifiPopup.qml
+SystemTrayPopup 1.0 SystemTrayPopup.qml

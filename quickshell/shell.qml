@@ -113,6 +113,7 @@ ShellRoot {
                         }
                         spacing: 12
                         SystemTray {
+                            id: systemTray
                             panelWindow: panelBar
                         }
                         Tidal {
@@ -281,10 +282,26 @@ ShellRoot {
                         height: networkPopout.visible ? networkPopout.implicitHeight : 0
                     }
                     Region {
+                        x: systemTrayPopout.x
+                        y: systemTrayPopout.y
+                        width: systemTrayPopout.visible ? systemTrayPopout.implicitWidth : 0
+                        height: systemTrayPopout.visible ? systemTrayPopout.implicitHeight : 0
+                    }
+                    Region {
                         x: powerPopout.x
                         y: powerPopout.y
                         width: powerPopout.visible ? powerPopout.implicitWidth : 0
                         height: powerPopout.visible ? powerPopout.implicitHeight : 0
+                    }
+                    // Catch clicks below the bar when any popup is visible.
+                    // Sits under PopoutItems in z-order so they still get
+                    // events first. Bar strip (0–40) excluded → clicks
+                    // there reach panelBar's catch-all MouseArea.
+                    Region {
+                        x: 0
+                        y: 40
+                        width: Visibilities.current !== "" ? panelPopout.width : 0
+                        height: Visibilities.current !== "" ? panelPopout.height - 40 : 0
                     }
                 }
 
@@ -296,6 +313,19 @@ ShellRoot {
                     windows: [panelPopout.QsWindow.window]
                     active: Visibilities.current !== ""
                     onCleared: Visibilities.close()
+                }
+
+
+                // Fallback overlay: catches clicks anywhere below the bar
+                // that don't land on a popout. Sits under all PopoutItems
+                // so they still receive events first. The mask Region below
+                // (y: 40 → bottom, active when a popup is visible) makes
+                // this MouseArea clickable while keeping the bar strip
+                // (0–40) click-through to panelBar.
+                MouseArea {
+                    anchors.fill: parent
+                    enabled: Visibilities.current !== ""
+                    onClicked: Visibilities.close()
                 }
 
                 // ───────────────────── Calendar popout instance ──────
@@ -421,6 +451,22 @@ ShellRoot {
                     WifiPopup {
                         id: wifiContent
                         anchors.fill: parent
+                    }
+                }
+
+                PopoutItem {
+                    id: systemTrayPopout
+                    panelWindow: panelPopout
+                    wrapper: systemTray
+                    name: "systemtray"
+                    alignment: "center"
+                    implicitWidth: 220
+                    implicitHeight: trayContent.preferredHeight + 2 * systemTrayPopout.padding
+
+                    SystemTrayPopup {
+                        id: trayContent
+                        anchors.fill: parent
+                        currentMenu: systemTray.activeMenu
                     }
                 }
 

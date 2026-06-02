@@ -1,20 +1,24 @@
 pragma ComponentBehavior: Bound
 import QtQuick
+import QtQuick.Layouts
+import Quickshell
 import Quickshell.Services.SystemTray
 import Quickshell.Widgets
 import "../../components"
+import "../../services"
 
 /**
  * @brief StatusNotifier system tray — renders one icon per registered tray item.
  *
- * Left-click activates the item, right-click triggers the secondary action.
+ * Left-click activates the item, right-click opens a custom styled popup menu
+ * built via QsMenuOpener instead of the native platform menu.
  * Hovering an icon for 300 ms shows a tooltip combining the item's title and
  * description. The whole row is hidden when no tray items are registered.
  */
 Item {
     id: root
 
-    /** Reference to the @c PanelWindow hosting this tray (needed for tooltips). */
+    /** Reference to the @c PanelWindow hosting this tray (needed for tooltips & popup). */
     property var panelWindow: null
 
     /** Side length of each tray icon in pixels. */
@@ -89,11 +93,12 @@ Item {
                             break;
                         case Qt.RightButton:
                             {
-                                const p = cell.mapToItem(root.panelWindow.contentItem, e.x, e.y);
-                                if (cell.modelData.hasMenu)
-                                    cell.modelData.display(root.panelWindow, p.x, p.y);
-                                else
+                                if (!cell.modelData.hasMenu) {
                                     cell.modelData.secondaryActivate();
+                                    break;
+                                }
+                                root.activeMenu = cell.modelData.menu;
+                                Visibilities.toggle("systemtray");
                                 break;
                             }
                         }
@@ -121,4 +126,7 @@ Item {
             }
         }
     }
+
+    /** @brief Handle to the menu we want to show (set when right-clicking an icon) */
+    property var activeMenu: null
 }
