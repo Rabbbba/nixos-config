@@ -115,7 +115,7 @@ in
     pkgs.vesktop
     librewolf
     mullvad-browser # anti-fingerprint, keep vanilla
-    bitwarden-desktop
+    #bitwarden-desktop
     mangohud
     obsidian
     superfile
