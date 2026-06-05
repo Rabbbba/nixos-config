@@ -485,7 +485,11 @@ in
   systemd.user.services.odysseus = {
     Unit = {
       Description = "Odysseus AI (native)";
-      After = [ "network.target" ];
+      After = [
+        "network.target"
+        "chromadb.service"
+      ];
+      Requires = [ "chromadb.service" ];
     };
     Service = {
       ExecStart = "/home/rayane/odysseus-dev/start.sh";
