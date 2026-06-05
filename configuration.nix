@@ -87,7 +87,6 @@
       "wheel"
       "input" # rivalcfg HID access (SteelSeries mice udev rule uses GROUP="input")
       "docker"
-      "odysseus"
     ];
   };
 
