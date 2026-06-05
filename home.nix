@@ -482,6 +482,20 @@ in
   # Redefines the unit shipped by pkgs.hyprpolkitagent — home-manager builds
   # a fresh .service per entry, so an Install-only override would produce an
   # incomplete file. Kept in sync with share/systemd/user/hyprpolkitagent.service.
+  systemd.user.services.odysseus = {
+    Unit = {
+      Description = "Odysseus AI (native)";
+      After = [ "network.target" ];
+    };
+    Service = {
+      ExecStart = "/home/rayane/odysseus-dev/start.sh";
+      Restart = "on-failure";
+      RestartSec = "5s";
+      Environment = "PATH=/home/rayane/odysseus-dev/venv/bin:/run/current-system/sw/bin:/usr/bin:/bin";
+    };
+    Install.WantedBy = [ "default.target" ];
+  };
+
   systemd.user.services.hyprpolkitagent = {
     Unit = {
       Description = "Hyprland Polkit Authentication Agent";

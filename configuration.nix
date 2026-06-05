@@ -45,20 +45,6 @@
     flake = "/etc/nixos";
   };
 
-  systemd.services.odysseus.path = with pkgs; [
-    git
-    nix
-    bash
-    coreutils
-    findutils
-    gnugrep
-    gnused
-    gawk
-    acl
-    doxygen
-    pre-commit
-  ];
-
   # runs generic linux binaries (github releases etc.) without a steam-run wrapper
   programs.nix-ld = {
     enable = true;
@@ -290,15 +276,6 @@
 
   # zero-config mesh VPN — `sudo tailscale up` once to register the node
   services.tailscale.enable = true;
-
-  # ── Odysseus (self-hosted AI workspace) ────────────────────────────────────
-  services.odysseus = {
-    enable = true;
-    dataDir = "/var/lib/odysseus";
-    port = 7000;
-    host = "127.0.0.1";
-    environmentFile = "/etc/odysseus/env";
-  };
 
   system.stateVersion = "25.11";
 }
