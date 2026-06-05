@@ -11,10 +11,9 @@ on:
 permissions:
   contents: read
 
-# latest push wins
 concurrency:
   group: pages
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   build:
