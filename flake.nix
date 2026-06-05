@@ -24,10 +24,6 @@
 
     pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
 
-    odysseus = {
-      url = "github:ToyVo/odysseus/feat-add-modules";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs =
@@ -38,7 +34,6 @@
       nix-cachyos-kernel,
       qml-language-server,
       pre-commit-hooks,
-      odysseus,
       ...
     }:
     let
@@ -139,7 +134,6 @@
         modules = [
           ./configuration.nix
           { nixpkgs.overlays = [ nix-cachyos-kernel.overlays.default ]; }
-          odysseus.nixosModules.default
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
