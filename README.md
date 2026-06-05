@@ -30,7 +30,7 @@ What the bar does:
 - Hyprland workspace pills with active / occupied / urgent / hover states (animated width)
 - Center clock with click-to-open calendar popout
 - Tidal MPRIS popup with album art, transport, volume slider, live cava equalizer
-- Wi-Fi / Ethernet auto-detection via `nmcli` polling, signal strength on the Wi-Fi glyph
+- Wi-Fi / Ethernet auto-detection via Quickshell.Networking, signal strength on the Wi-Fi glyph
 - Pipewire volume control with mouse-wheel scroll
 - Hover tooltips with dynamic content (e.g. `Wi-Fi: <SSID> (<signal>%)`)
 - Power menu in a popout opened by the Nix-logo button on the left
