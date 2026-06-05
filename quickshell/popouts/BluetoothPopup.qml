@@ -409,9 +409,13 @@ Item {
                     anchors.fill: parent
                     cursorShape: Qt.PointingHandCursor
                     onClicked: {
-                        // Pair, trust, then connect — chained because each
-                        // step depends on the previous one succeeding.
-                        Quickshell.execDetached(["sh", "-c", "bluetoothctl pair " + availRow.modelData.addr + " && bluetoothctl trust " + availRow.modelData.addr + " && bluetoothctl connect " + availRow.modelData.addr]);
+                        // Pair, trust, connect — three separate argv calls,
+                        // no shell. execDetached returns immediately; the
+                        // operations run sequentially on the bluetoothd side.
+                        const a = availRow.modelData.addr;
+                        Quickshell.execDetached(["bluetoothctl", "pair",    a]);
+                        Quickshell.execDetached(["bluetoothctl", "trust",   a]);
+                        Quickshell.execDetached(["bluetoothctl", "connect", a]);
                         postActionTimer.restart();
                     }
                 }
