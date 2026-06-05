@@ -113,8 +113,7 @@ in
     # breaks Chromium's video_capture (portal picker never opens, black frame).
     # Use Super+D (direct exec, clean systemd scope).
     pkgs.vesktop
-    librewolf
-    mullvad-browser # anti-fingerprint, keep vanilla
+    firefox
     #bitwarden-desktop
     mangohud
     obsidian
