@@ -86,12 +86,23 @@
       "networkmanager"
       "wheel"
       "input" # rivalcfg HID access (SteelSeries mice udev rule uses GROUP="input")
+      "docker" # manage containers without sudo (grants root-equivalent access)
     ];
   };
 
   # ── Network ────────────────────────────────────────────────────────────────
   networking.hostName = "Rayane";
   networking.networkmanager.enable = true;
+
+  # Allow Docker containers (172.16.0.0/12 covers docker0 + compose bridges)
+  # to reach host services — specifically llama-server on 8081.
+  # NixOS firewall blocks inbound by default, including traffic from bridge networks.
+  networking.firewall.extraCommands = ''
+    iptables -I INPUT -s 172.16.0.0/12 -p tcp --dport 8081 -j ACCEPT
+  '';
+  networking.firewall.extraStopCommands = ''
+    iptables -D INPUT -s 172.16.0.0/12 -p tcp --dport 8081 -j ACCEPT || true
+  '';
 
   # Encrypted DNS via a local dnscrypt-proxy speaking DoH to Mullvad (adblock
   # variant: blocks ads + trackers). resolv.conf is pinned to 127.0.0.1 and
@@ -271,6 +282,12 @@
 
   # zero-config mesh VPN — `sudo tailscale up` once to register the node
   services.tailscale.enable = true;
+
+  # ── Containers ─────────────────────────────────────────────────────────────
+  # Docker for self-hosted services (Odysseus) run from upstream compose files.
+  # Inference stays native (llama-server, Vulkan) — the container only talks to
+  # it over HTTP, so no GPU passthrough is needed here.
+  virtualisation.docker.enable = true;
 
   system.stateVersion = "25.11";
 }
