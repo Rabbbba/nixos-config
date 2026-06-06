@@ -164,13 +164,12 @@
           deadnix
           nixfmt
 
-          qt6.qtdeclarative # qmllint, qmlformat
           shellcheck
           stylua
 
           # Quickshell C++ plugin (gcc/cmake/pkg-config live in home.nix)
           qt6.qtbase
-          qt6.qtdeclarative # Qt6::Qml — required for QML_ELEMENT
+          qt6.qtdeclarative # Qt6::Qml — required for QML_ELEMENT + qmllint, qmlformat
           qt6.qtshadertools
           qt6.wrapQtAppsHook
           libGL
