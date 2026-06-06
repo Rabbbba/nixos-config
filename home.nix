@@ -35,6 +35,9 @@ in
   xdg.configFile."matugen".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/matugen";
   xdg.configFile."starship.toml".source = ./starship.toml;
 
+  # Odysseus lives on the persistent games disk — survives reinstalls.
+  home.file."odysseus".source = config.lib.file.mkOutOfStoreSymlink "/mnt/jeux/odysseus/app";
+
   home.sessionVariables.ELECTRON_OZONE_PLATFORM_HINT = "wayland";
 
   home.sessionPath = [ "$HOME/.local/bin" ];
