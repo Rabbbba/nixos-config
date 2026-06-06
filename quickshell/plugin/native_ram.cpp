@@ -8,7 +8,7 @@
 
 NativeRam::NativeRam(QObject *parent) : NativeSensor(parent) {
   mTimer.setInterval(1000);
-  poll();
+  poll(); // NOLINT(clang-analyzer-optin.cplusplus.VirtualCall)
   mTimer.start();
 }
 
@@ -53,25 +53,28 @@ void NativeRam::parseMemInfo() {
   std::ifstream iss("/proc/meminfo");
   std::string line;
   while (std::getline(iss, line)) {
-    std::string key, unit;
-    uint64_t value;
+    std::string key;
+    std::string unit;
+    double value = 0.0;
     std::istringstream issLine(line);
     issLine >> key >> value >> unit;
-    if (key == "MemTotal:")
+    if (key == "MemTotal:") {
       mMemTotal = value;
-    else if (key == "MemAvailable:")
+    } else if (key == "MemAvailable:") {
       mMemAvailable = value;
-    else if (key == "Buffers:")
+    } else if (key == "Buffers:") {
       mBuffersKb = value;
-    else if (key == "Cached:")
+    } else if (key == "Cached:") {
       mCachedKb = value;
-    else if (key == "SwapTotal:")
+    } else if (key == "SwapTotal:") {
       mSwapTotalKb = value;
-    else if (key == "SwapFree:")
+    } else if (key == "SwapFree:") {
       mSwapFreeKb = value;
+    }
   }
   mRamUsedKb = mMemTotal - mMemAvailable;
   mSwapUsedKb = mSwapTotalKb - mSwapFreeKb;
-  if (mMemTotal > 0)
-    mRamPercent = static_cast<double>(mRamUsedKb) / mMemTotal * 100;
+  if (mMemTotal > 0) {
+    mRamPercent = mRamUsedKb / mMemTotal * 100;
+  }
 }

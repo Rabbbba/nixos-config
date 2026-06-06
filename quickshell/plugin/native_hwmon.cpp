@@ -9,7 +9,7 @@
 NativeHwmon::NativeHwmon(QObject *parent) : NativeSensor(parent) {
   mTimer.setInterval(2000);
   mHwmonDir = discoverSensor();
-  poll();
+  poll(); // NOLINT(clang-analyzer-optin.cplusplus.VirtualCall)
   mTimer.start();
 }
 
@@ -26,23 +26,26 @@ QString NativeHwmon::hwmonRoot() const { return mHwmonRoot; }
 // ── Setters ──────────────────────────────────────────────────────────────
 
 void NativeHwmon::setSensorName(const QString &name) {
-  if (name == mSensorName)
+  if (name == mSensorName) {
     return;
+  }
   mSensorName = name;
   mHwmonDir = discoverSensor(); // chip changed → rescan
   poll();
 }
 
 void NativeHwmon::setTempIndex(int index) {
-  if (index == mTempIndex)
+  if (index == mTempIndex) {
     return;
+  }
   mTempIndex = index;
   poll(); // same chip, only the file changes → no rescan
 }
 
 void NativeHwmon::setHwmonRoot(const QString &root) {
-  if (root == mHwmonRoot)
+  if (root == mHwmonRoot) {
     return;
+  }
   mHwmonRoot = root;
   mHwmonDir = discoverSensor(); // search root changed → rescan
   poll();
@@ -51,8 +54,9 @@ void NativeHwmon::setHwmonRoot(const QString &root) {
 // ── Internals ────────────────────────────────────────────────────────────
 
 void NativeHwmon::poll() {
-  if (mHwmonDir.empty())
+  if (mHwmonDir.empty()) {
     return;
+  }
   std::ifstream file{mHwmonDir + "/temp" + std::to_string(mTempIndex) +
                      "_input"};
   double newValue{};
@@ -78,10 +82,12 @@ std::string NativeHwmon::discoverSensor() const {
     std::filesystem::path path = element.path() / "name";
     std::ifstream file{path};
     std::string name;
-    if (!(file >> name))
+    if (!(file >> name)) {
       continue;
-    if (name != mSensorName.toStdString())
+    }
+    if (name != mSensorName.toStdString()) {
       continue;
+    }
     return element.path().string();
   }
   qWarning() << "NativeHwmon: no hwmon matched sensor name" << mSensorName;

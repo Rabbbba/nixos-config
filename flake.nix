@@ -69,6 +69,45 @@
             pass_filenames = false;
             language = "system";
           };
+
+          # clang-tidy on the C++ QML plugin — .cpp only (.h checked via their TU).
+          # compile_commands.json uses -isystem .../QtCore but clang-tidy needs the
+          # parent .../include to resolve cross-dir includes inside Qt headers.
+          clang-tidy-plugin = {
+            enable = true;
+            name = "clang-tidy";
+            description = "Static analysis on the NativeSensors C++ plugin";
+            entry = "${pkgs.writeShellScript "clang-tidy-hook" ''
+              set -e
+              exec ${pkgs.clang-tools}/bin/clang-tidy \
+                -p quickshell/plugin/build \
+                --extra-arg=-isystem${pkgs.qt6.qtbase}/include \
+                --extra-arg=-isystem${pkgs.qt6.qtdeclarative}/include \
+                "$@"
+            ''}";
+            files = "quickshell/plugin/.*\\.cpp$";
+            pass_filenames = true;
+            language = "system";
+          };
+
+          # qmlformat on Quickshell QML sources
+          qmlformat = {
+            enable = true;
+            name = "qmlformat";
+            description = "Check QML formatting";
+            entry = "${pkgs.writeShellScript "qmlformat-hook" ''
+              set -e
+              for f in "$@"; do
+                if ! ${pkgs.qt6.qtdeclarative}/bin/qmlformat --check "$f" 2>/dev/null; then
+                  echo "qmlformat: $f needs formatting — run: qmlformat -i $f"
+                  exit 1
+                fi
+              done
+            ''}";
+            files = "quickshell/.*\\.qml$";
+            pass_filenames = true;
+            language = "system";
+          };
         };
         tools = {
           inherit (pkgs) doxygen graphviz;

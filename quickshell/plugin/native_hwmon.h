@@ -21,10 +21,10 @@ public:
   explicit NativeHwmon(QObject *parent = nullptr);
 
   // Getters
-  double temperature() const;
-  QString sensorName() const;
-  int tempIndex() const;
-  QString hwmonRoot() const;
+  [[nodiscard]] double temperature() const;
+  [[nodiscard]] QString sensorName() const;
+  [[nodiscard]] int tempIndex() const;
+  [[nodiscard]] QString hwmonRoot() const;
 
   // Setters
   void setSensorName(const QString &name);
@@ -37,7 +37,7 @@ signals:
 private:
   // Methods
   void poll() override;
-  std::string discoverSensor() const;
+  [[nodiscard]] std::string discoverSensor() const;
 
   // Configuration (writable via properties)
   QString mSensorName{"k10temp"};
@@ -46,5 +46,5 @@ private:
 
   // Derived state
   double mTemperature{};
-  std::string mHwmonDir{}; // resolved chip dir, from discoverSensor()
+  std::string mHwmonDir; // resolved chip dir, from discoverSensor()
 };

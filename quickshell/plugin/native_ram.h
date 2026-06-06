@@ -23,13 +23,13 @@ public:
   explicit NativeRam(QObject *parent = nullptr);
 
   // Getters
-  double ramPercent() const;
-  double ramUsedKb() const;
-  double ramTotalKb() const;
-  double ramBuffersKb() const;
-  double ramCachedKb() const;
-  double swapUsedKb() const;
-  double swapTotalKb() const;
+  [[nodiscard]] double ramPercent() const;
+  [[nodiscard]] double ramUsedKb() const;
+  [[nodiscard]] double ramTotalKb() const;
+  [[nodiscard]] double ramBuffersKb() const;
+  [[nodiscard]] double ramCachedKb() const;
+  [[nodiscard]] double swapUsedKb() const;
+  [[nodiscard]] double swapTotalKb() const;
 
 signals:
   void ramChanged();

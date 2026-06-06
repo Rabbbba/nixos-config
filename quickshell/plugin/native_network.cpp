@@ -9,7 +9,7 @@
 
 NativeNetwork::NativeNetwork(QObject *parent) : NativeSensor(parent) {
   mTimer.setInterval(2000);
-  poll();
+  poll(); // NOLINT(clang-analyzer-optin.cplusplus.VirtualCall)
   mTimer.start();
 }
 
@@ -23,8 +23,9 @@ double NativeNetwork::uploadKbps() const { return mUploadKbps; }
 
 void NativeNetwork::poll() {
   std::string iface = discoverNetwork();
-  if (iface.empty())
+  if (iface.empty()) {
     return;
+  }
 
   uint64_t rx{};
   std::ifstream rxFile("/sys/class/net/" + iface + "/statistics/rx_bytes");
@@ -69,7 +70,7 @@ void NativeNetwork::poll() {
   mPrevTx = tx;
 }
 
-std::string NativeNetwork::discoverNetwork() const {
+std::string NativeNetwork::discoverNetwork() {
   std::ifstream file("/proc/net/route");
   std::string line;
   std::getline(file, line); // skip the header row
@@ -79,8 +80,9 @@ std::string NativeNetwork::discoverNetwork() const {
     std::istringstream iss(line);
     iss >> iface >> destination;
     // Default route: destination 0.0.0.0 ("00000000") → its iface is routable.
-    if (destination == "00000000")
+    if (destination == "00000000") {
       return iface;
+    }
   }
   return {};
 }

@@ -12,6 +12,6 @@ protected:
   explicit NativeSensor(QObject *parent = nullptr);
 
 public:
-  virtual ~NativeSensor() = default;
+  ~NativeSensor() override = default;
   virtual void poll() = 0;
 };

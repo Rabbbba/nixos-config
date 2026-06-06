@@ -20,8 +20,8 @@ public:
   explicit NativeNetwork(QObject *parent = nullptr);
 
   // Getters
-  double downloadKbps() const;
-  double uploadKbps() const;
+  [[nodiscard]] double downloadKbps() const;
+  [[nodiscard]] double uploadKbps() const;
 
 signals:
   void downloadKbpsChanged();
@@ -29,8 +29,8 @@ signals:
 
 private:
   // Methods
-  void poll() override;                // read counters, compute speed, emit
-  std::string discoverNetwork() const; // active iface from the default route
+  void poll() override;                         // read counters, compute speed, emit
+  [[nodiscard]] static std::string discoverNetwork(); // active iface from the default route
 
   // Cumulative rx/tx byte counters from the previous tick, for delta
   // computation.
