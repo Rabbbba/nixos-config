@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.21)
 
-project( Hwmon
+project( NativeSensors
         VERSION 1.0
         LANGUAGES CXX
 )
