@@ -209,11 +209,13 @@
       "https://nix-community.cachix.org"
       # cachyos kernel binary cache — skips a ~40 min compile
       "https://attic.xuyh0120.win/lantian"
+      "https://rabbbba-nixos.cachix.org"
     ];
     trusted-public-keys = [
       "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
       "nix-community.cachix.org-1:mB9FSh9qf2dde0dGKs7wMzfk5fhMaIoI7P/I4tFMQeA="
       "lantian:EeAUQ+W+6r7EtwnmYjeVwx5kOGEBpjlBfPlzGlTNvHc="
+      "rabbbba-nixos.cachix.org-1:vNaCUQyAOs64wPY9n/U2RF9kipscTBmGphdKA/un5pg="
     ];
   };
 

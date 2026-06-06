@@ -180,6 +180,15 @@
           # aggregate them, so feed it each component root via CMAKE_PREFIX_PATH.
           export CMAKE_PREFIX_PATH="${pkgs.qt6.qtbase}:${pkgs.qt6.qtdeclarative}:${pkgs.qt6.qtshadertools}''${CMAKE_PREFIX_PATH:+:$CMAKE_PREFIX_PATH}"
 
+          # Auto-generate compile_commands.json for clangd (idempotent).
+          if [ ! -f quickshell/plugin/build/compile_commands.json ]; then
+            echo "  Generating compile_commands.json for clangd..."
+            cmake -B quickshell/plugin/build -S quickshell/plugin \
+              --log-level=WARNING > /dev/null 2>&1 \
+              && ln -sf build/compile_commands.json quickshell/plugin/compile_commands.json \
+              && echo "  Done."
+          fi
+
           echo ""
           echo "  nixos-config devshell ready."
           echo ""
