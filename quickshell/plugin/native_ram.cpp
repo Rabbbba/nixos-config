@@ -31,8 +31,22 @@ double NativeRam::swapTotalKb() const { return mSwapTotalKb; }
 // ── Internals ──────────────────────────────────────────────────────────────
 
 void NativeRam::poll() {
+  const auto oldPercent = mRamPercent;
+  const auto oldUsedKb = mRamUsedKb;
+  const auto oldMemTotal = mMemTotal;
+  const auto oldAvailable = mMemAvailable;
+  const auto oldBuffersKb = mBuffersKb;
+  const auto oldCachedKb = mCachedKb;
+  const auto oldSwapUsedKb = mSwapUsedKb;
+
   parseMemInfo();
-  emit ramChanged();
+
+  if (oldPercent != mRamPercent || oldUsedKb != mRamUsedKb ||
+      oldMemTotal != mMemTotal || oldAvailable != mMemAvailable ||
+      oldBuffersKb != mBuffersKb || oldCachedKb != mCachedKb ||
+      oldSwapUsedKb != mSwapUsedKb) {
+    emit ramChanged();
+  }
 }
 
 void NativeRam::parseMemInfo() {
