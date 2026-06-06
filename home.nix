@@ -47,7 +47,6 @@ in
     easyeffects
     tidal-hifi
     sox
-    matugen
 
     # Terminal & shell
     foot
