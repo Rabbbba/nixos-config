@@ -155,3 +155,7 @@ A few design choices worth pointing out — first the system/Nix side, then the 
 - Quickshell shell architecture inspired by [caelestia-dots/shell](https://github.com/caelestia-dots/shell) — Visibilities and the popout coordination layer borrow ideas from theirs.
 - [noctalia-dev/noctalia-shell](https://github.com/noctalia-dev/noctalia-shell) — closest project in the Quickshell ecosystem (same stack, broader scope: lock screen, notifications, OSD, panels). Reference when extending toward those surfaces.
 - Quickshell, Hyprland, NvChad, NixOS — all the work of their respective upstreams.
+
+## Contributing
+
+See [`CLAUDE.md`](CLAUDE.md) for development guidelines and tooling.
