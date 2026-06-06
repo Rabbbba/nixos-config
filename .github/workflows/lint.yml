@@ -38,6 +38,53 @@ jobs:
   # No qmllint job: Quickshell uses custom types it doesn't know about and
   # the silencing config isn't worth it. Doxygen strict + pre-commit + LSP cover it.
 
+  qml:
+    name: QML (qmlformat)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v30
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+
+      - name: qmlformat --check
+        run: |
+          nix develop --command bash -c '
+            files=$(find quickshell -name "*.qml" -not -path "./.git/*")
+            for f in $files; do
+              if ! qmlformat --check "$f" 2>/dev/null; then
+                echo "FAIL: $f needs formatting"
+                exit 1
+              fi
+            done
+            echo "All QML files are properly formatted."
+          '
+
+  cpp:
+    name: C++ (clang-tidy)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v30
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+
+      - name: clang-tidy
+        run: |
+          nix develop --command bash -c '
+            cmake -B quickshell/plugin/build -S quickshell/plugin \
+              --log-level=WARNING > /dev/null 2>&1
+            qt_include="${CMAKE_PREFIX_PATH%%:*}/include"
+            find quickshell/plugin -maxdepth 1 -name "*.cpp" | xargs \
+              clang-tidy -p quickshell/plugin/build \
+                --extra-arg="-isystem${qt_include}" \
+                --extra-arg="-isystem$(echo "${CMAKE_PREFIX_PATH}" | tr ":" "\n" | grep qtdeclarative)/include"
+          '
+
   shell:
     name: Shell (shellcheck)
     runs-on: ubuntu-latest
