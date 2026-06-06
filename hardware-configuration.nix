@@ -40,6 +40,7 @@
     ];
   };
 
+  # No swap devices configured — system has sufficient RAM (32 GB)
   swapDevices = [ ];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
