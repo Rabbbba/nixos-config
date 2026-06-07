@@ -24,8 +24,8 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: build
-  cancel-in-progress: false
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   native-sensors:
