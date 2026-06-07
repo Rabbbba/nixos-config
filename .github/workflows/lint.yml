@@ -53,13 +53,17 @@ jobs:
         run: |
           nix develop --command bash -c '
             files=$(find quickshell -name "*.qml" -not -path "./.git/*")
+            fail=0; tmp=$(mktemp)
             for f in $files; do
-              if ! qmlformat --check "$f" 2>/dev/null; then
+              qmlformat "$f" > "$tmp" 2>/dev/null
+              if ! diff -q "$tmp" "$f" > /dev/null; then
                 echo "FAIL: $f needs formatting"
-                exit 1
+                fail=1
               fi
             done
-            echo "All QML files are properly formatted."
+            rm -f "$tmp"
+            [ "$fail" -eq 0 ] && echo "All QML files are properly formatted."
+            exit "$fail"
           '
 
   cpp:

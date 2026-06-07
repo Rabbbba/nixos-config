@@ -74,8 +74,18 @@ Item {
         scale: root.visible ? 1 : 0.96
         transformOrigin: Item.Center
 
-        Behavior on opacity { NumberAnimation { duration: Theme.anim.fast; easing.type: Easing.OutCubic } }
-        Behavior on scale  { NumberAnimation { duration: Theme.anim.fast; easing.type: Easing.OutCubic } }
+        Behavior on opacity {
+            NumberAnimation {
+                duration: Theme.anim.fast
+                easing.type: Easing.OutCubic
+            }
+        }
+        Behavior on scale {
+            NumberAnimation {
+                duration: Theme.anim.fast
+                easing.type: Easing.OutCubic
+            }
+        }
 
         Item {
             id: container

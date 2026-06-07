@@ -31,7 +31,7 @@ ModuleWrapper {
         width: gpuMetrics.width
         horizontalAlignment: Text.AlignHCenter
         elide: Text.ElideNone
-        text:"󰢮 " + GpuUsage.gpuPercent.toFixed(0) + "%"
+        text: "󰢮 " + GpuUsage.gpuPercent.toFixed(0) + "%"
         color: root.hovered ? Theme.color.popupBg : Theme.color.text
     }
     onClicked: Visibilities.toggle("gpu")

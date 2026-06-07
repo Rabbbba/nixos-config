@@ -34,7 +34,7 @@ ModuleWrapper {
         horizontalAlignment: Text.AlignHCenter
         elide: Text.ElideNone
 
-        text:"󰍛 " + RamUsage.ramPercent.toFixed(0) + "%"
+        text: "󰍛 " + RamUsage.ramPercent.toFixed(0) + "%"
     }
 
     onClicked: Visibilities.toggle("ram")

@@ -32,7 +32,7 @@ ModuleWrapper {
         width: cpuMetrics.width
         horizontalAlignment: Text.AlignHCenter
         elide: Text.ElideNone
-        text:"󰘚 " + CpuUsage.cpuPercent.toFixed(0) + "%"
+        text: "󰘚 " + CpuUsage.cpuPercent.toFixed(0) + "%"
         color: root.hovered ? Theme.color.popupBg : Theme.color.text
     }
 

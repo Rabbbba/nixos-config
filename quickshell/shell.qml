@@ -315,7 +315,6 @@ ShellRoot {
                     onCleared: Visibilities.close()
                 }
 
-
                 // Fallback overlay: catches clicks anywhere below the bar
                 // that don't land on a popout. Sits under all PopoutItems
                 // so they still receive events first. The mask Region below

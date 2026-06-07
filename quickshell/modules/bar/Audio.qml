@@ -44,7 +44,7 @@ ModuleWrapper {
         horizontalAlignment: Text.AlignHCenter
         elide: Text.ElideNone
 
-        text:{
+        text: {
             if (!root.sink || !root.sink.audio)
                 return "󰕾  ?";
             if (root.sink.audio.muted)

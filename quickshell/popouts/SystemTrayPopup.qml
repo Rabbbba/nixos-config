@@ -63,7 +63,9 @@ Item {
                     color: hoverHandler.hovered ? Theme.color.popupBg : Theme.color.moduleBg
 
                     Behavior on color {
-                        ColorAnimation { duration: Theme.anim.fast }
+                        ColorAnimation {
+                            duration: Theme.anim.fast
+                        }
                     }
                 }
 

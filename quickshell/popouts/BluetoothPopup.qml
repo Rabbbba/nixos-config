@@ -188,10 +188,12 @@ Item {
                         };
                         root.available = list;
                     } else {
-                        root.available = [...root.available, {
-                            addr: addr,
-                            name: display
-                        }];
+                        root.available = [...root.available,
+                            {
+                                addr: addr,
+                                name: display
+                            }
+                        ];
                     }
                 } else if (event === "DEL") {
                     root.available = root.available.filter(d => d.addr !== addr);
@@ -413,8 +415,8 @@ Item {
                         // no shell. execDetached returns immediately; the
                         // operations run sequentially on the bluetoothd side.
                         const a = availRow.modelData.addr;
-                        Quickshell.execDetached(["bluetoothctl", "pair",    a]);
-                        Quickshell.execDetached(["bluetoothctl", "trust",   a]);
+                        Quickshell.execDetached(["bluetoothctl", "pair", a]);
+                        Quickshell.execDetached(["bluetoothctl", "trust", a]);
                         Quickshell.execDetached(["bluetoothctl", "connect", a]);
                         postActionTimer.restart();
                     }
