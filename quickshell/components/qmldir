@@ -8,5 +8,4 @@ SectionHeader 1.0 SectionHeader.qml
 ProgressBar 1.0 ProgressBar.qml
 KeyValueRow 1.0 KeyValueRow.qml
 Sparkline 1.0 Sparkline.qml
-ExclusionZone 1.0 ExclusionZone.qml
 

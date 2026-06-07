@@ -8,7 +8,6 @@ pragma ComponentBehavior: Bound
 import Quickshell
 import Quickshell.Hyprland
 import Quickshell.Wayland
-import QtQuick.Effects
 import QtQuick
 import "modules/bar"
 import "popouts"
@@ -21,13 +20,9 @@ import "components"
  * Per-monitor delegate (built via @c Variants → @c Scope):
  * - **panelBar**: interactive 40 px top bar on layer @c Top (captures clicks).
  *   Auto-reserves its 40 px exclusive zone via anchors.
- * - **panelBorder**: decorative full-screen border on layer @c Bottom
- *   (click-through). Sits BELOW app windows so it doesn't mask in-game
- *   overlays (Steam friends popups, Discord, etc.). Stays visible in the
- *   20 px reserved by the @ref components::ExclusionZone instances since
- *   nothing else is drawn there.
- * - **3× ExclusionZone**: reserve left/right/bottom 20 px in the
- *   layer-shell layout. Top is handled by @c panelBar itself.
+ * - **panelPopout**: fullscreen click-through host for popouts on layer @c Top.
+ *   Its input mask activates only around visible popouts, so panelBar keeps
+ *   receiving normal clicks when no popout is open.
  */
 ShellRoot {
     settings.watchFiles: true
@@ -145,54 +140,6 @@ ShellRoot {
                             id: audioModule
                             panelWindow: panelBar
                         }
-                    }
-                }
-            }
-
-            // ───────────────────── Decorative border ───────────────────
-            // qmllint disable uncreatable-type
-            PanelWindow {
-                id: panelBorder
-                color: "transparent"
-                WlrLayershell.exclusionMode: ExclusionMode.Ignore
-                WlrLayershell.layer: WlrLayer.Bottom
-                anchors {
-                    top: true
-                    left: true
-                    right: true
-                    bottom: true
-                }
-                screen: scope.modelData
-
-                // Empty mask → fully click-through. The render stays visible
-                // but no pointer event is captured by this surface.
-                mask: Region {}
-
-                Rectangle {
-                    id: borderFill
-                    anchors.fill: parent
-                    color: Theme.color.windowBg
-                    layer.enabled: true
-                    layer.effect: MultiEffect {
-                        maskEnabled: true
-                        maskInverted: true
-                        maskSource: cutoutMask
-                    }
-                }
-
-                Item {
-                    id: cutoutMask
-                    anchors.fill: parent
-                    visible: false
-                    layer.enabled: true
-
-                    Rectangle {
-                        x: 20
-                        y: 40
-                        width: parent.width - 40
-                        height: parent.height - 60
-                        radius: 24
-                        color: "white"
                     }
                 }
             }
@@ -483,23 +430,6 @@ ShellRoot {
                         anchors.centerIn: parent
                     }
                 }
-            }
-
-            // ───────────────────── ExclusionZones ──────────────────────
-            ExclusionZone {
-                modelData: scope.modelData
-                anchorSide: "left"
-                exclusiveZoneSize: 20
-            }
-            ExclusionZone {
-                modelData: scope.modelData
-                anchorSide: "right"
-                exclusiveZoneSize: 20
-            }
-            ExclusionZone {
-                modelData: scope.modelData
-                anchorSide: "bottom"
-                exclusiveZoneSize: 20
             }
         }
     }
