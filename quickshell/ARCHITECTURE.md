@@ -10,11 +10,7 @@ shell.qml          Entry point. Uses Variants → Scope to instantiate one bar
                    per matching monitor (currently filtered to AW3423DWF).
                    Each instance gets:
                    - panelBar     (PanelWindow Top, 40px) — interactive bar
-                   - panelBorder  (PanelWindow Bottom) — decorative border,
-                     click-through via empty mask, drawn via MultiEffect
-                     inverted cutout (20px margins, 24px corner radius)
                    - panelPopout  (PanelWindow Top, fullscreen) — popout host
-                   - 3× ExclusionZone (left, right, bottom, 20px each)
                    Sets pragmas (UseQApplication, ComponentBehavior: Bound)
                    and `settings.watchFiles` for hot-reload.
 
@@ -40,7 +36,8 @@ popouts/           Popup contents, decoupled from the modules that trigger them.
                    shell.qml. They open/close via the Visibilities singleton.
                    Full registry (qmldir):
                      AudioPopup, BluetoothPopup, CalendarPopup, CpuPopup,
-                     GpuPopup, PowerPopup, RamPopup, TidalPopup, WifiPopup
+                     GpuPopup, PowerPopup, RamPopup, SystemTrayPopup,
+                     TidalPopup, WifiPopup
 
 services/          Global Singletons holding shared state.
                    Theme         — color/font/animation tokens. Aggregates
@@ -51,20 +48,20 @@ services/          Global Singletons holding shared state.
                    Visibilities  — which popout is currently open
                    CpuUsage      — CPU% / cores / load average from /proc;
                                    Tctl temp via NativeHwmon
-                   RamUsage      — RAM and swap from /proc/meminfo
+                   RamUsage      — RAM/swap state exposed from NativeRam
                    GpuUsage      — GPU% / VRAM from /sys/class/drm/card1/device;
                                    temps via NativeHwmon
                    NetworkSpeed  — Rx/Tx throughput via NativeNetwork;
                                    history + formatting in QML
                    Players       — MPRIS player tracking (Tidal), with volume
                                    auto-restore after track changes
-                   Tick          — shared 1 Hz heartbeat for pollers
+                   Tick          — shared 500 ms heartbeat for pollers
                    History.js    — pure-JS utility: rolling array push with
                                    max length (used by NetworkSpeed, CpuUsage)
 
 components/        Reusable visual / interactive primitives, no business logic.
                    StyledText, IconButton, PopoutItem, Tooltip, SectionHeader,
-                   KeyValueRow, ProgressBar, Sparkline, ExclusionZone.
+                   KeyValueRow, ProgressBar, Sparkline.
                    Depend only on services/ (Theme) — never on modules/.
 
 plugin/            Native C++ QML module `NativeSensors`, built by a Nix
@@ -82,6 +79,23 @@ plugin/            Native C++ QML module `NativeSensors`, built by a Nix
 ```
 
 ## How things connect
+
+```mermaid
+flowchart TB
+    Shell["shell.qml"]
+    Bar["modules/bar"]
+    Popouts["popouts"]
+    Services["services"]
+    Plugin["NativeSensors C++ plugin"]
+    System["/proc + /sys"]
+
+    Shell --> Bar
+    Shell --> Popouts
+    Bar --> Services
+    Popouts --> Services
+    Services --> Plugin
+    Plugin --> System
+```
 
 ```
 shell.qml
@@ -102,28 +116,23 @@ shell.qml
   │           ├── Network         → throughput display
   │           └── Audio           → pipewire volume
   │
-  ├── panelBorder  (PanelWindow Bottom, fullscreen, ExclusionMode.Ignore)
-  │     └── Rectangle + MultiEffect (inverted cutout mask, 20px margin, 24px radius)
-  │         mask: Region {}   ← empty → fully click-through
-  │
   ├── panelPopout  (PanelWindow Top, fullscreen, ExclusionMode.Ignore,
   │                 WlrKeyboardFocus.OnDemand — needed for WifiPopup TextInput)
   │     ├── mask: Region { sub-Region per visible popout }
   │     ├── HyprlandFocusGrab { windows: [panelPopout.QsWindow.window];
   │     │                        active: Visibilities.current !== "";
   │     │                        onCleared: Visibilities.close() }
-  │     └── PopoutItem × 9:
+  │     └── PopoutItem × 10:
   │           calendarPopout ← clockModule        CalendarPopup
   │           cpuPopout      ← cpuModule          CpuPopup
   │           gpuPopout      ← gpuModule          GpuPopup
   │           ramPopout      ← ramModule          RamPopup
   │           audioPopout    ← audioModule        AudioPopup
   │           networkPopout  ← networkModule      WifiPopup
+  │           systemTrayPopout ← systemTray       SystemTrayPopup
   │           btPopout       ← btModule           BluetoothPopup
   │           tidalPopout    ← tidalModule        TidalPopup
   │           powerPopout    ← nixBtn             PowerPopup
-  │
-  └── ExclusionZone × 3  (left 20px, right 20px, bottom 20px)
 ```
 
 Three rules keep this navigable:
