@@ -84,6 +84,9 @@ Smaller quality improvements, handled along the way:
 - Factor the repetitive systemd user services into a reusable Nix helper (`mkGraphicalService`) — a good Nix abstraction exercise. Tracked in [#4](https://github.com/Rabbbba/nixos-config/issues/4).
 - Make `nix flake check` reproduce the pre-commit validation path reliably. Tracked in [#19](https://github.com/Rabbbba/nixos-config/issues/19).
 - Align the Nix cache policy between the local config and GitHub Actions. Tracked in [#20](https://github.com/Rabbbba/nixos-config/issues/20).
+- Document machine-specific assumptions and the TTY bootstrap path. Tracked in [#21](https://github.com/Rabbbba/nixos-config/issues/21).
+- Extract personal constants from the Nix/Home Manager config. Tracked in [#22](https://github.com/Rabbbba/nixos-config/issues/22).
+- Add a minimal demo/evaluation NixOS host for external readers. Tracked in [#23](https://github.com/Rabbbba/nixos-config/issues/23).
 - Align the repository's git identity. Done.
 - Clean up duplicate package entries and a stale CMake target name. Done.
 
@@ -93,8 +96,11 @@ Each item above is broken into GitHub **issues** (labeled by area: `area:quicksh
 
 Current recommended order:
 
-1. Fix validation reproducibility: [#19](https://github.com/Rabbbba/nixos-config/issues/19).
-2. Refactor systemd user-service boilerplate: [#4](https://github.com/Rabbbba/nixos-config/issues/4).
-3. Make `NativeRam` / `NativeNetwork` fixture-testable: [#10](https://github.com/Rabbbba/nixos-config/issues/10).
-4. Add C++ fixture tests: [#11](https://github.com/Rabbbba/nixos-config/issues/11).
-5. Add the headless CI test job: [#13](https://github.com/Rabbbba/nixos-config/issues/13).
+1. Document portability and first-boot assumptions: [#21](https://github.com/Rabbbba/nixos-config/issues/21).
+2. Fix validation reproducibility: [#19](https://github.com/Rabbbba/nixos-config/issues/19).
+3. Extract personal constants: [#22](https://github.com/Rabbbba/nixos-config/issues/22).
+4. Add a demo/evaluation host: [#23](https://github.com/Rabbbba/nixos-config/issues/23).
+5. Make `NativeRam` / `NativeNetwork` fixture-testable: [#10](https://github.com/Rabbbba/nixos-config/issues/10).
+6. Add C++ fixture tests: [#11](https://github.com/Rabbbba/nixos-config/issues/11).
+7. Add the headless CI test job: [#13](https://github.com/Rabbbba/nixos-config/issues/13).
+8. Refactor systemd user-service boilerplate: [#4](https://github.com/Rabbbba/nixos-config/issues/4).
