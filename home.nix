@@ -72,9 +72,6 @@ in
     valgrind
     clang-tools
     # ─── C/C++ learning ──────────────────────────────────────────────
-    zeal # offline cppreference/Qt/STL, sqlite-indexed
-    cling # C++ REPL
-    cppman # cppreference as man pages
     bash-language-server
     vscode-langservers-extracted
     stylua
@@ -130,8 +127,7 @@ in
 
     # AI
     claude-code
-    pi-coding-agent
-    bubblewrap # required by pi-sandbox
+    codex
 
     amdgpu_top
     networkmanagerapplet
