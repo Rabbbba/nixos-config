@@ -96,13 +96,15 @@
             name = "qmlformat";
             description = "Check QML formatting";
             entry = "${pkgs.writeShellScript "qmlformat-hook" ''
-              set -e
+              tmp=$(mktemp); rc=0
               for f in "$@"; do
-                if ! ${pkgs.qt6.qtdeclarative}/bin/qmlformat --check "$f" 2>/dev/null; then
+                ${pkgs.qt6.qtdeclarative}/bin/qmlformat "$f" > "$tmp" 2>/dev/null
+                if ! diff -q "$tmp" "$f" > /dev/null; then
                   echo "qmlformat: $f needs formatting — run: qmlformat -i $f"
-                  exit 1
+                  rc=1
                 fi
               done
+              rm -f "$tmp"; exit "$rc"
             ''}";
             files = "quickshell/.*\\.qml$";
             pass_filenames = true;
@@ -212,6 +214,7 @@
           qt6.qtshadertools
           qt6.wrapQtAppsHook
           libGL
+          clang-tools
         ];
 
         shellHook = pre-commit-check.shellHook + ''
