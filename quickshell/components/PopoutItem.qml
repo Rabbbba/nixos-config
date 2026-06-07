@@ -48,6 +48,10 @@ Item {
         const mapped = panelWindow.contentItem.mapFromGlobal(g.x, g.y);
         popoutX = mapped.x - (alignment === "center" ? implicitWidth / 2 : alignment === "right" ? implicitWidth : 0);
 
+        const margin = 8;
+        const maxX = panelWindow.contentItem.width - implicitWidth - margin;
+        popoutX = Math.max(margin, Math.min(popoutX, maxX));
+
         const gY = wrapper.mapToGlobal(0, wrapper.height);
         const mappedY = panelWindow.contentItem.mapFromGlobal(gY.x, gY.y);
         popoutY = mappedY.y + 10;  // 10px gap below the module
