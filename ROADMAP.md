@@ -8,6 +8,12 @@ This setup is not frozen. The goal is to progressively replace third-party deskt
 
 Status: `planned` · `in progress` · `done` · `idea`
 
+Workflow:
+- `ROADMAP.md` explains the direction and why each area matters.
+- GitHub issues break the roadmap into trackable work.
+- Pull requests close issues and include validation commands.
+- `AUDIT.md` stays private and is used as an internal review log; actionable findings are promoted into public issues.
+
 ## Pillar A — Build: move what can be moved into Quickshell
 
 Replace desktop daemons and tools with custom Quickshell modules. Ordered from most accessible to most complex.
@@ -75,10 +81,20 @@ Milestone: `v2 — Rigor & tests` (groups C1–C4).
 
 Smaller quality improvements, handled along the way:
 
-- Factor the repetitive systemd user services into a reusable Nix helper (`mkGraphicalService`) — a good Nix abstraction exercise.
-- Align the repository's git identity.
-- Clean up duplicate package entries and a stale CMake target name.
+- Factor the repetitive systemd user services into a reusable Nix helper (`mkGraphicalService`) — a good Nix abstraction exercise. Tracked in [#4](https://github.com/Rabbbba/nixos-config/issues/4).
+- Make `nix flake check` reproduce the pre-commit validation path reliably. Tracked in [#19](https://github.com/Rabbbba/nixos-config/issues/19).
+- Align the Nix cache policy between the local config and GitHub Actions. Tracked in [#20](https://github.com/Rabbbba/nixos-config/issues/20).
+- Align the repository's git identity. Done.
+- Clean up duplicate package entries and a stale CMake target name. Done.
 
 ## Reading progress
 
-Each item above is broken into GitHub **issues** (labeled by area: `area:quickshell`, `area:nix`, `area:cpp`, `area:ci`), grouped into **milestones** (`v1`, `v2`), tracked on the **project board**. An issue closes via a linked conventional commit (`feat(notif): … (closes #N)`).
+Each item above is broken into GitHub **issues** (labeled by area: `area:quickshell`, `area:nix`, `area:cpp`, `area:ci`), grouped into milestones when useful, and tracked on the **project board**. An issue closes via a linked conventional commit or PR (`feat(native-sensors): … (closes #N)`).
+
+Current recommended order:
+
+1. Fix validation reproducibility: [#19](https://github.com/Rabbbba/nixos-config/issues/19).
+2. Refactor systemd user-service boilerplate: [#4](https://github.com/Rabbbba/nixos-config/issues/4).
+3. Make `NativeRam` / `NativeNetwork` fixture-testable: [#10](https://github.com/Rabbbba/nixos-config/issues/10).
+4. Add C++ fixture tests: [#11](https://github.com/Rabbbba/nixos-config/issues/11).
+5. Add the headless CI test job: [#13](https://github.com/Rabbbba/nixos-config/issues/13).
