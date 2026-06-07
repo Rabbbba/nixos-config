@@ -41,3 +41,4 @@ wallpapers/dp1/
 
 # Environment files — never commit secrets
 .env
+quickshell/.qmlls.ini
