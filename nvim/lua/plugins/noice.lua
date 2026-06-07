@@ -17,6 +17,16 @@ return {
 				["vim.lsp.util.stylize_markdown"] = true,
 				["cmp.entry.get_documentation"] = true,
 			},
+			hover = {
+				opts = {
+					focusable = false,
+				},
+			},
+			signature = {
+				opts = {
+					focusable = false,
+				},
+			},
 		},
 		presets = {
 			bottom_search = false,
