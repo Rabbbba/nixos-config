@@ -1,4 +1,5 @@
 pragma ComponentBehavior: Bound
+// qmllint disable missing-property
 import QtQuick
 import Quickshell
 import Quickshell.Services.SystemTray

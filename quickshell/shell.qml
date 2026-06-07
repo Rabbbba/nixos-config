@@ -4,6 +4,7 @@
 //@ pragma DefaultEnv QSG_RENDER_LOOP=threaded
 
 pragma ComponentBehavior: Bound
+// qmllint disable missing-property
 import Quickshell
 import Quickshell.Hyprland
 import Quickshell.Wayland

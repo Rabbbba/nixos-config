@@ -1,3 +1,4 @@
+// qmllint disable missing-property
 import QtQuick
 import Quickshell.Services.Pipewire
 import "../../components"

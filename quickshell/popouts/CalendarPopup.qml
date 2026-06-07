@@ -1,4 +1,5 @@
 pragma ComponentBehavior: Bound
+// qmllint disable missing-property
 import QtQuick
 import "../services"
 import "../components"
