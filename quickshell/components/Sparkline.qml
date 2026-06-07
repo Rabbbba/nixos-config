@@ -20,8 +20,23 @@ Item {
     property color color: Theme.color.accent
     /** Horizontal spacing between bars in pixels. */
     property int barSpacing: 2
+    /** Values at or below this threshold are rendered as empty. */
+    property real noiseFloor: 0
+    /** Minimum height for visible non-zero bars. */
+    property real minBarHeight: 2
 
     implicitHeight: 28
+
+    /**
+     * Compute the rendered bar height for one sample.
+     * @param value Numeric sample value.
+     */
+    function barHeight(value: real): real {
+        if (!Number.isFinite(value) || value <= root.noiseFloor || root.maxValue <= 0)
+            return 0;
+
+        return Math.max(root.minBarHeight, (value / root.maxValue) * root.height);
+    }
 
     Repeater {
         model: root.values
@@ -31,7 +46,7 @@ Item {
             width: (root.width - (root.values.length - 1) * root.barSpacing) / root.values.length
             x: index * (width + root.barSpacing)
             anchors.bottom: parent.bottom
-            height: Math.max(2, (root.values[index] / root.maxValue) * root.height)
+            height: root.barHeight(root.values[index])
             color: root.color
             radius: 1
         }

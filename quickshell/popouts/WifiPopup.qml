@@ -110,7 +110,9 @@ Item {
      * @param values Rolling throughput samples.
      */
     function historyMax(values: var): real {
-        let maxValue = 1;
+        // Keep low idle traffic visually small instead of rescaling noise to
+        // the full graph height. Values are KiB/s; 1024 KiB/s is ~8.4 Mbps.
+        let maxValue = 1024;
         for (const value of values)
             maxValue = Math.max(maxValue, value);
         return maxValue;
@@ -224,6 +226,8 @@ Item {
                 values: NetworkSpeed.downloadHistory
                 color: Theme.color.accent
                 maxValue: root.historyMax(NetworkSpeed.downloadHistory)
+                noiseFloor: 4
+                minBarHeight: 1
             }
 
             KeyValueRow {
@@ -238,6 +242,8 @@ Item {
                 values: NetworkSpeed.uploadHistory
                 color: Theme.color.textMuted
                 maxValue: root.historyMax(NetworkSpeed.uploadHistory)
+                noiseFloor: 4
+                minBarHeight: 1
             }
         }
 
