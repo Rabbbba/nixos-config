@@ -6,11 +6,19 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <utility>
 
 NativeNetwork::NativeNetwork(QObject *parent) : NativeSensor(parent) {
   mTimer.setInterval(2000);
   poll(); // NOLINT(clang-analyzer-optin.cplusplus.VirtualCall)
   mTimer.start();
+}
+
+NativeNetwork::NativeNetwork(std::string procRoot, std::string sysRoot,
+                             QObject *parent)
+    : NativeSensor(parent), mProcRoot(std::move(procRoot)),
+      mSysRoot(std::move(sysRoot)) {
+  QMetaObject::invokeMethod(this, &NativeNetwork::poll, Qt::QueuedConnection);
 }
 
 // ── Getters ──────────────────────────────────────────────────────────────
@@ -28,10 +36,10 @@ void NativeNetwork::poll() {
   }
 
   uint64_t rx{};
-  std::ifstream rxFile("/sys/class/net/" + iface + "/statistics/rx_bytes");
+  std::ifstream rxFile(mSysRoot + "/class/net/" + iface + "/statistics/rx_bytes");
   rxFile >> rx;
   uint64_t tx{};
-  std::ifstream txFile("/sys/class/net/" + iface + "/statistics/tx_bytes");
+  std::ifstream txFile(mSysRoot + "/class/net/" + iface + "/statistics/tx_bytes");
   txFile >> tx;
 
   // First poll only seeds the previous-tick counters; no delta yet.
@@ -70,8 +78,8 @@ void NativeNetwork::poll() {
   mPrevTx = tx;
 }
 
-std::string NativeNetwork::discoverNetwork() {
-  std::ifstream file("/proc/net/route");
+std::string NativeNetwork::discoverNetwork() const {
+  std::ifstream file(mProcRoot + "/net/route");
   std::string line;
   std::getline(file, line); // skip the header row
   while (std::getline(file, line)) {
