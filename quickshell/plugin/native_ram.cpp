@@ -15,7 +15,7 @@ NativeRam::NativeRam(QObject *parent) : NativeSensor(parent) {
 
 NativeRam::NativeRam(std::string procRoot, QObject *parent)
     : NativeSensor(parent), mProcRoot(std::move(procRoot)) {
-  QMetaObject::invokeMethod(this, &NativeRam::poll, Qt::QueuedConnection);
+  poll(); // NOLINT(clang-analyzer-optin.cplusplus.VirtualCall)
 }
 // ── Getters ──────────────────────────────────────────────────────────────
 
