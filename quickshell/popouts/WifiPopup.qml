@@ -105,6 +105,17 @@ Item {
         return "󰤯";
     }
 
+    /**
+     * Maximum recent throughput sample for one sparkline history.
+     * @param values Rolling throughput samples.
+     */
+    function historyMax(values: var): real {
+        let maxValue = 1;
+        for (const value of values)
+            maxValue = Math.max(maxValue, value);
+        return maxValue;
+    }
+
     Column {
         id: layoutColumn
         anchors.left: parent.left
@@ -188,6 +199,45 @@ Item {
                 anchors.fill: parent
                 cursorShape: Qt.PointingHandCursor
                 onClicked: Networking.wifiEnabled = !Networking.wifiEnabled
+            }
+        }
+
+        // ── Traffic section ─────────────────────────────────────────────
+        SectionHeader {
+            text: "Traffic"
+        }
+
+        Column {
+            width: parent.width
+            spacing: 6
+
+            KeyValueRow {
+                width: parent.width
+                label: "Download"
+                value: NetworkSpeed.formatSpeed(NetworkSpeed.downloadKbps)
+                valueColor: Theme.color.accent
+            }
+
+            Sparkline {
+                width: parent.width
+                height: 22
+                values: NetworkSpeed.downloadHistory
+                color: Theme.color.accent
+                maxValue: root.historyMax(NetworkSpeed.downloadHistory)
+            }
+
+            KeyValueRow {
+                width: parent.width
+                label: "Upload"
+                value: NetworkSpeed.formatSpeed(NetworkSpeed.uploadKbps)
+            }
+
+            Sparkline {
+                width: parent.width
+                height: 22
+                values: NetworkSpeed.uploadHistory
+                color: Theme.color.textMuted
+                maxValue: root.historyMax(NetworkSpeed.uploadHistory)
             }
         }
 

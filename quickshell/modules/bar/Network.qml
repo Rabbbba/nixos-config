@@ -9,9 +9,8 @@ import "../../services"
  *
  * Reads NetworkManager state directly through @c Quickshell.Networking — no
  * nmcli polling. Renders one of: ethernet glyph, Wi-Fi bar-icon, or "offline"
- * glyph, followed by the live download/upload speed pair from
- * @ref services::NetworkSpeed. Clicking opens the @ref popouts::WifiPopup
- * via @ref services::Visibilities.
+ * glyph. Live throughput stays in the tooltip and @ref popouts::WifiPopup so
+ * the bar remains compact.
  */
 ModuleWrapper {
     id: root
@@ -63,27 +62,18 @@ ModuleWrapper {
     /** Signal strength of the active Wi-Fi connection in [0, 100], or 0. */
     readonly property int signalPct: root.activeWifi ? Math.round(root.activeWifi.signalStrength * 100) : 0
 
-    tooltip: netState === "wifi" ? "Wi-Fi: " + ssid + " (" + signalPct + "%)" : netState === "ethernet" ? "Ethernet" : "Offline"
+    tooltip: {
+        const traffic = "↓ " + NetworkSpeed.formatSpeed(NetworkSpeed.downloadKbps) + " · ↑ " + NetworkSpeed.formatSpeed(NetworkSpeed.uploadKbps);
+        if (root.netState === "wifi")
+            return "Wi-Fi: " + root.ssid + " (" + root.signalPct + "%) · " + traffic;
+        if (root.netState === "ethernet")
+            return "Ethernet · " + traffic;
+        return "Offline · " + traffic;
+    }
 
     onClicked: Visibilities.toggle("network")
 
-    // Worst-case width of a formatted speed string ("999Mb" at Md size).
-    // Reserves a stable slot so the module width doesn't jiggle as digits
-    // come and go. Above ~1 Gbps the format switches to "1.2Gb" which is
-    // the same character count, so the slot stays valid up to 10 Gbps.
-    TextMetrics {
-        id: speedMetrics
-        font.family: Theme.font.family
-        font.pixelSize: Theme.font.sizeMd
-        text: "999Mb"
-    }
-
     Row {
-        // 8 px (vs the project-wide 6) so the down/up arrow glyphs get a
-        // visible breathing gap before their value when the value uses the
-        // full slot width (e.g. "135Mb" jams against the arrow at 6).
-        spacing: 8
-
         StyledText {
             font.pixelSize: Theme.font.sizeLg
             color: root.hovered ? Theme.color.popupBg : Theme.color.text
@@ -105,46 +95,6 @@ ModuleWrapper {
                 }
                 return "󰤭";
             }
-        }
-
-        StyledText {
-            text: ""
-            font.family: Theme.font.family
-            font.pixelSize: Theme.font.sizeMd
-            color: root.hovered ? Theme.color.popupBg : Theme.color.text
-            height: parent.height
-            verticalAlignment: Text.AlignVCenter
-        }
-        StyledText {
-            text: NetworkSpeed.formatSpeed(NetworkSpeed.downloadKbps)
-            font.family: Theme.font.family
-            font.pixelSize: Theme.font.sizeMd
-            color: root.hovered ? Theme.color.popupBg : Theme.color.text
-            width: speedMetrics.width
-            horizontalAlignment: Text.AlignRight
-            elide: Text.ElideNone
-            height: parent.height
-            verticalAlignment: Text.AlignVCenter
-        }
-
-        StyledText {
-            text: ""
-            font.family: Theme.font.family
-            font.pixelSize: Theme.font.sizeMd
-            color: root.hovered ? Theme.color.popupBg : Theme.color.text
-            height: parent.height
-            verticalAlignment: Text.AlignVCenter
-        }
-        StyledText {
-            text: NetworkSpeed.formatSpeed(NetworkSpeed.uploadKbps)
-            font.family: Theme.font.family
-            font.pixelSize: Theme.font.sizeMd
-            color: root.hovered ? Theme.color.popupBg : Theme.color.text
-            width: speedMetrics.width
-            horizontalAlignment: Text.AlignRight
-            elide: Text.ElideNone
-            height: parent.height
-            verticalAlignment: Text.AlignVCenter
         }
     }
 }
