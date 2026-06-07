@@ -2,6 +2,7 @@
 CLAUDE.md
 TODO.md
 AUDIT.md
+AGENTS.md
 
 # Claude Code session state — local permissions, runtime metadata
 .claude/
