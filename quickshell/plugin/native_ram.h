@@ -21,6 +21,7 @@ class NativeRam : public NativeSensor {
 
 public:
   explicit NativeRam(QObject *parent = nullptr);
+  explicit NativeRam(std::string procRoot, QObject *parent = nullptr);
 
   // Getters
   [[nodiscard]] double ramPercent() const;
@@ -36,19 +37,21 @@ signals:
 
 private:
   // Methods
-  void poll() override;                // parse /proc/meminfo, emit ramChanged
-  void parseMemInfo();                 // raw parsing from /proc/meminfo
+  void poll() override; // parse /proc/meminfo, emit ramChanged
+  void parseMemInfo();  // raw parsing from /proc/meminfo
+
+  std::string mProcRoot{"/proc"};
 
   // Raw values from /proc/meminfo (in kB)
   double mMemTotal{};
   double mMemAvailable{};
-  double mBuffersKb{};       // memory used by buffers
-  double mCachedKb{};        // memory used by page cache
-  double mSwapTotalKb{};      // total swap space
-  double mSwapFreeKb{};        // unused swap space
+  double mBuffersKb{};   // memory used by buffers
+  double mCachedKb{};    // memory used by page cache
+  double mSwapTotalKb{}; // total swap space
+  double mSwapFreeKb{};  // unused swap space
 
   // Derived state (exposed via properties)
-  double mRamPercent{};      // (MemTotal - MemAvailable) / MemTotal
-  double mRamUsedKb{};       // MemTotal - MemAvailable
-  double mSwapUsedKb{};      // SwapTotal - SwapFree
+  double mRamPercent{}; // (MemTotal - MemAvailable) / MemTotal
+  double mRamUsedKb{};  // MemTotal - MemAvailable
+  double mSwapUsedKb{}; // SwapTotal - SwapFree
 };

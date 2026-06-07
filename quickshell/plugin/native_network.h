@@ -18,6 +18,8 @@ class NativeNetwork : public NativeSensor {
 
 public:
   explicit NativeNetwork(QObject *parent = nullptr);
+  explicit NativeNetwork(std::string procRoot, std::string sysRoot,
+                         QObject *parent = nullptr);
 
   // Getters
   [[nodiscard]] double downloadKbps() const;
@@ -29,8 +31,11 @@ signals:
 
 private:
   // Methods
-  void poll() override;                         // read counters, compute speed, emit
-  [[nodiscard]] static std::string discoverNetwork(); // active iface from the default route
+  void poll() override; // read counters, compute speed, emit
+  [[nodiscard]] std::string discoverNetwork() const; // active iface from the default route
+
+  std::string mProcRoot{"/proc"};
+  std::string mSysRoot{"/sys"};
 
   // Cumulative rx/tx byte counters from the previous tick, for delta
   // computation.

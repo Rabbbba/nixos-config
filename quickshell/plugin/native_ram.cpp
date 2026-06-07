@@ -5,6 +5,7 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <utility>
 
 NativeRam::NativeRam(QObject *parent) : NativeSensor(parent) {
   mTimer.setInterval(1000);
@@ -12,6 +13,10 @@ NativeRam::NativeRam(QObject *parent) : NativeSensor(parent) {
   mTimer.start();
 }
 
+NativeRam::NativeRam(std::string procRoot, QObject *parent)
+    : NativeSensor(parent), mProcRoot(std::move(procRoot)) {
+  poll(); // NOLINT(clang-analyzer-optin.cplusplus.VirtualCall)
+}
 // ── Getters ──────────────────────────────────────────────────────────────
 
 double NativeRam::ramPercent() const { return mRamPercent; }
@@ -50,7 +55,7 @@ void NativeRam::poll() {
 }
 
 void NativeRam::parseMemInfo() {
-  std::ifstream iss("/proc/meminfo");
+  std::ifstream iss(mProcRoot + "/meminfo");
   std::string line;
   while (std::getline(iss, line)) {
     std::string key;
