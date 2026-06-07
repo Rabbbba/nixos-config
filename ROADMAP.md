@@ -18,10 +18,32 @@ Replace desktop daemons and tools with custom Quickshell modules. Ordered from m
 | A2 | Wallpaper + theme picker — bar-integrated UI, drives matugen, applies per EDID output | `wallpaper.sh` / matugen front | planned | medium |
 | A3 | Audio visualizer — spectrum drawn in QML/Canvas from the PipeWire stream | `cava` | planned | high |
 | A4 | Application launcher — search and launch, in QML | `walker` + `elephant` | planned | very high |
+| A5 | Dashboard système — sparklines + jauges CPU/RAM/GPU/Net/Disques, tout en QML, alimenté par les capteurs `NativeSensors` | `btop` / `mission-center` | planned | medium |
+| A6 | Sélecteur de profil de performance — 3 profils déclaratifs Nix (Desktop/Game/Powersave), popout QML, bascule gouverneur CPU + GPU + MangoHud | scripts shell + `gamemode` standalone | planned | medium |
+| A7 | Gestionnaire de presse-papiers — popout listant l'historique `cliphist`, recherche, pin/delete | UI `cliphist` inexistante | planned | easy |
+| A8 | OSD unifié — volume, micro, luminosité, layout clavier, HDR, profil de performance | feedback dispersé entre scripts/outils | idea | medium |
+| A9 | Centre de notifications — historique, groupement par application, actions, do-not-disturb | historique `dunst` / aucun centre intégré | idea | high |
+| A10 | Screenshot studio — capture zone/fenêtre/écran, OCR, color picker, copie presse-papiers | scripts `grim`/`slurp`/`swappy` isolés | idea | medium |
+| A11 | Quick settings — toggles Wi-Fi, Bluetooth, audio sink, VPN/Tailscale, HDR, idle inhibitor, reload shell | scripts + commandes dispersées | idea | high |
+| A12 | NixOS update center — statut flake, rebuild/test, générations, rollback, logs | terminal `nh` manuel | idea | high |
+| A13 | Workspace overview — vue des workspaces/fenêtres Hyprland, recherche et focus rapide | overview absent / `hyprctl` manuel | idea | very high |
+| A14 | Alertes système intelligentes — températures, disque plein, réseau, services systemd en erreur | monitoring manuel | idea | easy → medium |
 
 Boundary: Quickshell is the **UI layer** of the desktop. System plumbing (DNS, kernel, low-level networking, audio server) stays with the right tools — nothing gets reinvented for its own sake.
 
-Milestone: `v1 — Home-grown desktop` (groups A1–A4).
+Rule: Quickshell owns presentation and orchestration. Privileged or low-level actions stay behind declarative Nix config, systemd units, or small audited scripts.
+
+Milestones:
+
+| Milestone | Items | Notes |
+|-----------|-------|-------|
+| `v1.0 — Desktop essentials` | A1, A2, A5, A7 — optional: A3 | Short, shippable, visible features |
+| `v1.1 — Launcher MVP` | A4 only | High-risk item — isolated milestone, do not bundle |
+| `v1.2 — System controls` | A6, A11, A12 | Privileged and system-facing actions |
+
+A8–A14 (except A11, A12) remain `idea` and are promoted into milestones once the core shell is stable.
+
+Architecture constraint — A12: the QML UI must not directly execute privileged rebuild or update commands. Privileged actions must go through audited scripts or systemd units. A read-only viewer (flake status, generations) is an acceptable first version before adding privileged triggers.
 
 ## Pillar B — Documentation
 
