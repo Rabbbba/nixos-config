@@ -146,6 +146,12 @@ in
 
     # Fonts
     nerd-fonts.iosevka
+
+    # Java
+    jdk
+    maven
+    jdt-language-server
+    google-java-format
   ];
 
   programs.yazi = {

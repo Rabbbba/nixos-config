@@ -59,6 +59,12 @@ vim.api.nvim_create_autocmd("LspAttach", {
 	end,
 })
 
+-- Jdtls for Java
+vim.lsp.config("jdtls", {
+	capabilities = require("cmp_nvim_lsp").default_capabilities(),
+})
+vim.lsp.enable("jdtls")
+
 vim.keymap.set("n", "<leader>ih", function()
 	local on = vim.lsp.inlay_hint.is_enabled({ bufnr = 0 })
 	vim.lsp.inlay_hint.enable(not on, { bufnr = 0 })
