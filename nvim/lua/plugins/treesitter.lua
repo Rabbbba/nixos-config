@@ -15,6 +15,7 @@ return {
 			"vimdoc",
 			"html",
 			"css",
+			"java",
 		},
 		highlight = {
 			enable = true,

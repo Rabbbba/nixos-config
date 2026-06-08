@@ -12,6 +12,7 @@ local options = {
 		md = { "prettier" },
 		nix = { "nixd" },
 		qml = { "qmlformat" },
+		java = { "google-java-format" },
 	},
 
 	format_on_save = {
