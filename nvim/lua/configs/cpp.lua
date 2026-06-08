@@ -36,6 +36,44 @@ autocmd("FileType", {
 		local build_dir = root .. "/build"
 		vim.bo[buf].makeprg = "cmake --build " .. vim.fn.fnameescape(build_dir)
 
+		-- <leader>cg: regenerate compile_commands.json after CMakeLists.txt changes
+		-- and restart clangd so diagnostics see new targets/macros/MOC paths.
+		vim.keymap.set("n", "<leader>cg", function()
+			vim.notify("CMake: generating compile_commands.json...", vim.log.levels.INFO)
+			vim.fn.jobstart({ "cmake", "-G", "Ninja", "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON", "-B", build_dir, "-S", root }, {
+				stdout_buffered = true,
+				stderr_buffered = true,
+				on_exit = function(_, code)
+					vim.schedule(function()
+						if code ~= 0 then
+							vim.notify("CMake: generate failed", vim.log.levels.ERROR)
+							return
+						end
+
+						local compile_commands = root .. "/compile_commands.json"
+						local build_compile_commands = build_dir .. "/compile_commands.json"
+						if not vim.uv.fs_stat(build_compile_commands) then
+							vim.notify("CMake: compile_commands.json was not generated", vim.log.levels.ERROR)
+							return
+						end
+
+						pcall(vim.uv.fs_unlink, compile_commands)
+						local ok, err = vim.uv.fs_symlink("build/compile_commands.json", compile_commands)
+						if not ok then
+							vim.notify("CMake: symlink failed: " .. tostring(err), vim.log.levels.ERROR)
+							return
+						end
+
+						vim.cmd("LspRestart clangd")
+						vim.notify("CMake: generated; clangd restarted", vim.log.levels.INFO)
+					end)
+				end,
+			})
+		end, {
+			buffer = buf,
+			desc = "CMake: generate + restart clangd",
+		})
+
 		-- <leader>cb: build. Errors land in the quickfix list — :copen, :cnext, :cprev.
 		vim.keymap.set("n", "<leader>cb", "<cmd>make<cr>", {
 			buffer = buf,
