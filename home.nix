@@ -300,6 +300,9 @@ in
           ${pkgs.systemd}/bin/busctl --system status org.freedesktop.NetworkManager >/dev/null 2>&1 && exit 0
           sleep 0.2
         done
+
+        echo "NetworkManager D-Bus name not available" >&2
+        exit 1
       ''}";
       ExecStart = "${
         inputs.quickshell.packages.${pkgs.stdenv.hostPlatform.system}.default
