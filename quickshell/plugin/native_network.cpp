@@ -23,6 +23,8 @@ NativeNetwork::NativeNetwork(std::string procRoot, std::string sysRoot,
   mTimer.start();
 }
 
+void NativeNetwork::refresh() { poll(); }
+
 // ── Getters ──────────────────────────────────────────────────────────────
 
 double NativeNetwork::downloadKbps() const { return mDownloadKbps; }

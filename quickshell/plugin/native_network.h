@@ -21,6 +21,8 @@ public:
   explicit NativeNetwork(std::string procRoot, std::string sysRoot,
                          QObject *parent = nullptr);
 
+  void refresh();
+
   // Getters
   [[nodiscard]] double downloadKbps() const;
   [[nodiscard]] double uploadKbps() const;
@@ -32,7 +34,8 @@ signals:
 private:
   // Methods
   void poll() override; // read counters, compute speed, emit
-  [[nodiscard]] std::string discoverNetwork() const; // active iface from the default route
+  [[nodiscard]] std::string
+  discoverNetwork() const; // active iface from the default route
 
   std::string mProcRoot{"/proc"};
   std::string mSysRoot{"/sys"};
