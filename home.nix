@@ -60,6 +60,7 @@ in
     nixfmt
     statix
     deadnix
+    tree-sitter
     # ─── C/C++ toolchain ─────────────────────────────────────────────
     # clang-tools already gives us the LSP side; this row is for compiling.
     gcc
@@ -97,6 +98,8 @@ in
     dunst
     libnotify
     swayosd
+    bitwarden-desktop
+    onlyoffice-desktopeditors
 
     inputs.quickshell.packages.${pkgs.stdenv.hostPlatform.system}.default
 
@@ -150,6 +153,7 @@ in
     # Java
     jdk
     maven
+    gradle
     jdt-language-server
     google-java-format
   ];

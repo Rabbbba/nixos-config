@@ -228,7 +228,14 @@
   # hardlink identical store paths — silent disk savings over time
   nix.optimise.automatic = true;
 
-  nixpkgs.config.allowUnfree = true;
+  nixpkgs.config = {
+    allowUnfree = true;
+
+    # eletron version for bitwarden
+    permittedInsecurePackages = [
+      "electron-39.8.10"
+    ];
+  };
 
   # ── System environment variables ───────────────────────────────────────────
   environment.sessionVariables = {
