@@ -35,8 +35,21 @@ in
   xdg.configFile."matugen".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/matugen";
   xdg.configFile."starship.toml".source = ./starship.toml;
 
+  xdg.desktopEntries.netbeans-awt = {
+    name = "NetBeans (AWT fix)";
+    comment = "Apache NetBeans with Java AWT window manager fix";
+    exec = "env _JAVA_AWT_WM_NONREPARENTING=1 netbeans";
+    icon = "netbeans";
+    terminal = false;
+    categories = [
+      "Development"
+      "IDE"
+    ];
+  };
+
   # Odysseus lives on the persistent games disk — survives reinstalls.
   home.file."odysseus".source = config.lib.file.mkOutOfStoreSymlink "/mnt/jeux/odysseus/app";
+  home.file.".local/share/jdks/openjdk-8".source = pkgs.jdk8;
 
   home.sessionVariables.ELECTRON_OZONE_PLATFORM_HINT = "wayland";
 
@@ -154,8 +167,11 @@ in
     jdk
     maven
     gradle
+    ant
     jdt-language-server
     google-java-format
+    jetbrains.idea-oss
+    netbeans
   ];
 
   programs.yazi = {
