@@ -23,9 +23,8 @@ return {
 				},
 			},
 			signature = {
-				opts = {
-					focusable = false,
-				},
+				-- gere par lsp_signature.nvim : noice vole le curseur (bug #1016)
+				enabled = false,
 			},
 		},
 		presets = {
