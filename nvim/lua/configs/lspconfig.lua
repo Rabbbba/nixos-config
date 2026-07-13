@@ -36,6 +36,23 @@ vim.lsp.config("nixd", {
 })
 vim.lsp.enable("nixd")
 
+-- basedpyright for Python (e.g. The Farmer Was Replaced external editing).
+-- The game's language isn't real Python, so type checking is off to avoid
+-- noise; completion is driven by the save's __builtins__.py, which is also a
+-- root marker so opening a game file makes the save folder the workspace.
+vim.lsp.config("basedpyright", {
+	capabilities = require("cmp_nvim_lsp").default_capabilities(),
+	root_markers = { "__builtins__.py", "pyproject.toml", "setup.py", ".git" },
+	settings = {
+		basedpyright = {
+			analysis = {
+				typeCheckingMode = "off",
+			},
+		},
+	},
+})
+vim.lsp.enable("basedpyright")
+
 -- qmldir is NOT in root_markers: every subfolder ships one, would split the
 -- project. qmlls > qml-language-server here for [unqualified] diagnostics.
 -- `-E` reads QML_IMPORT_PATH (home.nix). Project opts in quickshell/.qmlls.ini.

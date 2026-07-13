@@ -87,6 +87,7 @@ in
     clang-tools
     # ─── C/C++ learning ──────────────────────────────────────────────
     bash-language-server
+    basedpyright # Python LSP (ex : édition externe de The Farmer Was Replaced)
     vscode-langservers-extracted
     stylua
     prettier
@@ -122,6 +123,7 @@ in
     wl-clipboard
     wl-clip-persist # survives the source app closing
     cliphist
+    gimp
 
     # Apps
     # Vesktop: never launch via walker — its app.slice cgroup + detached fork
@@ -144,7 +146,7 @@ in
     # AI
     claude-code
     codex
-
+    sillytavern # LLM frontend — branche sur le llama-server local
     amdgpu_top
     networkmanagerapplet
     btop
@@ -236,6 +238,11 @@ in
     enable = true;
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
+    shellAliases = {
+      # The Farmer Was Replaced : cd dans le Save0 (préfixe Proton) + nvim.
+      # Alias plutôt que script : le cd persiste après avoir quitté nvim.
+      farmer = ''cd "/mnt/jeux/SteamLibrary/steamapps/compatdata/2060160/pfx/drive_c/users/steamuser/AppData/LocalLow/TheFarmerWasReplaced/TheFarmerWasReplaced/Saves/Save0" && nvim main.py'';
+    };
   };
 
   programs.starship.enable = true;

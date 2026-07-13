@@ -16,6 +16,7 @@ return {
 			"html",
 			"css",
 			"java",
+			"python",
 		},
 		highlight = {
 			enable = true,
