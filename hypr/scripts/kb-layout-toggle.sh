@@ -13,4 +13,8 @@ case "$CUR" in
     *) NEW="fr,us" ;;
 esac
 
-hyprctl keyword input:kb_layout "$NEW"
+# `hyprctl keyword` is rejected under a Lua config ("Use eval."), so apply the
+# change through the Lua config API via `eval`; fall back to legacy keyword when
+# running under a .conf config (eval has no Lua parser there).
+hyprctl eval "hl.config({ input = { kb_layout = \"$NEW\" } })" 2>/dev/null | grep -qx ok \
+    || hyprctl keyword input:kb_layout "$NEW"
