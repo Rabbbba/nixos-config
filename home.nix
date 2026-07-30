@@ -35,18 +35,6 @@ in
   xdg.configFile."matugen".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/matugen";
   xdg.configFile."starship.toml".source = ./starship.toml;
 
-  xdg.desktopEntries.netbeans-awt = {
-    name = "NetBeans (AWT fix)";
-    comment = "Apache NetBeans with Java AWT window manager fix";
-    exec = "env _JAVA_AWT_WM_NONREPARENTING=1 netbeans";
-    icon = "netbeans";
-    terminal = false;
-    categories = [
-      "Development"
-      "IDE"
-    ];
-  };
-
   # Odysseus lives on the persistent games disk — survives reinstalls.
   home.file."odysseus".source = config.lib.file.mkOutOfStoreSymlink "/mnt/jeux/odysseus/app";
   home.file.".local/share/jdks/openjdk-8".source = pkgs.jdk8;
@@ -96,6 +84,7 @@ in
     taplo
     shfmt
     nodejs
+    netlify-cli # déploiement de sites statiques sur Netlify
     ripgrep
     gh
     doxygen
@@ -120,20 +109,16 @@ in
     # Capture & clipboard
     grim
     slurp
-    wl-clipboard
     wl-clip-persist # survives the source app closing
     cliphist
-    gimp
 
     # Apps
     # Vesktop: never launch via walker — its app.slice cgroup + detached fork
     # breaks Chromium's video_capture (portal picker never opens, black frame).
     # Use Super+D (direct exec, clean systemd scope).
-    pkgs.vesktop
+    vesktop
     firefox
-    #bitwarden-desktop
     mangohud
-    obsidian
     superfile
 
     # Gaming
@@ -146,7 +131,6 @@ in
     # AI
     claude-code
     codex
-    sillytavern # LLM frontend — branche sur le llama-server local
     amdgpu_top
     networkmanagerapplet
     btop
@@ -160,7 +144,6 @@ in
 
     # `, <bin>` runs any nixpkgs binary ephemerally (needs nix-index, below)
     comma
-    hydralauncher
 
     # Fonts
     nerd-fonts.iosevka
@@ -168,12 +151,8 @@ in
     # Java
     jdk
     maven
-    gradle
-    ant
     jdt-language-server
     google-java-format
-    jetbrains.idea-oss
-    netbeans
   ];
 
   programs.yazi = {
@@ -328,14 +307,20 @@ in
       # Wait for NetworkManager on the system bus — Quickshell's network
       # backend only probes once at startup and silently disables itself
       # if the D-Bus name isn't owned yet, leaving the Wi-Fi popup empty.
+      #
+      # Best-effort only: NetworkManager gets restarted during a `nixos-rebuild
+      # switch`, and if it stays off the bus longer than our wait, we must NOT
+      # fail the unit — a failed quickshell.service makes switch-to-configuration
+      # report a non-zero activation and aborts the whole switch (no new
+      # generation). So we wait up to 30s, then start anyway (exit 0).
       ExecStartPre = "${pkgs.writeShellScript "wait-nm" ''
-        for i in $(seq 1 50); do
+        for i in $(seq 1 150); do
           ${pkgs.systemd}/bin/busctl --system status org.freedesktop.NetworkManager >/dev/null 2>&1 && exit 0
           sleep 0.2
         done
 
-        echo "NetworkManager D-Bus name not available" >&2
-        exit 1
+        echo "NetworkManager D-Bus name not available after 30s; starting anyway" >&2
+        exit 0
       ''}";
       ExecStart = "${
         inputs.quickshell.packages.${pkgs.stdenv.hostPlatform.system}.default
