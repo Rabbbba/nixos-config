@@ -5,6 +5,7 @@
 
   # ── Boot ────────────────────────────────────────────────────────────────────
   boot.loader.systemd-boot.enable = true;
+  boot.loader.systemd-boot.configurationLimit = 10; # ne garder que les 10 dernières générations dans le menu de boot
   boot.loader.efi.canTouchEfiVariables = true;
 
   # /tmp on tmpfs — RAM-backed builds, faster nix/cmake intermediates
@@ -43,6 +44,11 @@
   programs.nh = {
     enable = true;
     flake = "/etc/nixos";
+    clean = {
+      enable = true;
+      dates = "weekly";
+      extraArgs = "--keep 10"; # ne conserver que les 10 dernières générations (tous profils)
+    };
   };
 
   # runs generic linux binaries (github releases etc.) without a steam-run wrapper
@@ -219,11 +225,7 @@
     ];
   };
 
-  nix.gc = {
-    automatic = true;
-    dates = "weekly";
-    options = "--delete-older-than 7d";
-  };
+  # GC géré par programs.nh.clean (--keep 10) — voir le bloc programs.nh ci-dessus
 
   # hardlink identical store paths — silent disk savings over time
   nix.optimise.automatic = true;
@@ -234,6 +236,8 @@
     # eletron version for bitwarden
     permittedInsecurePackages = [
       "electron-39.8.10"
+      # build-time only (vesktop-pnpm-deps), pas dans la closure runtime
+      "pnpm-10.29.2"
     ];
   };
 
