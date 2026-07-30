@@ -175,12 +175,13 @@ in
   #Qt
   qt = {
     enable = true;
-    platformTheme.name = "gtk";
+    platformTheme.name = "gtk3";
     style.name = "adwaita-dark";
   };
 
   #Mouse
   home.pointerCursor = {
+    enable = true;
     name = "Bibata-Modern-Amber";
     package = pkgs.bibata-cursors;
     size = 24;
@@ -236,6 +237,9 @@ in
   programs.fzf = {
     enable = true;
     enableZshIntegration = true;
+    # atuin owns Ctrl-R (dedicated history TUI, sourced after fzf); drop fzf's
+    # own Ctrl-R widget so they don't both bind it.
+    historyWidget.zsh.command = "";
   };
 
   # backs `comma` and `command-not-found` with a nixpkgs binary index
