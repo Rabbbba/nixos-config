@@ -191,9 +191,12 @@ in
 
   gtk = {
     enable = true;
+    # gruvbox-gtk-theme was dropped from nixpkgs on 2026-07-30 along with
+    # gtk-engine-murrine (GTK2, unmaintained upstream) — it took Orchis and
+    # Colloid with it. gruvbox-dark-gtk is pure CSS, so it survived.
     theme = {
-      name = "Gruvbox-Dark-B";
-      package = pkgs.gruvbox-gtk-theme;
+      name = "gruvbox-dark";
+      package = pkgs.gruvbox-dark-gtk;
     };
     gtk4.theme = config.gtk.theme;
     iconTheme = {
