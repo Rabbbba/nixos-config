@@ -106,6 +106,11 @@ in
 
     inputs.quickshell.packages.${pkgs.stdenv.hostPlatform.system}.default
 
+    # Dropping services.xserver.enable took the xrandr client with it, and
+    # Hyprland's Xwayland doesn't put it back on PATH — xrandr-primary.sh needs
+    # it to mark the OLED primary for Steam's toasts.
+    xrandr
+
     # Capture & clipboard
     grim
     slurp
@@ -394,6 +399,25 @@ in
       RemainAfterExit = true;
     };
     Install.WantedBy = [ "awww-daemon.service" ];
+  };
+
+  # Steam pins its notification toasts to the X primary output, so the OLED has
+  # to be marked primary on Xwayland. A service for the same reason as
+  # hypr-orientation below: from hl.on("hyprland.start") the script's very first
+  # hyprctl call failed under `set -e`, and it exited long before reaching
+  # xrandr.
+  systemd.user.services.xrandr-primary = {
+    Unit = {
+      Description = "Mark the OLED as Xwayland's primary output";
+      PartOf = [ "graphical-session.target" ];
+      After = [ "graphical-session.target" ];
+    };
+    Service = {
+      Type = "oneshot";
+      ExecStart = "/etc/nixos/hypr/scripts/xrandr-primary.sh";
+      RemainAfterExit = true;
+    };
+    Install.WantedBy = [ "graphical-session.target" ];
   };
 
   # Pivots the master layout to match the active monitor's transform (portrait →
