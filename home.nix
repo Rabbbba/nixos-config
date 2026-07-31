@@ -393,6 +393,26 @@ in
     Install.WantedBy = [ "awww-daemon.service" ];
   };
 
+  # Pivots the master layout to match the active monitor's transform (portrait →
+  # orientationtop). A service rather than a Hyprland exec-once: the Lua config's
+  # hl.on("hyprland.start") fires before UWSM finalises
+  # HYPRLAND_INSTANCE_SIGNATURE, so the daemon died on an unbound variable
+  # before it could even wait for the IPC socket. graphical-session.target is
+  # reached only once UWSM has exported it.
+  systemd.user.services.hypr-orientation = {
+    Unit = {
+      Description = "Master orientation follows the active monitor's transform";
+      PartOf = [ "graphical-session.target" ];
+      After = [ "graphical-session.target" ];
+    };
+    Service = {
+      ExecStart = "/etc/nixos/hypr/scripts/orientation-daemon.sh";
+      Restart = "on-failure";
+      RestartSec = 2;
+    };
+    Install.WantedBy = [ "graphical-session.target" ];
+  };
+
   systemd.user.services.hypridle = {
     Unit = {
       Description = "hypridle — idle management daemon";
