@@ -28,7 +28,7 @@
 
   programs.thunar = {
     enable = true;
-    plugins = with pkgs.xfce; [
+    plugins = with pkgs; [
       thunar-archive-plugin
       thunar-volman
     ];
@@ -110,6 +110,27 @@
     iptables -D INPUT -s 172.16.0.0/12 -p tcp --dport 8081 -j ACCEPT || true
   '';
 
+  # Steam P2P / matchmaking inbound. remotePlay/localNetworkGameTransfers only
+  # open a narrow subrange; TWW3 (and other Steamworks P2P titles) also need the
+  # game-traffic range plus the Steam Datagram Relay ports, otherwise a direct
+  # join falls back with "No response from host".
+  networking.firewall.allowedUDPPortRanges = [
+    {
+      from = 27000;
+      to = 27100;
+    }
+  ];
+  networking.firewall.allowedUDPPorts = [
+    3478
+    4379
+    4380
+    27015
+  ];
+  networking.firewall.allowedTCPPorts = [
+    27015
+    27036
+  ];
+
   # Encrypted DNS via a local dnscrypt-proxy speaking DoH to Mullvad (adblock
   # variant: blocks ads + trackers). resolv.conf is pinned to 127.0.0.1 and
   # NetworkManager is kept out of DNS (dns=none). systemd-resolved is left off on
@@ -150,7 +171,9 @@
   };
 
   # ── Display & keyboard ─────────────────────────────────────────────────────
-  services.xserver.enable = true;
+  # Pas de services.xserver.enable : session 100 % Wayland. Xwayland vient de
+  # programs.hyprland.xwayland.enable, le greeter de greetd (TTY), le layout
+  # Wayland de Hyprland (kb_layout) et le TTY de console.keyMap ci-dessous.
   services.greetd = {
     enable = true;
     settings = {
@@ -159,10 +182,6 @@
         user = "greeter";
       };
     };
-  };
-  services.xserver.xkb = {
-    layout = "fr";
-    variant = "";
   };
   console.keyMap = "fr";
 
@@ -233,12 +252,16 @@
   nixpkgs.config = {
     allowUnfree = true;
 
-    # eletron version for bitwarden
-    permittedInsecurePackages = [
-      "electron-39.8.10"
-      # build-time only (vesktop-pnpm-deps), pas dans la closure runtime
-      "pnpm-10.29.2"
-    ];
+    # electron churne à chaque bump nixpkgs (desktop client, pas un service
+    # exposé) : on autorise toutes ses versions au lieu de re-pin à chaque
+    # --update. allowInsecurePredicate REMPLACE permittedInsecurePackages, donc
+    # pnpm (build-time only, vesktop-pnpm-deps) est géré ici aussi.
+    allowInsecurePredicate =
+      pkg:
+      let
+        name = pkgs.lib.getName pkg;
+      in
+      name == "electron" || name == "pnpm";
   };
 
   # ── System environment variables ───────────────────────────────────────────

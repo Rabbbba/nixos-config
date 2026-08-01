@@ -35,18 +35,6 @@ in
   xdg.configFile."matugen".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/matugen";
   xdg.configFile."starship.toml".source = ./starship.toml;
 
-  xdg.desktopEntries.netbeans-awt = {
-    name = "NetBeans (AWT fix)";
-    comment = "Apache NetBeans with Java AWT window manager fix";
-    exec = "env _JAVA_AWT_WM_NONREPARENTING=1 netbeans";
-    icon = "netbeans";
-    terminal = false;
-    categories = [
-      "Development"
-      "IDE"
-    ];
-  };
-
   # Odysseus lives on the persistent games disk — survives reinstalls.
   home.file."odysseus".source = config.lib.file.mkOutOfStoreSymlink "/mnt/jeux/odysseus/app";
   home.file.".local/share/jdks/openjdk-8".source = pkgs.jdk8;
@@ -96,6 +84,7 @@ in
     taplo
     shfmt
     nodejs
+    netlify-cli # déploiement de sites statiques sur Netlify
     ripgrep
     gh
     doxygen
@@ -117,23 +106,24 @@ in
 
     inputs.quickshell.packages.${pkgs.stdenv.hostPlatform.system}.default
 
+    # Dropping services.xserver.enable took the xrandr client with it, and
+    # Hyprland's Xwayland doesn't put it back on PATH — xrandr-primary.sh needs
+    # it to mark the OLED primary for Steam's toasts.
+    xrandr
+
     # Capture & clipboard
     grim
     slurp
-    wl-clipboard
     wl-clip-persist # survives the source app closing
     cliphist
-    gimp
 
     # Apps
     # Vesktop: never launch via walker — its app.slice cgroup + detached fork
     # breaks Chromium's video_capture (portal picker never opens, black frame).
     # Use Super+D (direct exec, clean systemd scope).
-    pkgs.vesktop
+    vesktop
     firefox
-    #bitwarden-desktop
     mangohud
-    obsidian
     superfile
 
     # Gaming
@@ -146,7 +136,6 @@ in
     # AI
     claude-code
     codex
-    sillytavern # LLM frontend — branche sur le llama-server local
     amdgpu_top
     networkmanagerapplet
     btop
@@ -160,7 +149,6 @@ in
 
     # `, <bin>` runs any nixpkgs binary ephemerally (needs nix-index, below)
     comma
-    hydralauncher
 
     # Fonts
     nerd-fonts.iosevka
@@ -168,12 +156,8 @@ in
     # Java
     jdk
     maven
-    gradle
-    ant
     jdt-language-server
     google-java-format
-    jetbrains.idea-oss
-    netbeans
   ];
 
   programs.yazi = {
@@ -196,12 +180,13 @@ in
   #Qt
   qt = {
     enable = true;
-    platformTheme.name = "gtk";
+    platformTheme.name = "gtk3";
     style.name = "adwaita-dark";
   };
 
   #Mouse
   home.pointerCursor = {
+    enable = true;
     name = "Bibata-Modern-Amber";
     package = pkgs.bibata-cursors;
     size = 24;
@@ -211,9 +196,12 @@ in
 
   gtk = {
     enable = true;
+    # gruvbox-gtk-theme was dropped from nixpkgs on 2026-07-30 along with
+    # gtk-engine-murrine (GTK2, unmaintained upstream) — it took Orchis and
+    # Colloid with it. gruvbox-dark-gtk is pure CSS, so it survived.
     theme = {
-      name = "Gruvbox-Dark-B";
-      package = pkgs.gruvbox-gtk-theme;
+      name = "gruvbox-dark";
+      package = pkgs.gruvbox-dark-gtk;
     };
     gtk4.theme = config.gtk.theme;
     iconTheme = {
@@ -257,6 +245,9 @@ in
   programs.fzf = {
     enable = true;
     enableZshIntegration = true;
+    # atuin owns Ctrl-R (dedicated history TUI, sourced after fzf); drop fzf's
+    # own Ctrl-R widget so they don't both bind it.
+    historyWidget.zsh.command = "";
   };
 
   # backs `comma` and `command-not-found` with a nixpkgs binary index
@@ -328,14 +319,20 @@ in
       # Wait for NetworkManager on the system bus — Quickshell's network
       # backend only probes once at startup and silently disables itself
       # if the D-Bus name isn't owned yet, leaving the Wi-Fi popup empty.
+      #
+      # Best-effort only: NetworkManager gets restarted during a `nixos-rebuild
+      # switch`, and if it stays off the bus longer than our wait, we must NOT
+      # fail the unit — a failed quickshell.service makes switch-to-configuration
+      # report a non-zero activation and aborts the whole switch (no new
+      # generation). So we wait up to 30s, then start anyway (exit 0).
       ExecStartPre = "${pkgs.writeShellScript "wait-nm" ''
-        for i in $(seq 1 50); do
+        for i in $(seq 1 150); do
           ${pkgs.systemd}/bin/busctl --system status org.freedesktop.NetworkManager >/dev/null 2>&1 && exit 0
           sleep 0.2
         done
 
-        echo "NetworkManager D-Bus name not available" >&2
-        exit 1
+        echo "NetworkManager D-Bus name not available after 30s; starting anyway" >&2
+        exit 0
       ''}";
       ExecStart = "${
         inputs.quickshell.packages.${pkgs.stdenv.hostPlatform.system}.default
@@ -402,6 +399,45 @@ in
       RemainAfterExit = true;
     };
     Install.WantedBy = [ "awww-daemon.service" ];
+  };
+
+  # Steam pins its notification toasts to the X primary output, so the OLED has
+  # to be marked primary on Xwayland. A service for the same reason as
+  # hypr-orientation below: from hl.on("hyprland.start") the script's very first
+  # hyprctl call failed under `set -e`, and it exited long before reaching
+  # xrandr.
+  systemd.user.services.xrandr-primary = {
+    Unit = {
+      Description = "Mark the OLED as Xwayland's primary output";
+      PartOf = [ "graphical-session.target" ];
+      After = [ "graphical-session.target" ];
+    };
+    Service = {
+      Type = "oneshot";
+      ExecStart = "/etc/nixos/hypr/scripts/xrandr-primary.sh";
+      RemainAfterExit = true;
+    };
+    Install.WantedBy = [ "graphical-session.target" ];
+  };
+
+  # Pivots the master layout to match the active monitor's transform (portrait →
+  # orientationtop). A service rather than a Hyprland exec-once: the Lua config's
+  # hl.on("hyprland.start") fires before UWSM finalises
+  # HYPRLAND_INSTANCE_SIGNATURE, so the daemon died on an unbound variable
+  # before it could even wait for the IPC socket. graphical-session.target is
+  # reached only once UWSM has exported it.
+  systemd.user.services.hypr-orientation = {
+    Unit = {
+      Description = "Master orientation follows the active monitor's transform";
+      PartOf = [ "graphical-session.target" ];
+      After = [ "graphical-session.target" ];
+    };
+    Service = {
+      ExecStart = "/etc/nixos/hypr/scripts/orientation-daemon.sh";
+      Restart = "on-failure";
+      RestartSec = 2;
+    };
+    Install.WantedBy = [ "graphical-session.target" ];
   };
 
   systemd.user.services.hypridle = {
