@@ -35,11 +35,7 @@ in
   xdg.configFile."matugen".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/matugen";
   xdg.configFile."starship.toml".source = ./starship.toml;
 
-  # Odysseus lives on the persistent games disk — survives reinstalls.
-  home.file."odysseus".source = config.lib.file.mkOutOfStoreSymlink "/mnt/jeux/odysseus/app";
   home.file.".local/share/jdks/openjdk-8".source = pkgs.jdk8;
-
-  home.sessionVariables.ELECTRON_OZONE_PLATFORM_HINT = "wayland";
 
   home.sessionPath = [ "$HOME/.local/bin" ];
 
@@ -50,7 +46,6 @@ in
     pavucontrol
     easyeffects
     tidal-hifi
-    sox
 
     # Terminal & shell
     foot
@@ -136,13 +131,23 @@ in
     # AI
     claude-code
     codex
+    # Vulkan backend: the default build is CPU/BLAS only, and RDNA4 has no
+    # usable ROCm path here. Declared in the config rather than installed with
+    # `nix profile install` — the imperative profile is what `nh clean` GC'd
+    # away, taking llama-server with it.
+    (llama-cpp.override { vulkanSupport = true; })
+
+    # System monitoring & tray
     amdgpu_top
-    networkmanagerapplet
     btop
-    bc
+    networkmanagerapplet
+
+    # Archives
     unzip
     unrar # rar backend used by file-roller via PATH
     file-roller # GUI archive frontend, integrates with thunar-archive-plugin
+
+    # Hyprland scripting glue
     jq # used by hypr scripts
     socat # listens to hyprland events
     hyprpolkitagent # privilege prompts for LACT, gparted...
@@ -158,18 +163,21 @@ in
     maven
     jdt-language-server
     google-java-format
-  ];
 
-  programs.yazi = {
-    enable = true;
-    enableZshIntegration = true;
-    shellWrapperName = "y";
-  };
+    # ── JetBrains (All Products Pack) ──────────────────────────────────
+    # `idea` is the unified distribution: Ultimate unlocks on JetBrains
+    # Account login, so `idea-ultimate` no longer exists in nixpkgs.
+    jetbrains.idea
+    jetbrains.clion
+  ];
 
   home.sessionVariables = {
     XCURSOR_THEME = "Bibata-Modern-Amber";
     XCURSOR_SIZE = "24";
     QML_IMPORT_PATH = qmlImportPath;
+
+    # Electron apps default to XWayland without this hint (Vesktop, Bitwarden).
+    ELECTRON_OZONE_PLATFORM_HINT = "wayland";
 
     # 1 GiB default evicts mid-session on modern AAA → hot recompiles (UE5).
     MESA_SHADER_CACHE_MAX_SIZE = "10G";

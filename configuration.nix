@@ -17,7 +17,6 @@
     xwayland.enable = true;
     withUWSM = true;
   };
-  programs.uwsm.enable = true;
   programs.steam = {
     enable = true;
     gamescopeSession.enable = true;
@@ -36,10 +35,7 @@
   services.gvfs.enable = true; # trash, MTP, network mounts
   services.tumbler.enable = true; # thumbnail daemon
 
-  programs.gamemode = {
-    enable = true;
-    enableRenice = true;
-  };
+  programs.gamemode.enable = true; # enableRenice is on by default (cap_sys_nice wrapper)
 
   programs.nh = {
     enable = true;
@@ -67,8 +63,8 @@
 
   zramSwap.enable = true;
 
-  # zramSwap defaults swappiness to 100 — too aggressive with 30 GiB RAM +
-  # games/LLM: kernel pre-swaps pages we touch right after → stutters.
+  # zramSwap defaults swappiness to 100 — too aggressive with 30 GiB RAM: the
+  # kernel pre-swaps pages we touch right after, which stutters under games.
   boot.kernel.sysctl."vm.swappiness" = 10;
 
   # tidal-hifi binds its API on 47836, which sits inside the kernel's ephemeral
@@ -99,16 +95,6 @@
   # ── Network ────────────────────────────────────────────────────────────────
   networking.hostName = "Rayane";
   networking.networkmanager.enable = true;
-
-  # Allow Docker containers (172.16.0.0/12 covers docker0 + compose bridges)
-  # to reach host services — specifically llama-server on 8081.
-  # NixOS firewall blocks inbound by default, including traffic from bridge networks.
-  networking.firewall.extraCommands = ''
-    iptables -I INPUT -s 172.16.0.0/12 -p tcp --dport 8081 -j ACCEPT
-  '';
-  networking.firewall.extraStopCommands = ''
-    iptables -D INPUT -s 172.16.0.0/12 -p tcp --dport 8081 -j ACCEPT || true
-  '';
 
   # Steam P2P / matchmaking inbound. remotePlay/localNetworkGameTransfers only
   # open a narrow subrange; TWW3 (and other Steamworks P2P titles) also need the
@@ -185,9 +171,6 @@
   };
   console.keyMap = "fr";
 
-  # ── Printing ───────────────────────────────────────────────────────────────
-  services.printing.enable = true;
-
   # ── Security ───────────────────────────────────────────────────────────────
   # hyprlock rejects the password without this PAM service
   security.pam.services.hyprlock = { };
@@ -206,8 +189,9 @@
   hardware.graphics.enable = true;
   hardware.graphics.enable32Bit = true; # 32-bit for games
   hardware.amdgpu.opencl.enable = true;
-  # overdrive sets amdgpu.ppfeaturemask=0xfffd7fff → disables PP_GFXOFF, which
-  # otherwise costs ~10ms wake-up per token on LLM workloads (9 → 25 t/s)
+  # amdgpu.ppfeaturemask=0xfffd7fff — unlocks the clock/voltage controls LACT
+  # drives. Side effect: PP_GFXOFF is disabled, so the GPU skips its deep idle
+  # state (costs a few watts at rest, removes the wake-up latency on it).
   hardware.amdgpu.overdrive.enable = true;
   hardware.amdgpu.initrd.enable = true;
 
@@ -296,6 +280,13 @@
   # (ValveSoftware/Proton#8391). Value = polling interval in ms (2 ms = 500 Hz).
   boot.kernelParams = [ "usbhid.mousepoll=2" ];
 
+  # Motherboard sensors (NCT6687D): its native driver is out-of-tree, but
+  # nct6683 drives the chip when forced. Gives fan RPM and the supply rails,
+  # which k10temp/amdgpu don't expose. Labels and voltage scaling are wrong
+  # under this driver — only the trends are meaningful.
+  boot.kernelModules = [ "nct6683" ];
+  boot.extraModprobeConfig = "options nct6683 force=1";
+
   # ── Games disk ─────────────────────────────────────────────────────────────
   fileSystems."/mnt/jeux" = {
     device = "/dev/disk/by-uuid/eaf01630-0390-47bc-8052-c056e1e5aedb";
@@ -316,13 +307,8 @@
   # firmware updates via LVFS (BIOS, SSD, peripherals)
   services.fwupd.enable = true;
 
-  # zero-config mesh VPN — `sudo tailscale up` once to register the node
-  services.tailscale.enable = true;
-
   # ── Containers ─────────────────────────────────────────────────────────────
-  # Docker for self-hosted services (Odysseus) run from upstream compose files.
-  # Inference stays native (llama-server, Vulkan) — the container only talks to
-  # it over HTTP, so no GPU passthrough is needed here.
+  # Docker for self-hosted services run from upstream compose files.
   virtualisation.docker.enable = true;
 
   system.stateVersion = "25.11";
